@@ -31,6 +31,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import render_slides
+import render_card
 from buffer_client import Buffer, BufferError
 
 RAW = "https://raw.githubusercontent.com/%s/%s/%s/%s"
@@ -95,8 +96,16 @@ def pick_unit(plan: dict, target: date) -> dict:
     )
 
 
-def fill_template(unit: dict, defaults: dict) -> Path:
-    """يعبّئ علامات القالب من الوحدة، ويكتب قالباً مؤقتاً للرندر."""
+# قوالب البطاقات المفردة بمقاس كل منصة. X أفقي 16:9، ولنكدن 1.91:1.
+# انستقرام يبقى الكاروسيل المتصل 4:5 في defaults["template"].
+CARD_SPECS = {
+    "x":  ("templates/x_card.html", 1600, 900),
+    "li": ("templates/linkedin_card.html", 1200, 627),
+}
+
+
+def build_values(unit: dict, defaults: dict) -> dict:
+    """القيم المشتركة بين الكاروسيل والبطاقات من مصدر واحد، فلا تختلف."""
     s = {**defaults, **unit.get("slides", {})}
 
     lit = int(s.get("lit", defaults.get("lit", 5)))
@@ -121,18 +130,40 @@ def fill_template(unit: dict, defaults: dict) -> Path:
     }
     for i in range(8):
         values["ON_%d" % i] = "rail__node--on" if i == lit else ""
+    return values
 
-    html = (ROOT / defaults["template"]).read_text(encoding="utf-8")
+
+def _fill(html: str, values: dict, where: str) -> str:
     for k, v in values.items():
         html = html.replace("{{%s}}" % k, str(v))
-
-    left = [t for t in html.split("{{")[1:]]
+    left = [t.split("}}")[0] for t in html.split("{{")[1:]]
     if left:
-        raise SystemExit("علامات لم تُعبَّأ: " + ", ".join(t.split("}}")[0] for t in left))
+        raise SystemExit("علامات لم تُعبَّأ في %s: %s" % (where, ", ".join(left)))
+    return html
 
+
+def fill_template(unit: dict, defaults: dict) -> Path:
+    """يعبّئ قالب الكاروسيل المتصل (انستقرام) ويكتب قالباً مؤقتاً للرندر."""
+    html = _fill((ROOT / defaults["template"]).read_text(encoding="utf-8"),
+                 build_values(unit, defaults), defaults["template"])
     out = ROOT / "out" / "_filled.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html, encoding="utf-8")
+    return out
+
+
+def render_cards(unit: dict, defaults: dict, target: date) -> dict:
+    """يرندر بطاقتي X ولنكدن بمقاس كل منصة، ويرجّع {key: png_path}."""
+    values = build_values(unit, defaults)
+    root = ROOT / "out" / target.isoformat() / "cards"
+    out = {}
+    for key, (tpl, w, h) in CARD_SPECS.items():
+        html = _fill((ROOT / tpl).read_text(encoding="utf-8"), values, tpl)
+        d = root / key
+        d.mkdir(parents=True, exist_ok=True)
+        filled = d / Path(tpl).name
+        filled.write_text(html, encoding="utf-8")
+        out[key] = render_card.render(filled, d, w, h, strict=True)
     return out
 
 
@@ -149,6 +180,14 @@ def export_jpegs(pngs, outdir: Path, slug: str, target: date) -> list:
         )
         out.append(dst)
     return out
+
+
+def to_jpeg(png: Path, dst: Path) -> Path:
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    Image.open(png).convert("RGB").save(
+        dst, "JPEG", quality=JPEG_QUALITY, subsampling=0, optimize=True
+    )
+    return dst
 
 
 def repo_info():
@@ -217,30 +256,42 @@ def main():
     print("2) الرندر والفحص")
     filled = fill_template(unit, plan["defaults"])
     pngs = render_slides.render(filled, ROOT / "out" / target.isoformat(), strict=True)
+    cards = render_cards(unit, plan["defaults"], target)
 
     print("3) التصدير")
     assets = ROOT / ASSET_DIR / target.isoformat()
-    jpegs = export_jpegs(pngs, assets, unit["slug"], target)
-    for j in jpegs:
+    slug, iso = unit["slug"], target.isoformat()
+    ig = export_jpegs(pngs, assets, slug, target)                        # كاروسيل انستقرام 4:5
+    xj = to_jpeg(cards["x"], assets / ("%s-%s-x.jpg" % (iso, slug)))     # بطاقة X 16:9
+    lij = to_jpeg(cards["li"], assets / ("%s-%s-li.jpg" % (iso, slug)))  # بطاقة لنكدن 1.91:1
+    files = ig + [xj, lij]
+    for j in files:
         print("   %s  %d KB" % (j.name, j.stat().st_size / 1024))
 
     print("4) الدفع")
     owner, repo = repo_info()
-    sha = push(jpegs, "%s %s" % (target.isoformat(), unit["slug"]))
+    sha = push(files, "%s %s" % (iso, slug))
     print("   %s/%s @ %s" % (owner, repo, sha[:10]))
 
     print("5) التحقق أن الروابط تخدم صوراً")
-    urls = [RAW % (owner, repo, sha, str(j.relative_to(ROOT))) for j in jpegs]
-    for u in urls:
+    def raw(j):
+        return RAW % (owner, repo, sha, str(j.relative_to(ROOT)))
+    ig_urls = [raw(j) for j in ig]
+    x_url, li_url = raw(xj), raw(lij)
+    for u in ig_urls + [x_url, li_url]:
         verify(u)
 
-    alts = [unit.get("alt", {}).get("01", unit["slides"]["badge"] + " | زيادة"),
-            unit.get("alt", {}).get("02", unit["slides"]["stat_label"].replace("<br>", " "))]
+    # صورة كل قناة بمقاسها: انستقرام كاروسيل 4:5، X بطاقته 16:9، لنكدن بطاقته
+    chan_images = {"instagram": ig_urls, "twitter": [x_url], "linkedin": [li_url]}
+
+    alt01 = unit.get("alt", {}).get("01", unit["slides"]["badge"] + " | زيادة")
+    alt02 = unit.get("alt", {}).get("02", unit["slides"]["stat_label"].replace("<br>", " "))
+    chan_alts = {"instagram": [alt01, alt02], "twitter": [alt01], "linkedin": [alt01]}
 
     print("6) المسودات في بفر")
     if args.dry_run:
         print("   dry-run: تم تخطي الكتابة. الروابط جاهزة:")
-        for u in urls:
+        for u in ig_urls + [x_url, li_url]:
             print("      " + u)
         return
 
@@ -265,11 +316,9 @@ def main():
                                 datetime.strptime(hhmm, "%H:%M").time())
         due = when.strftime("%Y-%m-%dT%H:%M:00+03:00")
 
-        # انستقرام ياخذ الشريحتين ككاروسيل، ولنكدن كذلك. X الأولى فقط.
-        imgs = urls if service in ("instagram", "linkedin") else urls[:1]
-
         try:
-            post = buf.create_draft(ch["id"], body, due, imgs, alts, service)
+            post = buf.create_draft(ch["id"], body, due,
+                                    chan_images[service], chan_alts[service], service)
         except BufferError as e:
             raise SystemExit("فشل إنشاء مسودة %s:\n%s" % (service, e))
 
@@ -281,10 +330,10 @@ def main():
 
     summary = ROOT / "out" / target.isoformat() / "run.json"
     summary.write_text(json.dumps({
-        "date": target.isoformat(),
-        "slug": unit["slug"],
+        "date": iso,
+        "slug": slug,
         "commit": sha,
-        "images": urls,
+        "images": {"instagram": ig_urls, "twitter": [x_url], "linkedin": [li_url]},
         "drafts": [{"service": s, "id": i, "dueAt": d} for s, i, d in created],
     }, ensure_ascii=False, indent=2), encoding="utf-8")
 
