@@ -112,11 +112,9 @@ CARD_SPECS = {
 }
 
 
-def build_values(unit: dict, defaults: dict) -> dict:
-    """القيم المشتركة بين الكاروسيل والبطاقات من مصدر واحد، فلا تختلف."""
-    s = {**defaults, **unit.get("slides", {})}
-
-    lit = int(s.get("lit", defaults.get("lit", 5)))
+def _values_from(s: dict) -> dict:
+    """يبني قيم القالب من قاموس شرائح مدموج (defaults + زاوية/وحدة)."""
+    lit = int(s.get("lit", 5))
     if lit not in LIT_X:
         raise SystemExit(
             "lit=%d غير مسموح. المسموح 4 أو 5 فقط، فهما العقدتان الواقعتان "
@@ -139,6 +137,16 @@ def build_values(unit: dict, defaults: dict) -> dict:
     for i in range(8):
         values["ON_%d" % i] = "rail__node--on" if i == lit else ""
     return values
+
+
+def build_values(unit: dict, defaults: dict) -> dict:
+    """القيم المشتركة بين الكاروسيل والبطاقات (وحدة قديمة بحقل slides)."""
+    return _values_from({**defaults, **unit.get("slides", {})})
+
+
+def angle_values(angle: dict, defaults: dict) -> dict:
+    """قيم قالب لزاوية في النموذج المنوّع."""
+    return _values_from({**defaults, **angle})
 
 
 def _fill(html: str, values: dict, where: str) -> str:
@@ -245,6 +253,130 @@ def verify(url: str, attempts: int = 8):
     )
 
 
+# إزاحة أيام النشر عن أحد الإرساء. الخميس قبله (-3) هو يوم عمل الكرون.
+DAY_OFFSET = {"thu": -3, "sun": 0, "tue": 2, "wed": -4, "mon": 1, "fri": -2, "sat": -1}
+
+
+def _slot_asset(slot: dict, vals: dict, assets: Path, outbase: Path,
+                slug: str, iso: str, idx: int, target: date) -> list:
+    """يرندر أصل خانة واحدة (كاروسيل انستقرام أو بطاقة X/لنكدن). يرجّع jpegs."""
+    ch = slot["channel"]
+    tag = "s%d-%s" % (idx, slot["angle"])
+    d = outbase / ("slot%d" % idx)
+    d.mkdir(parents=True, exist_ok=True)
+
+    if ch == "instagram":
+        html = _fill((ROOT / plan_template()).read_text(encoding="utf-8"), vals, "carousel")
+        filled = d / "carousel.html"
+        filled.write_text(html, encoding="utf-8")
+        pngs = render_slides.render(filled, d, strict=True)
+        return export_jpegs(pngs, assets, "%s-%s" % (slug, tag), target)
+
+    key = "x" if ch == "twitter" else "li"
+    tpl, w, h = CARD_SPECS[key]
+    html = _fill((ROOT / tpl).read_text(encoding="utf-8"), vals, tpl)
+    filled = d / Path(tpl).name
+    filled.write_text(html, encoding="utf-8")
+    png = render_card.render(filled, d, w, h, strict=True)
+    return [to_jpeg(png, assets / ("%s-%s-%s-%s.jpg" % (iso, slug, tag, key)))]
+
+
+_PLAN_TEMPLATE = ["templates/carousel_connected.html"]
+
+
+def plan_template() -> str:
+    return _PLAN_TEMPLATE[0]
+
+
+def run_varied(unit: dict, plan: dict, channels: dict, target: date, args) -> None:
+    """
+    النموذج المنوّع: الموضوع الواحد يتفرّع إلى زوايا موزّعة على الخانات
+    السبع بلا تكرار على أي منصة، مع خانة ترند. كل خانة لها تصميمها
+    ونصها وهاشتاقها. كل المسودات saveToDraft.
+    """
+    defaults = plan["defaults"]
+    _PLAN_TEMPLATE[0] = defaults["template"]
+    slug, iso = unit["slug"], target.isoformat()
+    outbase = ROOT / "out" / iso
+    assets = ROOT / ASSET_DIR / iso
+    slots = unit["schedule"]
+
+    print("   الوحدة: %s (خطة منوّعة: %d خانات)" % (slug, len(slots)))
+    print("2) الرندر والفحص لكل خانة")
+    files_per_slot = []
+    for i, slot in enumerate(slots):
+        angle = unit["angles"][slot["angle"]]
+        vals = angle_values(angle, defaults)
+        print("   خانة %d: %s/%s ← زاوية %s" % (i, slot["day"], slot["channel"], slot["angle"]))
+        files_per_slot.append(_slot_asset(slot, vals, assets, outbase, slug, iso, i, target))
+
+    all_files = [f for group in files_per_slot for f in group]
+
+    if args.dry_run:
+        print("3) dry-run: تم الرندر والفحص بلا رفع ولا بفر.")
+        return
+
+    print("3) الدفع")
+    owner, repo = repo_info()
+    sha = push(all_files, "%s %s varied" % (iso, slug))
+    print("   %s/%s @ %s" % (owner, repo, sha[:10]))
+
+    print("4) التحقق أن الروابط تخدم صوراً")
+    def raw(j):
+        return RAW % (owner, repo, sha, str(j.relative_to(ROOT)))
+    urls_per_slot = [[raw(f) for f in group] for group in files_per_slot]
+    for group in urls_per_slot:
+        for u in group:
+            verify(u)
+
+    print("5) المسودات في بفر")
+    trend_file = ROOT / "content" / "trend_current.txt"
+    trend_override = trend_file.read_text(encoding="utf-8").strip() if trend_file.exists() else ""
+
+    buf = Buffer()
+    created = []
+    for i, slot in enumerate(slots):
+        service = slot["channel"]
+        angle = unit["angles"][slot["angle"]]
+        caption = angle.get("captions", {}).get(service)
+        if not caption:
+            raise SystemExit("خانة %d (%s) بلا كابشن لـ%s في زاوية %s"
+                             % (i, service, service, slot["angle"]))
+        if angle.get("trend_slot") and trend_override:
+            caption = trend_override    # هوك الترند من صاحب الحساب/trends.py
+
+        body = caption.strip()
+        limit = channels["channels"][service]["charLimit"]
+        if len(body) > limit:
+            raise SystemExit("نص خانة %d (%s) طوله %d ويتجاوز حد %d."
+                             % (i, service, len(body), limit))
+
+        off = DAY_OFFSET[slot["day"]]
+        when = datetime.combine(target + timedelta(days=off),
+                                datetime.strptime(slot["time"], "%H:%M").time())
+        due = when.strftime("%Y-%m-%dT%H:%M:00+03:00")
+
+        alt = angle.get("alt") or (angle["badge"] + " | زيادة")
+        alts = [alt, alt]  # يكفي للكاروسيل وللبطاقة المفردة
+        try:
+            post = buf.create_draft(channels["channels"][service]["id"],
+                                    body, due, urls_per_slot[i], alts, service)
+        except BufferError as e:
+            raise SystemExit("فشل إنشاء مسودة خانة %d (%s):\n%s" % (i, service, e))
+        created.append((service, slot["angle"], post["id"], due))
+        print("   %-10s %-14s %s  %s" % (service, slot["angle"], post["id"], due))
+
+    print("\nتم: %d مسودة منوّعة. لا شي منشور." % len(created))
+    print("راجعها في بفر واعتمد ما يعجبك.")
+
+    summary = outbase / "run.json"
+    summary.parent.mkdir(parents=True, exist_ok=True)
+    summary.write_text(json.dumps({
+        "date": iso, "slug": slug, "commit": sha, "model": "varied",
+        "drafts": [{"service": s, "angle": a, "id": i, "dueAt": d} for s, a, i, d in created],
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", help="تاريخ أحد بصيغة YYYY-MM-DD")
@@ -259,6 +391,12 @@ def main():
 
     check_occasions(plan)
     unit = pick_unit(plan, target)
+
+    # النموذج المنوّع: الوحدة فيها زوايا وجدول خانات
+    if "angles" in unit:
+        run_varied(unit, plan, channels, target, args)
+        return
+
     print("   الوحدة: %s" % unit["slug"])
 
     print("2) الرندر والفحص")
