@@ -1,0 +1,130 @@
+---
+name: ziadah-social
+description: Use this skill for any work on Ziadah's social media posts - designing carousel slides, writing captions for X/Instagram/LinkedIn, rendering slide images, publishing assets to GitHub, or creating Buffer drafts. Trigger it whenever the request mentions a weekly batch, a post for a Saudi occasion (National Day, Founding Day, Eid, Ramadan, White Friday, back to school), a Ziadah feature announcement, or asks to schedule or draft anything on Buffer for Ziadah. Use it even for a small ask like "change the headline on this week's carousel" or "add a post for Founding Day", because the brand tokens, the layout checker, the GitHub asset flow, and the Buffer channel IDs all live here and freehanding any of them breaks the identity or silently ships a broken image.
+---
+
+# Ziadah Social
+
+نظام بوستات زيادة. وحدة محتوى واحدة تُعرَّف في ملف YAML، تتحول إلى شرائح
+مصممة بهوية زيادة، تُرفع على GitHub، وتُنشأ كمسودات في بفر للمراجعة.
+
+## قواعد لا تُكسر
+
+1. **لا تنشر مباشرة.** كل منشور `saveToDraft: true`. صاحب الحساب يراجع
+   ويعتمد من بفر بنفسه.
+2. **لا تخترع رقماً.** الأرقام المعتمدة فقط: `20M+` مبيعات إضافية،
+   `40M+` ظهور، `200K+` منتج إضافي، `1,500+` متجر. ولا تذكر اسم أي متجر
+   في أي رقم منشور.
+3. **لا تذكر سعر باقة.** الأسعار تتغير ولم تُعتمد للنشر.
+4. **لا تدّعي عدد لحظات التشغيل.** اللحظات الموثقة ثمان: الرئيسية،
+   التصنيفات، صفحة منتج، إضافة للسلة، حذف من السلة، فتح السلة، بدء إتمام
+   الطلب، بعد الشراء. لا تكتب "أكثر من 10" لأنها غير موثقة.
+5. **معرّفات القنوات تُنسخ من `content/channels.yml` ولا تُخمَّن.**
+6. **الحد عشرة.** خطة بفر تسمح بعشرة منشورات مجدولة فقط. الوحدة الأسبوعية
+   سبعة، والثلاثة الباقية احتياطي للترند والمناسبات. لا تتجاوزها.
+
+## سير العمل
+
+النظام **مؤتمت بالكامل** عبر `.github/workflows/weekly.yml`. الكرون يعمل
+كل خميس 03:00 بتوقيت الرياض، فيختار وحدة الأحد القادم من
+`content/quarter.yml`، يرندرها، يدفع الأصول، وينشئ ثلاث مسودات في بفر.
+دور المستخدم الوحيد هو الاعتماد في بفر.
+
+### إضافة أو تعديل محتوى
+كل شي في `content/quarter.yml`. لا تلمس HTML القالب: هو قالب بعلامات
+`{{...}}` تُعبَّأ من الملف. أضف وحدة بتاريخ أحد جديد، ولا تكرر تاريخاً.
+
+### الربع القادم
+شغّل `scripts/run_weekly.py --dry-run` وسيبلّغ عن أي مناسبة لا يغطيها
+المخزون. أضف وحدة لها بتاريخ الأحد الذي يسبقها.
+
+### تشغيل يدوي
+من تبويب Actions في GitHub، زر Run workflow، مع خيار `dry_run` الذي
+يرندر ويرفع ويتحقق بلا كتابة في بفر.
+
+### الجدول الثابت
+| اليوم | القناة | الوقت (الرياض) |
+|---|---|---|
+| الأحد | LinkedIn | 10:00 ص |
+| الأحد | Instagram | 9:00 م |
+| الأحد | X | 9:30 م |
+| الثلاثاء | LinkedIn | 10:00 ص |
+| الثلاثاء | X | 9:30 م |
+| الخميس | Instagram | 8:30 م |
+| الخميس | X | 9:30 م |
+
+### إنشاء المسودات يدوياً
+الوظيفة تتولى هذا. لو احتجت فعله بنفسك، لكل عنصر نادِ `create_post`:
+
+```
+channelId      = post.channelId
+text           = post.text
+schedulingType = "notification"
+mode           = "customScheduled"
+dueAt          = post.dueAt
+saveToDraft    = true
+assets         = [{ image: { url: <كل رابط في post.images>,
+                             metadata: { altText: post.altText } } }]
+```
+
+انستقرام يحتاج زيادةً على ذلك:
+```
+metadata.instagram = { type: "post", shouldShareToFeed: true }
+```
+
+تحقق بعدها بـ `list_posts` بحالة `draft` أن العدد يطابق ما أنشأته،
+واذكر للمستخدم كم مسودة أُنشئت وعلى أي قنوات.
+
+## الهوية
+
+الألوان في `brand/tokens.css` مستخرجة عيّنياً من إعلان زيادة المعتمد.
+لا تستبدل أي لون بتقدير بصري.
+
+| | |
+|---|---|
+| الأساس الداكن | `#1c0434` |
+| البنفسجي | `#550bf5` |
+| وهج | `#9358e8` |
+| أخضر | `#5fc26a` |
+| سطح مرتفع | `#1e044a` |
+
+الخط **IBM Plex Sans Arabic** مضمّن base64 في `brand/`. أثقل وزن `700`،
+لا يوجد `900`. ثقل العناوين من الحجم والتضييق لا من الوزن.
+
+الشعار في `brand/logo_mark_white.svg`، متجهي متتبّع من ملف زيادة الأصلي
+بتطابق IoU 98.72%. **الكلمة "زيادة" مصفوفة بخط IBM Plex ولم تُتتبّع من
+ملف أصلي**، فإن وصل القفل الرسمي استبدله.
+
+## الأرقام العربية
+
+لُف الأرقام وحدها في `<bdi>` ولا تلفها مع الكلمة المجاورة:
+
+```html
+<bdi>1,500</bdi> متجر     صحيح
+<bdi>1,500 متجر</bdi>     خطأ، يقلب ترتيب الكلمة
+```
+
+## الكانفس المتصل
+
+الكانفس عرضه (عدد الشرائح × 1080) ويُقص بـ `clip`. الطبقات الرابطة
+(`.bg` و`.rail` و`.footline`) ترسم على كامل العرض فتعبر خط اللحام،
+وكل نص أو جوال يبقى كاملاً داخل شريحة واحدة.
+
+`scripts/check_layout.py` يشتغل قبل كل تصدير ويوقفه عند: سقوط الخط،
+تراكب كتلتين، عنصر يعبر اللحام فينقسم، أو تجاوز الهامش الآمن. **لا
+تعطّل هذا الفحص.** التراكب تحديداً لا يُرى بالعين في مراجعة سريعة.
+
+## الملفات
+
+```
+.github/workflows/weekly.yml   الكرون الأسبوعي
+brand/                         التوكنز والخط المضمّن والشعار المتجهي
+templates/                     قالب بعلامات {{...}}
+content/quarter.yml            خطة الربع: الوحدات والمناسبات
+content/channels.yml           معرّفات قنوات بفر وحدود المحارف
+scripts/run_weekly.py          المشغّل: اختيار، رندر، دفع، مسودات
+scripts/buffer_client.py       api.buffer.com بالشكل الرسمي
+scripts/check_layout.py        فاحص التخطيط، لا تعطّله
+social/<date>/                 الأصول المنشورة، تُخدم عبر raw
+out/                           مخرجات محلية، غير مدفوعة
+```

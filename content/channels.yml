@@ -1,0 +1,27 @@
+# معرّفات قنوات بفر لمنظمة ziadah.app.
+# مأخوذة من list_channels يوم 2026-07-29. لا تُخمَّن ولا تُكتب يدوياً.
+# إذا أعاد صاحب الحساب ربط قناة، المعرّف يتغيّر: أعد التشغيل وحدّث هنا.
+
+organization:
+  id: "66fea32784f8bcd8fb79b10f"
+  account: "ziadah.app@gmail.com"
+  timezone: "Asia/Riyadh"
+  limits:
+    scheduledPosts: 10   # سقف الخطة المجانية. الوحدة الأسبوعية سبعة.
+    tags: 3
+
+channels:
+  twitter:
+    id: "66fea3dbca3dab3e0a859ba6"
+    handle: "ZiadahApp"
+    charLimit: 280
+  instagram:
+    id: "672340e2bfe13efaee12dda5"
+    handle: "ziadahapp"
+    type: business
+    charLimit: 2200
+  linkedin:
+    id: "6a6672214b2d03035f46393b"
+    name: "Ziadah | زيادة"
+    type: page
+    charLimit: 3000

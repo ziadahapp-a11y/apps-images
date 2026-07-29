@@ -1,0 +1,4 @@
+playwright>=1.44
+pillow>=10.0
+pyyaml>=6.0
+potracer>=0.0.4

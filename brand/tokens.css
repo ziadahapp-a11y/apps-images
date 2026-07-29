@@ -1,0 +1,121 @@
+/* ==========================================================================
+   زيادة | توكنز الهوية للبوستات الاجتماعية
+
+   الألوان مستخرجة عيّنياً من إعلان زيادة المعتمد، لا من تخمين.
+   الخط: IBM Plex Sans Arabic، مضمّن base64.
+
+   تنبيه على الأوزان: هذه العائلة أثقل وزن فيها 700. لا يوجد 900.
+   لذلك ثقل العناوين يأتي من الحجم والتضييق لا من الوزن.
+   ========================================================================== */
+
+:root {
+  /* ---- الأساس الداكن ---- */
+  --ink:        #1c0434;  /* اللون المهيمن في اللوحة الداكنة */
+  --ink-deep:   #150228;  /* أعمق، لحواف التدرج */
+  --surface:    #1e044a;  /* سطح مرتفع: الشرائط والبطاقات */
+  --surface-2:  #230645;
+
+  /* ---- البنفسجي ---- */
+  --violet:      #550bf5;  /* الأساسي. الكلمة المميزة والأزرار */
+  --violet-glow: #9358e8;  /* الوهج والتدرجات */
+  --violet-soft: #b794f6;  /* نص ثانوي بنفسجي على الداكن */
+
+  /* ---- مساند ---- */
+  --green: #5fc26a;
+  --red:   #dc2626;
+
+  /* ---- الفاتح ---- */
+  --paper: #ffffff;
+  --tint:  #f5f2fe;
+
+  /* ---- نص على الداكن ---- */
+  --on-dark:       #ffffff;
+  --on-dark-muted: rgba(255, 255, 255, 0.66);
+  --on-dark-faint: rgba(255, 255, 255, 0.32);
+  --hairline:      rgba(255, 255, 255, 0.12);
+
+  /* ---- نص على الفاتح ---- */
+  --on-light:       var(--ink);
+  --on-light-muted: rgba(28, 4, 52, 0.60);
+  --hairline-light: rgba(28, 4, 52, 0.10);
+
+  /* ---- تدرجات ---- */
+  --grad-deep:  linear-gradient(158deg, var(--ink-deep) 0%, var(--ink) 46%, #2a0666 100%);
+  --grad-light: linear-gradient(158deg, #ffffff 0%, var(--tint) 62%, #e9e3fc 100%);
+  --grad-brand: linear-gradient(96deg, var(--violet) 0%, var(--violet-glow) 100%);
+
+  /* ---- مقاسات الشريحة ---- */
+  --slide-w: 1080px;
+  --slide-h: 1350px;
+  --pad:     88px;
+
+  /* ---- المقياس الطباعي، مبني على عرض 1080 ---- */
+  --fs-display: 124px;
+  --fs-h1:       92px;
+  --fs-h2:       64px;
+  --fs-lead:     42px;
+  --fs-body:     33px;
+  --fs-label:    27px;
+  --fs-micro:    22px;
+
+  --lh-tight: 1.18;
+  --lh-snug:  1.34;
+  --lh-body:  1.64;
+
+  /* ---- أنصاف أقطار ---- */
+  --r-sm: 14px;
+  --r-md: 24px;
+  --r-lg: 40px;
+  --r-pill: 999px;
+}
+
+/* ==========================================================================
+   حرج: عزل الأرقام عن اتجاه النص العربي.
+   لُف الأرقام وحدها فقط:  <bdi>1,500</bdi> متجر
+   ولا تلف الرقم مع الكلمة: <bdi>1,500 متجر</bdi>  ← يقلب ترتيب الكلمة
+   ========================================================================== */
+bdi {
+  unicode-bidi: isolate;
+  direction: ltr;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  background: #000;
+}
+
+/* ---- أدوات مشتركة ---- */
+.u-accent { color: var(--violet-soft); }
+
+.u-grad {
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ==========================================================================
+   قفل الشعار
+   الرمز متجهي متتبّع من ملف زيادة الأصلي، تطابق IoU 98.72% مع المصدر.
+   الكلمة مصفوفة بخط الهوية IBM Plex ولم تُتتبّع من ملف أصلي.
+   ========================================================================== */
+.logo { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; }
+
+.logo__mark { display: block; }
+.logo__mark svg { display: block; width: 100%; height: auto; }
+
+.logo__ar { margin-top: 16px; font-size: 54px; font-weight: 700; letter-spacing: -0.015em; color: var(--on-dark); }
+.logo__en { margin-top: 9px; font-size: 21px; font-weight: 500; letter-spacing: 0.30em; color: var(--on-dark-muted); }
+
+/* على الخلفيات الفاتحة */
+.logo--light .logo__mark svg { fill: var(--violet); }
+.logo--light .logo__ar { color: var(--ink); }
+.logo--light .logo__en { color: var(--on-light-muted); }

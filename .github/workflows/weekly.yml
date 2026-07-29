@@ -1,0 +1,65 @@
+name: مسودات زيادة الأسبوعية
+
+# الكرون يعمل من الفرع الافتراضي فقط. هذا الملف لازم يكون في main،
+# وإلا لن يشتغل أبداً بلا أي رسالة خطأ.
+on:
+  schedule:
+    # 00:00 UTC خميس = 03:00 الخميس بتوقيت الرياض.
+    # المسودات تجهز ثلاثة أيام قبل نشر الأحد، فعندك وقت للمراجعة.
+    - cron: "0 0 * * 4"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "تاريخ أحد محدد (YYYY-MM-DD). اتركه فارغاً للأحد القادم"
+        required: false
+      dry_run:
+        description: "يرندر ويرفع ويتحقق بلا كتابة في بفر"
+        type: boolean
+        default: false
+
+concurrency:
+  group: weekly-drafts
+  cancel-in-progress: false
+
+jobs:
+  drafts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write        # للدفع. لا يحتاج توكن، GITHUB_TOKEN تلقائي.
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: تثبيت المتطلبات
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: تهيئة git للدفع
+        run: |
+          git config user.name  "ziadah-social-bot"
+          git config user.email "actions@github.com"
+
+      - name: التشغيل
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.date }}" ]; then ARGS="$ARGS --date ${{ inputs.date }}"; fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          python3 scripts/run_weekly.py $ARGS
+
+      - name: رفع المخرجات للمعاينة
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: slides
+          # canvas_full يعرض الشريحتين متجاورتين فتتأكد من الاتصال
+          path: out/**/*.png
+          retention-days: 30
+          if-no-files-found: warn
