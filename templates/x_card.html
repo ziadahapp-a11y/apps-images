@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>زيادة | بطاقة X أفقية</title>
+<link rel="stylesheet" href="../brand/ibm_plex_arabic_embedded.css">
+<link rel="stylesheet" href="../brand/tokens.css">
+<style>
+/* بطاقة X أفقية 1600×900 (16:9). إطار واحد، لا لحام.
+   الهوك يمين (اتجاه القراءة)، الإثبات الرقمي يسار، وريل اللحظات
+   توقيع سفلي. نفس توكنز الهوية ونفس الشعار المتجهي. */
+.card {
+  position: relative;
+  width: 1600px; height: 900px;
+  overflow: hidden;
+  background: var(--ink);
+}
+.bg { position: absolute; inset: 0; }
+.bg__base { position: absolute; inset: 0;
+  background: linear-gradient(112deg, var(--ink-deep) 0%, var(--ink) 42%, #20053f 78%, #2a0763 100%); }
+.bg__glow { position: absolute; top: -30%; left: 34%;
+  width: 1100px; height: 1100px; transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(147,88,232,0.42) 0%, rgba(85,11,245,0.15) 38%, transparent 66%); }
+.bg__corner { position: absolute; bottom: -40%; left: 96%;
+  width: 760px; height: 760px; transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(85,11,245,0.28) 0%, transparent 64%); }
+.bg__grid { position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.024) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.024) 1px, transparent 1px);
+  background-size: 84px 84px;
+  mask-image: radial-gradient(ellipse 72% 66% at 50% 36%, #000 0%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 72% 66% at 50% 36%, #000 0%, transparent 80%); }
+
+.slide__logo { position: absolute; top: 60px; right: 64px; }
+.logo__mark { width: 84px; }
+
+/* الهوك يمين */
+.hook { position: absolute; right: 64px; top: 214px; width: 812px; }
+.badge { display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 26px; border-radius: var(--r-pill);
+  background: rgba(255,255,255,0.06); border: 1px solid var(--hairline);
+  font-size: 25px; font-weight: 600; color: var(--violet-soft); }
+.hook__title { margin-top: 30px; font-size: 90px; font-weight: 700;
+  line-height: 1.12; letter-spacing: -0.035em; color: var(--on-dark); }
+.hook__lead { margin-top: 28px; width: 740px; font-size: 34px; font-weight: 300;
+  line-height: 1.34; color: var(--on-dark-muted); }
+
+/* الإثبات يسار */
+.stat { position: absolute; left: 64px; top: 250px; width: 512px; }
+.stat__num { font-size: 152px; font-weight: 700; letter-spacing: -0.045em; line-height: 1; color: var(--on-dark); }
+.stat__label { margin-top: 22px; font-size: 34px; font-weight: 400; line-height: 1.3; color: var(--on-dark-muted); }
+.stat__rule { margin-top: 30px; width: 88px; height: 4px; border-radius: 2px; background: var(--grad-brand); }
+.stat__second { margin-top: 38px; padding-top: 30px; border-top: 1px solid var(--hairline); }
+.stat__second-num { font-size: 60px; font-weight: 700; letter-spacing: -0.035em; line-height: 1; color: var(--violet-soft); }
+.stat__second-label { margin-top: 12px; font-size: 27px; font-weight: 400; color: var(--on-dark-muted); }
+
+/* ريل اللحظات: توقيع سفلي */
+.rail { position: absolute; left: 0; right: 0; bottom: 84px; height: 70px; }
+.rail__track { position: absolute; top: 8px; left: 120px; right: 120px; height: 2px;
+  background: linear-gradient(to right, transparent 0%, var(--hairline) 8%, var(--hairline) 92%, transparent 100%); }
+.rail__node { position: absolute; top: 0; transform: translateX(-50%); text-align: center; }
+.rail__dot { width: 12px; height: 12px; margin: 3px auto 0; border-radius: 50%; background: rgba(255,255,255,0.20); }
+.rail__label { margin-top: 14px; font-size: 20px; font-weight: 400; color: var(--on-dark-faint); white-space: nowrap; }
+.rail__node--on .rail__dot { width: 18px; height: 18px; margin-top: 0;
+  background: var(--green); box-shadow: 0 0 0 7px rgba(95,194,106,0.18), 0 0 28px rgba(95,194,106,0.5); }
+.rail__node--on .rail__label { color: var(--on-dark); font-weight: 600; }
+
+.foot { position: absolute; bottom: 34px; right: 64px; font-size: 24px; font-weight: 400; color: var(--on-dark-muted); }
+.foot--left { right: auto; left: 64px; }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="bg">
+    <div class="bg__base"></div><div class="bg__grid"></div>
+    <div class="bg__glow"></div><div class="bg__corner"></div>
+  </div>
+
+  <div class="slide__logo">
+    <div class="logo"><div class="logo__mark"><!--MARK--></div>
+      <div class="logo__ar">زيادة</div><div class="logo__en">ziadah</div></div>
+  </div>
+
+  <div class="hook">
+    <div class="badge chk" data-name="badge">✦ {{BADGE}}</div>
+    <h1 class="hook__title chk" data-name="title">{{TITLE}}</h1>
+    <p class="hook__lead chk" data-name="lead">{{LEAD}}</p>
+  </div>
+
+  <div class="stat">
+    <div class="stat__num chk" data-name="stat_num"><bdi>{{STAT_NUM}}</bdi></div>
+    <div class="stat__label chk" data-name="stat_label">{{STAT_LABEL}}</div>
+    <div class="stat__rule"></div>
+    <div class="stat__second">
+      <div class="stat__second-num"><bdi>{{STAT2_NUM}}</bdi></div>
+      <div class="stat__second-label">{{STAT2_LABEL}}</div>
+    </div>
+  </div>
+
+  <div class="rail">
+    <div class="rail__track"></div>
+    <div class="rail__node {{ON_0}}" style="left:150px"><div class="rail__dot"></div><div class="rail__label">الرئيسية</div></div>
+    <div class="rail__node {{ON_1}}" style="left:352px"><div class="rail__dot"></div><div class="rail__label">التصنيفات</div></div>
+    <div class="rail__node {{ON_2}}" style="left:554px"><div class="rail__dot"></div><div class="rail__label">صفحة منتج</div></div>
+    <div class="rail__node {{ON_3}}" style="left:756px"><div class="rail__dot"></div><div class="rail__label">إضافة للسلة</div></div>
+    <div class="rail__node {{ON_4}}" style="left:958px"><div class="rail__dot"></div><div class="rail__label">حذف من السلة</div></div>
+    <div class="rail__node {{ON_5}}" style="left:1160px"><div class="rail__dot"></div><div class="rail__label">فتح السلة</div></div>
+    <div class="rail__node {{ON_6}}" style="left:1362px"><div class="rail__dot"></div><div class="rail__label">بدء إتمام الطلب</div></div>
+    <div class="rail__node {{ON_7}}" style="left:1490px"><div class="rail__dot"></div><div class="rail__label">بعد الشراء</div></div>
+  </div>
+
+  <div class="foot">www.ziadah.app</div>
+  <div class="foot foot--left">متاح على منصتي زد وسلة</div>
+</div>
+</body>
+</html>
