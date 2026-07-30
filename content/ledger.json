@@ -22,6 +22,94 @@
           "dueAt": "2026-08-02T21:30:00+03:00"
         }
       ]
+    },
+    "2026-08-09": {
+      "slug": "back-to-school",
+      "commit": "330abde9042bb7c7b49b1db8ee12b182390b146e",
+      "createdAt": "2026-07-30T10:49:17+00:00",
+      "drafts": [
+        {
+          "service": "linkedin",
+          "id": "6a6b2c2c4930d0d0778d3e7c",
+          "dueAt": "2026-08-09T10:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6a6b2c2c0489187d05c75557",
+          "dueAt": "2026-08-09T21:00:00+03:00"
+        },
+        {
+          "service": "twitter",
+          "id": "6a6b2c2d4218251f3f1ecd99",
+          "dueAt": "2026-08-09T21:30:00+03:00"
+        }
+      ]
+    },
+    "2026-08-16": {
+      "slug": "zeed-ai",
+      "commit": "7d1911ccea04982ae9b879dc590d6711bb0f379a",
+      "createdAt": "2026-07-30T10:49:30+00:00",
+      "drafts": [
+        {
+          "service": "linkedin",
+          "id": "6a6b2c396da4224d27ad3ff8",
+          "dueAt": "2026-08-16T10:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6a6b2c3a61c6cd427c082d03",
+          "dueAt": "2026-08-16T21:00:00+03:00"
+        },
+        {
+          "service": "twitter",
+          "id": "6a6b2c3a6da4224d27ad4010",
+          "dueAt": "2026-08-16T21:30:00+03:00"
+        }
+      ]
+    },
+    "2026-08-23": {
+      "slug": "post-purchase",
+      "commit": "59ca8d7fe6aba4236d2bbe4f3fa7a13730285dd2",
+      "createdAt": "2026-07-30T10:49:43+00:00",
+      "drafts": [
+        {
+          "service": "linkedin",
+          "id": "6a6b2c464218251f3f1ecf09",
+          "dueAt": "2026-08-23T10:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6a6b2c474930d0d0778d3fc2",
+          "dueAt": "2026-08-23T21:00:00+03:00"
+        },
+        {
+          "service": "twitter",
+          "id": "6a6b2c470489187d05c75693",
+          "dueAt": "2026-08-23T21:30:00+03:00"
+        }
+      ]
+    },
+    "2026-08-30": {
+      "slug": "bundles",
+      "commit": "85bf0381fc7e06511742c1df6526feb571ae498a",
+      "createdAt": "2026-07-30T10:49:57+00:00",
+      "drafts": [
+        {
+          "service": "linkedin",
+          "id": "6a6b2c544930d0d0778d3fff",
+          "dueAt": "2026-08-30T10:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6a6b2c544930d0d0778d4017",
+          "dueAt": "2026-08-30T21:00:00+03:00"
+        },
+        {
+          "service": "twitter",
+          "id": "6a6b2c540489187d05c756f0",
+          "dueAt": "2026-08-30T21:30:00+03:00"
+        }
+      ]
     }
   },
   "fingerprints": {
@@ -63,6 +151,86 @@
     "8f1eb4f9f652c4f5ae3c7525cc9f678de195548683580bc7732f1d2ef2afd0ba": {
       "date": "2026-08-02",
       "slug": "silent-seller",
+      "kind": "twitter"
+    },
+    "ee5440a7900b0e3caf06f0a56198c64409bf5fae098a64cc1d4550ab8dcefb54": {
+      "date": "2026-08-09",
+      "slug": "back-to-school",
+      "kind": "slides"
+    },
+    "4d8e165ce126b72b9894e1ce6055ac00849b45eb5b8a699fb14aaa3c892c773e": {
+      "date": "2026-08-09",
+      "slug": "back-to-school",
+      "kind": "linkedin"
+    },
+    "4c16031505cbc14f24c4bfd7528a560b86b501f68aed1df9fce1a5968083901e": {
+      "date": "2026-08-09",
+      "slug": "back-to-school",
+      "kind": "instagram"
+    },
+    "ce7bbd59e9ca313265319ee287544adf86c11812322d208edb75aef97231d3f3": {
+      "date": "2026-08-09",
+      "slug": "back-to-school",
+      "kind": "twitter"
+    },
+    "29a05b8995f188c00d99d9e3250373ecdee912ae92ca652aaa9d956567237281": {
+      "date": "2026-08-16",
+      "slug": "zeed-ai",
+      "kind": "slides"
+    },
+    "bcef38e5662b937dff273fd1e694d65d16dbe27d18d49a13edf07a9a9bda0a64": {
+      "date": "2026-08-16",
+      "slug": "zeed-ai",
+      "kind": "linkedin"
+    },
+    "ea25d283a926da194f73a5b661f10d2f8f63ac34d5fbe020896e6be113b6c7ef": {
+      "date": "2026-08-16",
+      "slug": "zeed-ai",
+      "kind": "instagram"
+    },
+    "1e20f7a6423205b90b1dc32cbb4a37434cb090de5edecffdeea0454d09ea15d1": {
+      "date": "2026-08-16",
+      "slug": "zeed-ai",
+      "kind": "twitter"
+    },
+    "56755b60f592fba7d00584fc688327cc6d4476fd0c2bc7cbc59ac73c7c7babf1": {
+      "date": "2026-08-23",
+      "slug": "post-purchase",
+      "kind": "slides"
+    },
+    "71ff0bc61c9a75b265a675be41941aec1b72e3df5e3761988bcaf53c93766ed4": {
+      "date": "2026-08-23",
+      "slug": "post-purchase",
+      "kind": "linkedin"
+    },
+    "33cb793512ea547a76ea81231079fcf9552809f410bff42eb3a96add7318ea31": {
+      "date": "2026-08-23",
+      "slug": "post-purchase",
+      "kind": "instagram"
+    },
+    "e110bb5ba2d87057db9308bf2b0588a49d0c8a7a1f6761eb39f48085d3c2954f": {
+      "date": "2026-08-23",
+      "slug": "post-purchase",
+      "kind": "twitter"
+    },
+    "c945cbbf4ac0c2395c926f342e0ed8a194bffc3ecf2b32f1f495312ae8f4df60": {
+      "date": "2026-08-30",
+      "slug": "bundles",
+      "kind": "slides"
+    },
+    "da3209a62c6c46a4d41136ebe77af977fe6f970168d8dfae5726c226b6ad610c": {
+      "date": "2026-08-30",
+      "slug": "bundles",
+      "kind": "linkedin"
+    },
+    "964321268eca88c7c08ab1a3d182242cd7fd3a0e6ede4a3c597b0da6d78bb061": {
+      "date": "2026-08-30",
+      "slug": "bundles",
+      "kind": "instagram"
+    },
+    "87cba8922e0e4d670b27924e338b555a680169b9abca46fd7318764b7cb8e5fc": {
+      "date": "2026-08-30",
+      "slug": "bundles",
       "kind": "twitter"
     }
   }
