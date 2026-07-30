@@ -400,6 +400,16 @@ def main():
     unit = pick_unit(plan, target)
     print("   الوحدة: %s" % unit["slug"])
 
+    # تنبيه مخزون منخفض: التشغيل تلقائي كل أسبوع، فلو نضب المحتوى
+    # يفشل التشغيل فجأة بلا سابق إنذار. نعدّ الأسابيع المتبقية من
+    # الهدف فصاعداً، ونصرخ مبكراً حين تقترب النهاية ليُعبّأ الربع
+    # القادم قبل أن ينكسر الجدول لا بعده.
+    remaining = sorted(w["date"] for w in plan["weeks"] if w["date"] >= target.isoformat())
+    if len(remaining) <= 3:
+        print("   ⚠️ تنبيه مخزون: باقٍ %d أسبوع فقط (آخرها %s). "
+              "عبّئ وحدات جديدة في content/quarter.yml قبل النفاد."
+              % (len(remaining), remaining[-1]))
+
     # ---- الطبقة الأولى، تكملة: بصمة التصميم وبصمة كل نص ----
     slides_all = {**plan["defaults"], **unit.get("slides", {})}
     fps = ledger.check_content(led, target.isoformat(), unit["slug"],
