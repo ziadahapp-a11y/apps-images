@@ -520,8 +520,11 @@ def main():
     ap.add_argument("--dry-run", action="store_true", help="يرندر ويتحقق بلا كتابة في بفر")
     ap.add_argument("--force", action="store_true",
                     help="يتجاوز فحص التكرار. احذف المسودات القديمة من بفر أولاً")
+    ap.add_argument("--week", metavar="YYYY-MM-DD",
+                    help="أحد أسبوع محدد. ينشئ وحداته (أحد/ثلاثاء/خميس). "
+                         "الافتراضي بلا وسائط: الأسبوع القادم")
     ap.add_argument("--month", metavar="YYYY-MM",
-                    help="ينشئ مسودات كل آحاد الشهر دفعةً واحدة (اعتماد شهري)")
+                    help="ينشئ مسودات كل وحدات الشهر دفعةً واحدة")
     ap.add_argument("--plan-month", metavar="YYYY-MM",
                     help="يعرض خطة الشهر ويتحقق من تمايز وحداته بلا أي إنشاء")
     args = ap.parse_args()
@@ -536,69 +539,45 @@ def main():
     led = ledger.load()
     check_occasions(plan)
 
-    # ======================================================================
-    # وضع الدفعة الشهرية: ينشئ مسودات كل آحاد الشهر مرة واحدة، فيراجعها
-    # المستخدم ويعتمدها شهرياً بدل أسبوعياً. آمن على الخطة المجانية:
-    # سقف بفر عشر مسودات مجدولة لكل قناة، وإيقاعنا منشور واحد لكل قناة
-    # في الأسبوع، فالشهر أربع أو خمس لكل قناة، دون السقف بهامش. والمسودات
-    # نفسها بلا سقف، إنما المجدول منها هو المحدود.
-    # ======================================================================
+    # اختيار الوحدات حسب الوضع. الوحدات مفهرسة بالتاريخ، فأي مدى تاريخي
+    # يختار وحداته. الإيقاع المعتمد ثلاث وحدات في الأسبوع (أحد/ثلاثاء/خميس)،
+    # فكل منصة تنشر ثلاث مرات أسبوعياً.
     if args.month:
         y, m = (int(x) for x in args.month.split("-"))
-        units = sorted(
-            (w for w in plan["weeks"]
-             if date.fromisoformat(w["date"]).year == y
-             and date.fromisoformat(w["date"]).month == m),
-            key=lambda w: w["date"],
+        units = [w for w in plan["weeks"]
+                 if date.fromisoformat(w["date"]).year == y
+                 and date.fromisoformat(w["date"]).month == m]
+        label = "شهر %s" % args.month
+    elif args.date:
+        # وحدة واحدة بتاريخ محدد (تشغيل يدوي)
+        units = [w for w in plan["weeks"] if w["date"] == args.date]
+        label = "يوم %s" % args.date
+    else:
+        # الوضع الافتراضي: أسبوع العمل القادم (أحد إلى خميس).
+        # يختار الوحدات الثلاث أحد/ثلاثاء/خميس إن كانت موجودة.
+        sunday = date.fromisoformat(args.week) if args.week else next_sunday(date.today())
+        lo, hi = sunday.isoformat(), (sunday + timedelta(days=4)).isoformat()
+        units = [w for w in plan["weeks"] if lo <= w["date"] <= hi]
+        label = "أسبوع %s" % sunday.isoformat()
+
+    units = sorted(units, key=lambda w: w["date"])
+    if not units:
+        raise SystemExit(
+            "لا وحدات لـ%s في content/quarter.yml. أضفها أولاً." % label
         )
-        if not units:
-            raise SystemExit(
-                "لا وحدات لشهر %s في content/quarter.yml. أضفها أولاً." % args.month
-            )
 
-        print("1) دفعة شهر %s: %d وحدة" % (args.month, len(units)))
-        low_stock_notice(plan, date.today().isoformat(), threshold=5)
+    run_batch(units, label, plan, channels, led, args)
 
-        buf = None if args.dry_run else Buffer()
-        # ---- الطبقة الثانية: نسأل بفر نفسه، لا ملفاً محلياً ----
-        existing = [] if args.dry_run else buf.drafts(channels["organization"]["id"])
-        if not args.dry_run:
-            print("   مسودات قائمة في بفر: %d" % len(existing))
 
-        made, skipped = 0, 0
-        for w in units:
-            iso = w["date"]
-            # تخطي ما نُفّذ سابقاً بدل إجهاض الدفعة كلها (إلا مع --force)
-            if led["runs"].get(iso) and not args.force:
-                skipped += 1
-                print("\n=== أحد %s: %s — نُفّذ سابقاً، تخطي ===" % (iso, w["slug"]))
-                continue
-            created = process_unit(plan, channels, led, buf,
-                                   date.fromisoformat(iso), w,
-                                   args.dry_run, args.force, existing)
-            made += len(created)
-
-        if not args.dry_run:
-            # دفع السجل مرة واحدة بعد الدفعة كلها لا بعد كل وحدة
-            ledger_push()
-            print("\n   السجل حُدّث والتُزم: content/ledger.json")
-
-        print("\nتم: %d مسودة عبر %d وحدة (%d متخطاة، نُفّذت سابقاً). لا شي منشور."
-              % (made, len(units) - skipped, skipped))
-        print("راجعها كلها في بفر واعتمد ما يعجبك. الاعتماد شهري الآن.")
-        return
-
-    # ======================================================================
-    # وضع الأسبوع الواحد: تشغيل يدوي لتاريخ محدد، أو الأحد القادم افتراضاً.
-    # ======================================================================
-    target = date.fromisoformat(args.date) if args.date else next_sunday(date.today())
-    print("1) الهدف: أحد %s" % target.isoformat())
-
-    # ---- الطبقة الأولى: هل نُفّذ هذا التاريخ سابقاً؟ ----
-    ledger.check_run(led, target.isoformat(), force=args.force)
-    unit = pick_unit(plan, target)
-    print("   الوحدة: %s" % unit["slug"])
-    low_stock_notice(plan, target.isoformat(), threshold=3)
+def run_batch(units, label, plan, channels, led, args):
+    """
+    ينشئ مسودات مجموعة وحدات دفعةً واحدة، ويتخطى ما نُفّذ سابقاً بدل
+    إجهاض الدفعة (إلا مع --force)، ويدفع السجل مرة واحدة في النهاية.
+    """
+    print("1) دفعة %s: %d وحدة" % (label, len(units)))
+    # تنبيه مخزون: عدد الوحدات المتبقية من اليوم. الإيقاع ثلاث في الأسبوع،
+    # فعتبة أسبوعين نحو ست وحدات.
+    low_stock_notice(plan, date.today().isoformat(), threshold=6)
 
     buf = None if args.dry_run else Buffer()
     # ---- الطبقة الثانية: نسأل بفر نفسه، لا ملفاً محلياً ----
@@ -606,21 +585,29 @@ def main():
     if not args.dry_run:
         print("   مسودات قائمة في بفر: %d" % len(existing))
 
-    created = process_unit(plan, channels, led, buf, target, unit,
-                           args.dry_run, args.force, existing)
+    made, skipped = 0, 0
+    for w in units:
+        iso = w["date"]
+        if led["runs"].get(iso) and not args.force:
+            skipped += 1
+            print("\n=== %s: %s — نُفّذ سابقاً، تخطي ===" % (iso, w["slug"]))
+            continue
+        created = process_unit(plan, channels, led, buf,
+                               date.fromisoformat(iso), w,
+                               args.dry_run, args.force, existing)
+        made += len(created)
 
     if args.dry_run:
         return
 
     # حرج: وظيفة GitHub تستنسخ الريبو من جديد في كل تشغيل، فسجل غير
-    # ملتزم يبدأ فارغاً كل مرة ويعود التكرار. الالتزام هنا هو ما يجعل
-    # منع التكرار يعمل بين التشغيلات لا داخل التشغيل الواحد.
+    # ملتزم يبدأ فارغاً كل مرة ويعود التكرار. الدفع مرة واحدة بعد الدفعة.
     ledger_push()
-    print("   السجل حُدّث والتُزم: content/ledger.json")
+    print("\n   السجل حُدّث والتُزم: content/ledger.json")
 
-    print("\nتم: %d مسودة. لا شي منشور." % len(created))
+    print("\nتم: %d مسودة عبر %d وحدة (%d متخطاة، نُفّذت سابقاً). لا شي منشور."
+          % (made, len(units) - skipped, skipped))
     print("راجعها في بفر واعتمد ما يعجبك.")
-    print("إعادة تشغيل نفس التاريخ سترفض تلقائياً.")
 
 
 if __name__ == "__main__":

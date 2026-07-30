@@ -1,24 +1,28 @@
-name: مسودات زيادة الشهرية
+name: مسودات زيادة الأسبوعية
 
 # الكرون يعمل من الفرع الافتراضي فقط. هذا الملف لازم يكون في main،
 # وإلا لن يشتغل أبداً بلا أي رسالة خطأ.
 #
-# الاعتماد شهري: مرة في الشهر تُنشأ مسودات كل آحاد الشهر القادم دفعةً
-# واحدة، فيراجعها المستخدم ويعتمدها في بفر مرة واحدة بدل كل أسبوع.
-# آمن على الخطة المجانية: سقف بفر عشر مسودات مجدولة لكل قناة، وإيقاعنا
-# منشور واحد لكل قناة أسبوعياً، فالشهر أربع أو خمس لكل قناة، دون السقف.
+# الاعتماد أسبوعي: كل أسبوع تُنشأ مسودات وحدات الأسبوع القادم الثلاث
+# (أحد/ثلاثاء/خميس)، فيراجعها المستخدم ويعتمدها في بفر مرة كل أسبوع.
+# كل منصة تنشر ثلاث مرات أسبوعياً (9 مسودات في الأسبوع، 3 لكل قناة).
+# آمن على الخطة المجانية: سقف بفر عشر مسودات مجدولة لكل قناة، وثلاث
+# في الطابور أسبوعياً دون السقف بهامش.
 on:
   schedule:
-    # 00:00 UTC يوم 25 = 03:00 يوم 25 بتوقيت الرياض. يجهّز مسودات الشهر
-    # القادم قبل بدايته بأيام، فعندك متسع للمراجعة قبل أول أحد فيه.
-    - cron: "0 0 25 * *"
+    # 00:00 UTC خميس = 03:00 الخميس بتوقيت الرياض. يجهّز مسودات الأسبوع
+    # القادم قبل أحد النشر بثلاثة أيام، فعندك وقت للمراجعة.
+    - cron: "0 0 * * 4"
   workflow_dispatch:
     inputs:
-      month:
-        description: "شهر محدد (YYYY-MM) لإنشاء كل آحاده. اتركه فارغاً للشهر القادم"
+      week:
+        description: "أحد أسبوع محدد (YYYY-MM-DD). اتركه فارغاً للأسبوع القادم"
         required: false
       date:
-        description: "أو أحد واحد محدد (YYYY-MM-DD) بدل شهر كامل"
+        description: "أو يوم واحد محدد (YYYY-MM-DD) بدل أسبوع كامل"
+        required: false
+      month:
+        description: "أو شهر كامل (YYYY-MM) دفعةً واحدة"
         required: false
       dry_run:
         description: "يرندر ويرفع ويتحقق بلا كتابة في بفر"
@@ -30,7 +34,7 @@ on:
         default: false
 
 concurrency:
-  group: monthly-drafts
+  group: weekly-drafts
   cancel-in-progress: false
 
 jobs:
@@ -63,19 +67,16 @@ jobs:
         run: |
           ARGS=""
           if [ -n "${{ inputs.date }}" ]; then
-            # أحد واحد محدد يدوياً
             ARGS="--date ${{ inputs.date }}"
           elif [ -n "${{ inputs.month }}" ]; then
-            # شهر محدد يدوياً
             ARGS="--month ${{ inputs.month }}"
-          else
-            # التشغيل المجدول: الشهر القادم كاملاً
-            TARGET=$(TZ=Asia/Riyadh date -d "$(TZ=Asia/Riyadh date +%Y-%m-01) +1 month" +%Y-%m)
-            ARGS="--month $TARGET"
+          elif [ -n "${{ inputs.week }}" ]; then
+            ARGS="--week ${{ inputs.week }}"
           fi
+          # بلا وسائط: الوضع الافتراضي = الأسبوع القادم (أحد/ثلاثاء/خميس)
           if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
           if [ "${{ inputs.force }}" = "true" ]; then ARGS="$ARGS --force"; fi
-          echo "الوسائط: $ARGS"
+          echo "الوسائط: ${ARGS:-(الأسبوع القادم)}"
           python3 scripts/run_weekly.py $ARGS
 
       - name: ورقة مراجعة الشهر
@@ -84,14 +85,7 @@ jobs:
         env:
           TZ: Asia/Riyadh
         run: |
-          # نفس شهر الدفعة: المحدد يدوياً إن وُجد، وإلا الشهر القادم
-          if [ -n "${{ inputs.month }}" ]; then
-            M="${{ inputs.month }}"
-          elif [ -n "${{ inputs.date }}" ]; then
-            M=$(date -d "${{ inputs.date }}" +%Y-%m)
-          else
-            M=$(date -d "$(date +%Y-%m-01) +1 month" +%Y-%m)
-          fi
+          M=$(date -d "+7 days" +%Y-%m)
           python3 scripts/proof_sheet.py "$M" || true
 
       - name: رفع المخرجات للمعاينة
