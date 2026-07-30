@@ -122,14 +122,15 @@ class Buffer:
         السجل المحلي أو شُغّل النظام من جهاز آخر.
         """
         q = """
-        query($id: String!) {
-          posts(organizationId: $id, status: [draft], first: 50) {
+        query($input: PostsInput!) {
+          posts(input: $input, first: 50) {
             edges { node { id channelId dueAt text } }
           }
         }
         """
         try:
-            data = self._call(q, {"id": org_id})
+            data = self._call(q, {"input": {"organizationId": org_id,
+                                            "filter": {"status": ["draft"]}}})
         except BufferError as e:
             # لا نكمل على العمياء: عدم القدرة على القراءة يعني عدم
             # القدرة على منع التكرار، وهذا سبب كافٍ للتوقف.
