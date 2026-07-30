@@ -16,6 +16,10 @@ on:
         description: "يرندر ويرفع ويتحقق بلا كتابة في بفر"
         type: boolean
         default: false
+      force:
+        description: "يتجاوز فحص التكرار للتاريخ. احذف المسودات القديمة من بفر أولاً"
+        type: boolean
+        default: false
 
 concurrency:
   group: weekly-drafts
@@ -52,6 +56,7 @@ jobs:
           ARGS=""
           if [ -n "${{ inputs.date }}" ]; then ARGS="$ARGS --date ${{ inputs.date }}"; fi
           if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          if [ "${{ inputs.force }}" = "true" ]; then ARGS="$ARGS --force"; fi
           python3 scripts/run_weekly.py $ARGS
 
       - name: ورقة مراجعة الشهر
