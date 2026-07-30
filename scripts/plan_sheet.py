@@ -124,15 +124,19 @@ def build(month: str = None) -> str:
                   % (fr_ig["w"] * 2, fr_ig["h"] * 2, fr_li["w"] * 2, fr_li["h"] * 2,
                      fr_x["w"] * 2, fr_x["h"] * 2))
 
-    return TEMPLATE % {
-        "scope": esc(scope),
-        "total_units": total_units,
-        "total_posts": total_units * 3,
-        "weeks": len(groups),
-        "sizes": esc(sizes_line),
-        "cards": "".join(cards),
-        "generated": date.today().isoformat(),
+    subs = {
+        "@@SCOPE@@": esc(scope),
+        "@@UNITS@@": str(total_units),
+        "@@POSTS@@": str(total_units * 3),
+        "@@WEEKS@@": str(len(groups)),
+        "@@SIZES@@": esc(sizes_line),
+        "@@CARDS@@": "".join(cards),
+        "@@GENERATED@@": date.today().isoformat(),
     }
+    html = TEMPLATE
+    for k, v in subs.items():
+        html = html.replace(k, v)
+    return html
 
 
 TEMPLATE = """<!DOCTYPE html>
@@ -193,12 +197,12 @@ TEMPLATE = """<!DOCTYPE html>
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>خطة محتوى زيادة — %(scope)s</h1>
+    <h1>خطة محتوى زيادة — @@SCOPE@@</h1>
     <p>كل ما ستجهّزه الأتمتة كمسودات في بفر. دورك الوحيد: مراجعتها ونشرها.</p>
     <div class="stats">
-      <div class="stat"><b>%(weeks)d</b><span>أسابيع</span></div>
-      <div class="stat"><b>%(total_units)d</b><span>وحدة محتوى</span></div>
-      <div class="stat"><b>%(total_posts)d</b><span>منشور</span></div>
+      <div class="stat"><b>@@WEEKS@@</b><span>أسابيع</span></div>
+      <div class="stat"><b>@@UNITS@@</b><span>وحدة محتوى</span></div>
+      <div class="stat"><b>@@POSTS@@</b><span>منشور</span></div>
       <div class="stat"><b>3</b><span>منشورات/منصة/أسبوع</span></div>
     </div>
   </div>
@@ -208,12 +212,12 @@ TEMPLATE = """<!DOCTYPE html>
     الأسبوع القادم الثلاث (أحد/ثلاثاء/خميس) كمسودات في بفر — بالتصميم
     والنص والمقاس الصحيح لكل منصة. لا شيء يُنشر تلقائياً. تفتح بفر مرة
     في الأسبوع، تراجع، وتنشر ما يعجبك.
-    <div class="sizes">المقاسات: %(sizes)s</div>
+    <div class="sizes">المقاسات: @@SIZES@@</div>
   </div>
 
-  %(cards)s
+  @@CARDS@@
 
-  <footer>وُلّدت هذه الورقة في %(generated)s من content/quarter.yml — ما تراه هو ما سيُجدول.</footer>
+  <footer>وُلّدت هذه الورقة في @@GENERATED@@ من content/quarter.yml — ما تراه هو ما سيُجدول.</footer>
 </div>
 </body>
 </html>
