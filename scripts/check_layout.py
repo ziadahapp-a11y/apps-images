@@ -28,8 +28,8 @@ GRID_SAFE_H = 1080     # ارتفاع المربع المركزي داخل شر�
 CONTAINED_BY_FRAME = {
     "ig": [".slide__logo", ".hook", ".hook__title", ".hook__lead", ".badge",
            ".tagline", ".slide__foot", ".stat", ".phone"],
-    "li": [".slide__logo", ".hook", ".hook__title", ".hook__lead", ".badge",
-           ".tagline", ".slide__foot", ".stat", ".phone"],
+    "li": [".logo-slot", ".copy", ".title", ".lead", ".badge",
+           ".stat", ".caps", ".phone", ".foot"],
     "x":  [".logo-slot", ".copy", ".title", ".lead", ".badge",
            ".stat", ".phone", ".foot--r", ".foot--l"],
 }
@@ -174,7 +174,7 @@ def check(page, frame: str = "ig", container: str = "canvas", slide_w: int = SLI
                 )
 
     # --- 6. الطبقات الرابطة يجب أن تعبر فعلاً ---
-    for layer in data["crossing"] if frame != "x" else []:
+    for layer in data["crossing"] if frame not in ("x", "li") else []:
         if layer["width"] < canvas_w - 2:
             errors.append(
                 "طبقة رابطة: %s عرضها %.0f وليس %d، فلن تعبر اللحام"

@@ -31,6 +31,6 @@ channels:
     name: "Ziadah | زيادة"
     type: page
     charLimit: 3000
-    frame: ig               # يقبل 4:5 ويعطيه مساحة أكبر من المربع
-    images: 2               # لنكدن يعرض الأولى كمعاينة
+    frame: li               # 1:1 مربّع، مقاس لنكدن المعتمد للصورة المفردة
+    images: 1               # صورة واحدة، لا كاروسيل
     hashtags: [3, 5]

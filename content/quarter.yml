@@ -21,6 +21,7 @@
 defaults:
   templates:
     ig: templates/carousel_connected.html
+    li: templates/li_card.html
     x:  templates/x_card.html
   lit: 5
   stat2_num: "1,500+"
