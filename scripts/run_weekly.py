@@ -435,8 +435,12 @@ def main():
     for u in urls:
         verify(u)
 
-    alts = [unit.get("alt", {}).get("01", unit["slides"]["badge"] + " | زيادة"),
-            unit.get("alt", {}).get("02", unit["slides"]["stat_label"].replace("<br>", " "))]
+    # النص البديل: من alt إن وُجد، وإلا من الوصف المتاح. وحدة capabilities
+    # لا تحمل stat_label، فنسقط على caps_lead ثم lead ثم badge بلا كسر.
+    s_ = unit["slides"]
+    alt02 = (s_.get("stat_label") or s_.get("caps_lead") or s_.get("lead") or s_["badge"])
+    alts = [unit.get("alt", {}).get("01", s_["badge"] + " | زيادة"),
+            unit.get("alt", {}).get("02", alt02.replace("<br>", " "))]
 
     print("6) المسودات في بفر")
     if args.dry_run:
