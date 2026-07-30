@@ -54,12 +54,24 @@ jobs:
           if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
           python3 scripts/run_weekly.py $ARGS
 
+      - name: ورقة مراجعة الشهر
+        if: always()
+        continue-on-error: true
+        env:
+          TZ: Asia/Riyadh
+        run: |
+          M=$(date -d "+7 days" +%Y-%m)
+          python3 scripts/proof_sheet.py "$M" || true
+
       - name: رفع المخرجات للمعاينة
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: slides
+          # ورقة المراجعة أول ما تفتحه: ملف واحد فيه التصاميم والنصوص
+          name: slides-and-proof
           # canvas_full يعرض الشريحتين متجاورتين فتتأكد من الاتصال
-          path: out/**/*.png
+          path: |
+            out/proof-*.html
+            out/**/*.png
           retention-days: 30
           if-no-files-found: warn

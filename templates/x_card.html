@@ -84,6 +84,16 @@
 .stat { position: absolute; top: 148px; left: 0; width: 300px; }
 .stat__num { font-size: 104px; font-weight: 700; letter-spacing: -0.045em; line-height: 1; color: var(--on-dark); }
 .stat__label { margin-top: 16px; font-size: 25px; font-weight: 400; line-height: 1.34; color: var(--on-dark-muted); }
+.caps { position: absolute; top: 140px; left: 0; width: 300px; }
+.caps__lead { font-size: 34px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.24; color: var(--on-dark); }
+.caps__list { margin-top: 26px; display: flex; flex-direction: column; gap: 18px; }
+.cap { display: flex; align-items: flex-start; gap: 12px; }
+.cap__tick { flex: 0 0 auto; width: 27px; height: 27px; border-radius: 50%; background: var(--green);
+  position: relative; margin-top: 1px; box-shadow: 0 0 0 5px rgba(95,194,106,0.14); }
+.cap__tick::after { content: ""; position: absolute; left: 8px; top: 7px; width: 10px; height: 5px;
+  border-left: 2.5px solid #fff; border-bottom: 2.5px solid #fff; transform: rotate(-45deg); }
+.cap__text { font-size: 21px; font-weight: 500; line-height: 1.42; color: var(--on-dark); }
+
 .stat__rule { margin-top: 24px; width: 72px; height: 4px; border-radius: 2px; background: var(--grad-brand); }
 
 /* الجوال يُقتصّ من أسفله عن قصد: الارتفاع 900 لا يكفي إطاراً كاملاً،
@@ -172,11 +182,20 @@
   </div>
 
   <div class="visual">
+    <!--PROOF:stat-->
     <div class="stat">
       <div class="stat__num"><bdi>{{STAT_NUM}}</bdi></div>
       <div class="stat__label">{{STAT_LABEL}}</div>
       <div class="stat__rule"></div>
     </div>
+    <!--/PROOF:stat-->
+
+    <!--PROOF:capabilities-->
+    <div class="caps">
+      <div class="caps__lead">{{CAPS_LEAD}}</div>
+      <div class="caps__list">{{CAPS_LIST}}</div>
+    </div>
+    <!--/PROOF:capabilities-->
 
     <div class="phone">
       <div class="phone__screen">

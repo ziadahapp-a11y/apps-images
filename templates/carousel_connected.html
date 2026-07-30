@@ -182,6 +182,33 @@
 .stat__second-num { font-size: 74px; font-weight: 700; letter-spacing: -0.035em; line-height: 1; color: var(--violet-soft); }
 .stat__second-label { margin-top: 16px; font-size: var(--fs-body); font-weight: 400; color: var(--on-dark-muted); }
 
+
+/* ==========================================================================
+   كتلة الإثبات: نوعان، والاختيار من ملف المحتوى.
+
+   كان القالب يفرض رقماً في كل بوست، فصارت كل المنشورات عن أرقام.
+   العيب بنيوي لا تحريري: حقل الرقم كان إلزامياً.
+
+   stat         رقم كبير. للإثبات والمصداقية.
+   capabilities صف قدرات بعلامات صح. مأخوذ من إعلان زيادة الأصلي.
+                يستخدم حين تكون الرسالة عن ما يصير ممكناً لا عن حجم منجز.
+   ========================================================================== */
+.caps { position: absolute; top: 330px; right: var(--pad); width: 452px; }
+.caps__lead { font-size: var(--fs-h2); font-weight: 700; letter-spacing: -0.03em;
+  line-height: 1.24; color: var(--on-dark); }
+.caps__list { margin-top: 40px; display: flex; flex-direction: column; gap: 26px; }
+.cap { display: flex; align-items: flex-start; gap: 18px; }
+.cap__tick { flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--green); position: relative; margin-top: 2px;
+  box-shadow: 0 0 0 7px rgba(95,194,106,0.14); }
+.cap__tick::after { content: ""; position: absolute; left: 12px; top: 11px;
+  width: 15px; height: 8px; border-left: 3.5px solid #fff; border-bottom: 3.5px solid #fff;
+  transform: rotate(-45deg); }
+.cap__text { font-size: var(--fs-body); font-weight: 500; line-height: 1.44;
+  color: var(--on-dark); }
+.caps__note { margin-top: 44px; padding-top: 32px; border-top: 1px solid var(--hairline);
+  font-size: var(--fs-body); font-weight: 300; line-height: 1.5; color: var(--on-dark-muted); }
+
 /* ==========================================================================
    الجوال ونافذة زيادة
    مرسومة HTML بالكامل، لا صورة مقصوصة، فتبقى حادة عند أي مقاس.
@@ -341,6 +368,7 @@
       </div>
     </div>
 
+    <!--PROOF:stat-->
     <div class="stat">
       <div class="stat__num"><bdi>{{STAT_NUM}}</bdi></div>
       <div class="stat__label">{{STAT_LABEL}}</div>
@@ -351,6 +379,15 @@
         <div class="stat__second-label">{{STAT2_LABEL}}</div>
       </div>
     </div>
+    <!--/PROOF:stat-->
+
+    <!--PROOF:capabilities-->
+    <div class="caps">
+      <div class="caps__lead">{{CAPS_LEAD}}</div>
+      <div class="caps__list">{{CAPS_LIST}}</div>
+      <div class="caps__note">{{CAPS_NOTE}}</div>
+    </div>
+    <!--/PROOF:capabilities-->
 
     <div class="phone">
       <div class="phone__screen">

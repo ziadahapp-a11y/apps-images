@@ -18,6 +18,7 @@
 """
 import argparse
 import json
+import re
 import subprocess
 import sys
 import time
@@ -47,6 +48,15 @@ SCHEDULE = [
 
 # العقد المسموح إضاءتها: الوحيدتان الواقعتان تحت الجوال
 LIT_X = {4: 1214, 5: 1483}
+
+# فعل تفعيل في آخر النص. القاعدة: لا بوست ينتهي بمعلومة، لأن المعلومة
+# بلا خطوة تبني وعياً لا يتحول. يُفحَص آخر 180 حرفاً فقط: دعوة في وسط
+# النص لا تُحسب، فالقارئ يقرر عند النهاية.
+ACTION_RE = re.compile(
+    r"(فعّل|فعّلها|فعّله|جهّز|ابنِ|ابدأ|افتح|اختر|شغّل|"
+    r"الرابط في البايو|من لوحة متجرك)"
+)
+ACTION_TAIL = 180
 
 
 def sh(*args):
@@ -96,6 +106,37 @@ def pick_unit(plan: dict, target: date) -> dict:
     )
 
 
+PROOF_KINDS = ("stat", "capabilities")
+
+
+def strip_unused_proof(html: str, keep: str) -> str:
+    """
+    يحذف بلوكات الإثبات غير المستخدمة.
+
+    القالب يحمل كل الأنواع، والتعبئة تُبقي واحداً. البديل كان قالباً
+    لكل نوع، وهو يضاعف مواضع تعديل الهوية ويجعلها تتفرّق.
+    """
+    if keep not in PROOF_KINDS:
+        raise SystemExit(
+            "proof=%s غير معروف. المسموح: %s" % (keep, " أو ".join(PROOF_KINDS))
+        )
+    for kind in PROOF_KINDS:
+        if kind == keep:
+            html = html.replace("<!--PROOF:%s-->" % kind, "") \
+                       .replace("<!--/PROOF:%s-->" % kind, "")
+        else:
+            html = re.sub(r"<!--PROOF:%s-->.*?<!--/PROOF:%s-->" % (kind, kind),
+                          "", html, flags=re.S)
+    return html
+
+
+def render_caps(items: list) -> str:
+    return "".join(
+        '<div class="cap"><div class="cap__tick"></div>'
+        '<div class="cap__text">%s</div></div>' % i for i in items
+    )
+
+
 def fill_template(unit: dict, defaults: dict, template: Path = None) -> Path:
     """يعبّئ علامات القالب من الوحدة، ويكتب قالباً مؤقتاً للرندر."""
     s = {**defaults, **unit.get("slides", {})}
@@ -107,24 +148,38 @@ def fill_template(unit: dict, defaults: dict, template: Path = None) -> Path:
             "تحت الجوال ويصح وصل الخط الصاعد إليهما." % lit
         )
 
+    proof = s.get("proof", "stat")
+    caps = s.get("caps", []) or []
+    if proof == "capabilities" and not (2 <= len(caps) <= 4):
+        raise SystemExit(
+            "proof=capabilities يحتاج بين قدرتين وأربع في حقل caps، "
+            "ووجدت %d. أكثر من أربع يزدحم في المقاس." % len(caps)
+        )
+
     values = {
         "BADGE": s["badge"],
         "TITLE": s["title"],
         "LEAD": s["lead"],
-        "STAT_NUM": s["stat_num"],
-        "STAT_LABEL": s["stat_label"],
-        "STAT2_NUM": s["stat2_num"],
-        "STAT2_LABEL": s["stat2_label"],
         "SHEET_TITLE": s["sheet_title"],
         "SHEET_SUB": s["sheet_sub"],
         "SHEET_CTA": s["sheet_cta"],
         "CONNECTOR_X": str(LIT_X[lit]),
+        "CAPS_LEAD": s.get("caps_lead", ""),
+        "CAPS_LIST": render_caps(caps),
+        "CAPS_NOTE": s.get("caps_note", ""),
+        # القالب يحمل حقول الرقم دائماً، فنعطيها قيماً فارغة عند
+        # عدم استخدامها بدل أن يفشل فحص العلامات غير المعبَّأة
+        "STAT_NUM": s.get("stat_num", ""),
+        "STAT_LABEL": s.get("stat_label", ""),
+        "STAT2_NUM": s.get("stat2_num", ""),
+        "STAT2_LABEL": s.get("stat2_label", ""),
     }
     for i in range(8):
         values["ON_%d" % i] = "rail__node--on" if i == lit else ""
 
     tpl = template or (ROOT / defaults["templates"]["ig"])
     html = tpl.read_text(encoding="utf-8")
+    html = strip_unused_proof(html, proof)
     for k, v in values.items():
         html = html.replace("{{%s}}" % k, str(v))
 
@@ -155,7 +210,6 @@ def export_jpegs(pngs, outdir: Path, slug: str, target: date, frame: str) -> lis
 
 def repo_info():
     remote = sh("git", "remote", "get-url", "origin").stdout.strip()
-    import re
     m = re.search(r"github\.com[:/](?P<o>[^/]+)/(?P<r>[^/.]+)", remote)
     if not m:
         raise SystemExit("الـ remote ليس على GitHub: " + remote)
@@ -266,6 +320,9 @@ def plan_month(plan: dict, ch: dict, month: str) -> None:
                 flag += " ✗طويل"
             if not (lo <= tags <= hi):
                 flag += " ✗هاشتاق"
+            if not ACTION_RE.search(text.strip()[-ACTION_TAIL:]):
+                flag += " ✗بلا تفعيل"
+
             print("     %-10s %4d/%d حرف  %d#%s" % (svc, n, lim, tags, flag))
             if flag:
                 problems.append("%s / %s:%s" % (w["slug"], svc, flag))
@@ -277,6 +334,34 @@ def plan_month(plan: dict, ch: dict, month: str) -> None:
             if fp in led["fingerprints"]:
                 problems.append("نص %s/%s نُشر سابقاً في %s"
                                 % (w["slug"], svc, led["fingerprints"][fp]["date"]))
+
+    # ---- توازن الخطة ----
+    # هذا الفحص موجود لأن الإصدار السابق أنتج ثلاثة عشر بوستاً كلها
+    # عن أرقام. السبب كان حقل الرقم الإلزامي في القالب، والنتيجة خطة
+    # تتحدث عن حجم منجزنا لا عن حال التاجر. الفحص يمنع الانزلاق ثانيةً.
+    from collections import Counter
+    proofs = Counter(w["slides"].get("proof", "stat") for w in weeks)
+    acts = Counter(w.get("act", "غير محدد") for w in weeks)
+
+    print("   الإثبات: " + " · ".join("%s %d" % kv for kv in proofs.items()))
+    print("   الفصول: " + " · ".join("%s %d" % kv for kv in acts.items()))
+
+    if proofs.get("stat", 0) > len(weeks) / 2:
+        problems.append(
+            "%d من %d وحدة تقودها أرقام. الحد نصف الشهر. "
+            "حوّل بعضها إلى proof: capabilities: الرسالة عن ما يصير "
+            "ممكناً للتاجر لا عن حجم ما أنجزناه."
+            % (proofs["stat"], len(weeks))
+        )
+
+    if "غير محدد" in acts:
+        problems.append("وحدات بلا حقل act. كل وحدة تنتمي لفصل في رحلة التاجر.")
+
+    if not (acts.get("activation", 0) or acts.get("occasion", 0)):
+        problems.append(
+            "لا وحدة activation ولا occasion في الشهر. خطة بلا دعوة "
+            "تفعيل واضحة تبني وعياً ولا تحوّله."
+        )
 
     print()
     if problems:
@@ -393,6 +478,12 @@ def main():
         imgs = pool if want == "all" else pool[:int(want)]
         if not imgs:
             raise SystemExit("لا صور بمقاس %s لقناة %s" % (fr, service))
+
+        if not ACTION_RE.search(body[-ACTION_TAIL:]):
+            raise SystemExit(
+                "نص %s ينتهي بمعلومة لا بخطوة. المعلومة بلا دعوة تفعيل "
+                "تبني وعياً لا يتحول. أضف خطوة محددة في آخره." % service
+            )
 
         lo, hi = ch["hashtags"]
         n_tags = body.count("#")
