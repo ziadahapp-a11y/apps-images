@@ -7,7 +7,7 @@ organization:
   account: "ziadah.app@gmail.com"
   timezone: "Asia/Riyadh"
   limits:
-    scheduledPosts: 10   # سقف الخطة المجانية. الوحدة الأسبوعية سبعة.
+    scheduledPosts: 10   # سقف الخطة المجانية: عشر مجدولة لكل قناة (لا إجمالاً). المسودات بلا سقف.
     tags: 3
 
 channels:

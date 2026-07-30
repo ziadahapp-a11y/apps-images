@@ -280,9 +280,10 @@ def plan_month(plan: dict, ch: dict, month: str) -> None:
     """
     يعرض خطة الشهر ويتحقق من تمايز وحداته، بلا أي رندر أو إنشاء.
 
-    الخطة شهرية لكن إنشاء المسودات يبقى أسبوعياً: أربع وحدات دفعةً
-    تعني 12 منشوراً، وسقف الخطة المجانية 10. فالتخطيط شهري والتنفيذ
-    أسبوعي، ولا نلمس السقف.
+    سقف بفر المجاني عشر مسودات مجدولة لكل قناة (لا إجمالاً)، والمسودات
+    غير المجدولة بلا سقف. وإيقاعنا منشور واحد لكل قناة أسبوعياً، فالشهر
+    أربع أو خمس لكل قناة، دون السقف بهامش. لذلك يصح إنشاء الشهر دفعةً
+    واحدة (--month) ويعتمدها المستخدم شهرياً.
     """
     y, m = (int(x) for x in month.split("-"))
     weeks = [w for w in plan["weeks"]
@@ -372,56 +373,31 @@ def plan_month(plan: dict, ch: dict, month: str) -> None:
     print("الخطة سليمة: كل وحدة متمايزة ولا شي منها نُشر سابقاً.")
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--date", help="تاريخ أحد بصيغة YYYY-MM-DD")
-    ap.add_argument("--dry-run", action="store_true", help="يرندر ويتحقق بلا كتابة في بفر")
-    ap.add_argument("--force", action="store_true",
-                    help="يتجاوز فحص التكرار. احذف المسودات القديمة من بفر أولاً")
-    ap.add_argument("--plan-month", metavar="YYYY-MM",
-                    help="يعرض خطة الشهر ويتحقق من تمايز وحداته بلا أي إنشاء")
-    args = ap.parse_args()
+def process_unit(plan, channels, led, buf, target, unit, dry_run, force, existing):
+    """
+    يعالج وحدة أحد واحدة كاملة: بصمات، رندر بمقاس كل منصة، دفع الأصول،
+    تحقق الروابط، إنشاء المسودات، وتسجيلها في السجل. لا يدفع السجل:
+    دفعه يتم مرة واحدة بعد اكتمال الدفعة (شهرية كانت أو أسبوعية).
 
-    plan = yaml.safe_load((ROOT / "content" / "quarter.yml").read_text(encoding="utf-8"))
-    channels = yaml.safe_load((ROOT / "content" / "channels.yml").read_text(encoding="utf-8"))
-
-    if args.plan_month:
-        plan_month(plan, channels, args.plan_month)
-        return
-
-    target = date.fromisoformat(args.date) if args.date else next_sunday(date.today())
-    print("1) الهدف: أحد %s" % target.isoformat())
-
-    # ---- الطبقة الأولى: هل نُفّذ هذا التاريخ سابقاً؟ ----
-    led = ledger.load()
-    ledger.check_run(led, target.isoformat(), force=args.force)
-
-    check_occasions(plan)
-    unit = pick_unit(plan, target)
-    print("   الوحدة: %s" % unit["slug"])
-
-    # تنبيه مخزون منخفض: التشغيل تلقائي كل أسبوع، فلو نضب المحتوى
-    # يفشل التشغيل فجأة بلا سابق إنذار. نعدّ الأسابيع المتبقية من
-    # الهدف فصاعداً، ونصرخ مبكراً حين تقترب النهاية ليُعبّأ الربع
-    # القادم قبل أن ينكسر الجدول لا بعده.
-    remaining = sorted(w["date"] for w in plan["weeks"] if w["date"] >= target.isoformat())
-    if len(remaining) <= 3:
-        print("   ⚠️ تنبيه مخزون: باقٍ %d أسبوع فقط (آخرها %s). "
-              "عبّئ وحدات جديدة في content/quarter.yml قبل النفاد."
-              % (len(remaining), remaining[-1]))
+    `existing` قائمة مسودات بفر القائمة، وتُحدَّث بما يُنشأ هنا ليراه
+    فحص الطبقة الثانية للوحدات التالية في نفس الدفعة. يرجع قائمة
+    (خدمة، معرّف، موعد) لما أُنشئ.
+    """
+    iso = target.isoformat()
+    print("\n=== أحد %s: %s ===" % (iso, unit["slug"]))
 
     # ---- الطبقة الأولى، تكملة: بصمة التصميم وبصمة كل نص ----
     slides_all = {**plan["defaults"], **unit.get("slides", {})}
-    fps = ledger.check_content(led, target.isoformat(), unit["slug"],
-                               slides_all, unit["posts"], force=args.force)
+    fps = ledger.check_content(led, iso, unit["slug"],
+                               slides_all, unit["posts"], force=force)
     print("   فحص التكرار: %d بصمة جديدة، لا تطابق" % len(fps))
 
     # المقاسات المطلوبة: ig يخدم انستقرام ولنكدن، و x يخدم X وحده
     frames = sorted({channels["channels"][s]["frame"] for s in unit["posts"]})
 
     print("2) الرندر والفحص بمقاس كل منصة")
-    outbase = ROOT / "out" / target.isoformat()
-    assets = ROOT / ASSET_DIR / target.isoformat()
+    outbase = ROOT / "out" / iso
+    assets = ROOT / ASSET_DIR / iso
     by_frame = {}
     for fr in frames:
         tpl = ROOT / plan["defaults"]["templates"][fr]
@@ -437,7 +413,7 @@ def main():
 
     print("4) الدفع")
     owner, repo = repo_info()
-    sha = push(jpegs, "%s %s" % (target.isoformat(), unit["slug"]))
+    sha = push(jpegs, "%s %s" % (iso, unit["slug"]))
     print("   %s/%s @ %s" % (owner, repo, sha[:10]))
 
     print("5) التحقق أن الروابط تخدم صوراً")
@@ -453,17 +429,11 @@ def main():
             unit.get("alt", {}).get("02", alt02.replace("<br>", " "))]
 
     print("6) المسودات في بفر")
-    if args.dry_run:
+    if dry_run:
         print("   dry-run: تم تخطي الكتابة. الروابط جاهزة:")
         for u in urls:
             print("      " + u)
-        return
-
-    buf = Buffer()
-
-    # ---- الطبقة الثانية: نسأل بفر نفسه، لا ملفاً محلياً ----
-    existing = buf.drafts(channels["organization"]["id"])
-    print("   مسودات قائمة في بفر: %d" % len(existing))
+        return []
 
     created = []
     for service, day_offset, hhmm in SCHEDULE:
@@ -516,10 +486,131 @@ def main():
             raise SystemExit("فشل إنشاء مسودة %s:\n%s" % (service, e))
 
         created.append((service, post["id"], due))
+        # ليراها فحص الطبقة الثانية للوحدات التالية في نفس الدفعة
+        existing.append({"channelId": ch["id"], "dueAt": due, "id": post["id"]})
         print("   %-10s %s  %s" % (service, post["id"], due))
 
-    ledger.record(led, target.isoformat(), unit["slug"], sha, fps,
-                  [{"service": s_, "id": i_, "dueAt": d_} for s_, i_, d_ in created])
+    ledger.record(led, iso, unit["slug"], sha, fps,
+                  [{"service": s, "id": i, "dueAt": d} for s, i, d in created])
+
+    summary = ROOT / "out" / iso / "run.json"
+    summary.write_text(json.dumps({
+        "date": iso,
+        "slug": unit["slug"],
+        "commit": sha,
+        "images": urls,
+        "drafts": [{"service": s, "id": i, "dueAt": d} for s, i, d in created],
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return created
+
+
+def low_stock_notice(plan: dict, from_iso: str, threshold: int) -> None:
+    """ينبّه مبكراً حين يقترب نفاد المخزون، فالتشغيل تلقائي ولا عين تراقب."""
+    remaining = sorted(w["date"] for w in plan["weeks"] if w["date"] >= from_iso)
+    if len(remaining) <= threshold:
+        print("   ⚠️ تنبيه مخزون: باقٍ %d أسبوع فقط (آخرها %s). "
+              "عبّئ وحدات جديدة في content/quarter.yml قبل النفاد."
+              % (len(remaining), remaining[-1] if remaining else "—"))
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--date", help="تاريخ أحد بصيغة YYYY-MM-DD")
+    ap.add_argument("--dry-run", action="store_true", help="يرندر ويتحقق بلا كتابة في بفر")
+    ap.add_argument("--force", action="store_true",
+                    help="يتجاوز فحص التكرار. احذف المسودات القديمة من بفر أولاً")
+    ap.add_argument("--month", metavar="YYYY-MM",
+                    help="ينشئ مسودات كل آحاد الشهر دفعةً واحدة (اعتماد شهري)")
+    ap.add_argument("--plan-month", metavar="YYYY-MM",
+                    help="يعرض خطة الشهر ويتحقق من تمايز وحداته بلا أي إنشاء")
+    args = ap.parse_args()
+
+    plan = yaml.safe_load((ROOT / "content" / "quarter.yml").read_text(encoding="utf-8"))
+    channels = yaml.safe_load((ROOT / "content" / "channels.yml").read_text(encoding="utf-8"))
+
+    if args.plan_month:
+        plan_month(plan, channels, args.plan_month)
+        return
+
+    led = ledger.load()
+    check_occasions(plan)
+
+    # ======================================================================
+    # وضع الدفعة الشهرية: ينشئ مسودات كل آحاد الشهر مرة واحدة، فيراجعها
+    # المستخدم ويعتمدها شهرياً بدل أسبوعياً. آمن على الخطة المجانية:
+    # سقف بفر عشر مسودات مجدولة لكل قناة، وإيقاعنا منشور واحد لكل قناة
+    # في الأسبوع، فالشهر أربع أو خمس لكل قناة، دون السقف بهامش. والمسودات
+    # نفسها بلا سقف، إنما المجدول منها هو المحدود.
+    # ======================================================================
+    if args.month:
+        y, m = (int(x) for x in args.month.split("-"))
+        units = sorted(
+            (w for w in plan["weeks"]
+             if date.fromisoformat(w["date"]).year == y
+             and date.fromisoformat(w["date"]).month == m),
+            key=lambda w: w["date"],
+        )
+        if not units:
+            raise SystemExit(
+                "لا وحدات لشهر %s في content/quarter.yml. أضفها أولاً." % args.month
+            )
+
+        print("1) دفعة شهر %s: %d وحدة" % (args.month, len(units)))
+        low_stock_notice(plan, date.today().isoformat(), threshold=5)
+
+        buf = None if args.dry_run else Buffer()
+        # ---- الطبقة الثانية: نسأل بفر نفسه، لا ملفاً محلياً ----
+        existing = [] if args.dry_run else buf.drafts(channels["organization"]["id"])
+        if not args.dry_run:
+            print("   مسودات قائمة في بفر: %d" % len(existing))
+
+        made, skipped = 0, 0
+        for w in units:
+            iso = w["date"]
+            # تخطي ما نُفّذ سابقاً بدل إجهاض الدفعة كلها (إلا مع --force)
+            if led["runs"].get(iso) and not args.force:
+                skipped += 1
+                print("\n=== أحد %s: %s — نُفّذ سابقاً، تخطي ===" % (iso, w["slug"]))
+                continue
+            created = process_unit(plan, channels, led, buf,
+                                   date.fromisoformat(iso), w,
+                                   args.dry_run, args.force, existing)
+            made += len(created)
+
+        if not args.dry_run:
+            # دفع السجل مرة واحدة بعد الدفعة كلها لا بعد كل وحدة
+            ledger_push()
+            print("\n   السجل حُدّث والتُزم: content/ledger.json")
+
+        print("\nتم: %d مسودة عبر %d وحدة (%d متخطاة، نُفّذت سابقاً). لا شي منشور."
+              % (made, len(units) - skipped, skipped))
+        print("راجعها كلها في بفر واعتمد ما يعجبك. الاعتماد شهري الآن.")
+        return
+
+    # ======================================================================
+    # وضع الأسبوع الواحد: تشغيل يدوي لتاريخ محدد، أو الأحد القادم افتراضاً.
+    # ======================================================================
+    target = date.fromisoformat(args.date) if args.date else next_sunday(date.today())
+    print("1) الهدف: أحد %s" % target.isoformat())
+
+    # ---- الطبقة الأولى: هل نُفّذ هذا التاريخ سابقاً؟ ----
+    ledger.check_run(led, target.isoformat(), force=args.force)
+    unit = pick_unit(plan, target)
+    print("   الوحدة: %s" % unit["slug"])
+    low_stock_notice(plan, target.isoformat(), threshold=3)
+
+    buf = None if args.dry_run else Buffer()
+    # ---- الطبقة الثانية: نسأل بفر نفسه، لا ملفاً محلياً ----
+    existing = [] if args.dry_run else buf.drafts(channels["organization"]["id"])
+    if not args.dry_run:
+        print("   مسودات قائمة في بفر: %d" % len(existing))
+
+    created = process_unit(plan, channels, led, buf, target, unit,
+                           args.dry_run, args.force, existing)
+
+    if args.dry_run:
+        return
 
     # حرج: وظيفة GitHub تستنسخ الريبو من جديد في كل تشغيل، فسجل غير
     # ملتزم يبدأ فارغاً كل مرة ويعود التكرار. الالتزام هنا هو ما يجعل
@@ -530,15 +621,6 @@ def main():
     print("\nتم: %d مسودة. لا شي منشور." % len(created))
     print("راجعها في بفر واعتمد ما يعجبك.")
     print("إعادة تشغيل نفس التاريخ سترفض تلقائياً.")
-
-    summary = ROOT / "out" / target.isoformat() / "run.json"
-    summary.write_text(json.dumps({
-        "date": target.isoformat(),
-        "slug": unit["slug"],
-        "commit": sha,
-        "images": urls,
-        "drafts": [{"service": s, "id": i, "dueAt": d} for s, i, d in created],
-    }, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":
