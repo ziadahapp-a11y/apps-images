@@ -1,5 +1,49 @@
 {
   "version": 1,
-  "runs": {},
-  "fingerprints": {}
+  "runs": {
+    "2026-08-02": {
+      "slug": "moments",
+      "commit": "553931a2acdbbd3b3866fa98152e0cd4fdd31838",
+      "createdAt": "2026-07-30T06:44:08+00:00",
+      "drafts": [
+        {
+          "service": "linkedin",
+          "id": "6a6af2b731c6b0ee1159c5d3",
+          "dueAt": "2026-08-02T10:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6a6af2b80263c79a74b2a06b",
+          "dueAt": "2026-08-02T21:00:00+03:00"
+        },
+        {
+          "service": "twitter",
+          "id": "6a6af2b80263c79a74b2a08c",
+          "dueAt": "2026-08-02T21:30:00+03:00"
+        }
+      ]
+    }
+  },
+  "fingerprints": {
+    "cdd94eef3862a4b536175409638b47fe0dc41ea0c93e089fb6bb74408c60201b": {
+      "date": "2026-08-02",
+      "slug": "moments",
+      "kind": "slides"
+    },
+    "2358e2b3b461d909bb0233a030e101844b7d17612988db07dcbb3c5624f2cf82": {
+      "date": "2026-08-02",
+      "slug": "moments",
+      "kind": "linkedin"
+    },
+    "41ec61602bece994c2c23991d37f085f34c62c68858915b57912d05c76f48918": {
+      "date": "2026-08-02",
+      "slug": "moments",
+      "kind": "instagram"
+    },
+    "668311ada9a1be348fa8bea0753682ae59a16895f7ee58a58a4b1471b6d14e3e": {
+      "date": "2026-08-02",
+      "slug": "moments",
+      "kind": "twitter"
+    }
+  }
 }
