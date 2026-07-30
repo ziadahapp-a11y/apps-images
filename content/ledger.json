@@ -2,23 +2,23 @@
   "version": 1,
   "runs": {
     "2026-08-02": {
-      "slug": "moments",
-      "commit": "553931a2acdbbd3b3866fa98152e0cd4fdd31838",
-      "createdAt": "2026-07-30T06:44:08+00:00",
+      "slug": "silent-seller",
+      "commit": "7d3e70bc9f9502130d65892241a94f72117d63b8",
+      "createdAt": "2026-07-30T09:41:06+00:00",
       "drafts": [
         {
           "service": "linkedin",
-          "id": "6a6af2b731c6b0ee1159c5d3",
+          "id": "6a6b1c318a3502457bde1cbc",
           "dueAt": "2026-08-02T10:00:00+03:00"
         },
         {
           "service": "instagram",
-          "id": "6a6af2b80263c79a74b2a06b",
+          "id": "6a6b1c31f63cc7aa6f6f6014",
           "dueAt": "2026-08-02T21:00:00+03:00"
         },
         {
           "service": "twitter",
-          "id": "6a6af2b80263c79a74b2a08c",
+          "id": "6a6b1c32f63cc7aa6f6f602c",
           "dueAt": "2026-08-02T21:30:00+03:00"
         }
       ]
@@ -43,6 +43,26 @@
     "668311ada9a1be348fa8bea0753682ae59a16895f7ee58a58a4b1471b6d14e3e": {
       "date": "2026-08-02",
       "slug": "moments",
+      "kind": "twitter"
+    },
+    "54641cbb8ac6f988032b1a9b2440b493975778ea2f5fcd6e79b7d6d417297602": {
+      "date": "2026-08-02",
+      "slug": "silent-seller",
+      "kind": "slides"
+    },
+    "076b4bd10c61b208c090e8fdfc145f073c5179e3bc97eff311700aebbb5ed79f": {
+      "date": "2026-08-02",
+      "slug": "silent-seller",
+      "kind": "linkedin"
+    },
+    "519dd30832c70e8e74c2fcf526073fb444056a51b2c0de8bb0e053eeb5357615": {
+      "date": "2026-08-02",
+      "slug": "silent-seller",
+      "kind": "instagram"
+    },
+    "8f1eb4f9f652c4f5ae3c7525cc9f678de195548683580bc7732f1d2ef2afd0ba": {
+      "date": "2026-08-02",
+      "slug": "silent-seller",
       "kind": "twitter"
     }
   }
