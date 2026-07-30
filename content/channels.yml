@@ -15,13 +15,22 @@ channels:
     id: "66fea3dbca3dab3e0a859ba6"
     handle: "ZiadahApp"
     charLimit: 280
+    frame: x                # 16:9، الوحيد الذي يظهر كاملاً بلا قص
+    images: 1
+    hashtags: [0, 2]        # X يعاقب الحشو. سطر واحد يوقف التمرير
   instagram:
     id: "672340e2bfe13efaee12dda5"
     handle: "ziadahapp"
     type: business
     charLimit: 2200
+    frame: ig               # 4:5، ما توصي به ميتا رسمياً وتفضّله على 1:1
+    images: all             # كاروسيل. كل الشرائح بنفس النسبة إلزاماً
+    hashtags: [3, 6]        # مجموعة مركّزة. الحشو صار يُخفَّض ترتيبه
   linkedin:
     id: "6a6672214b2d03035f46393b"
     name: "Ziadah | زيادة"
     type: page
     charLimit: 3000
+    frame: ig               # يقبل 4:5 ويعطيه مساحة أكبر من المربع
+    images: 2               # لنكدن يعرض الأولى كمعاينة
+    hashtags: [3, 5]

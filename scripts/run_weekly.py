@@ -31,26 +31,18 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import render_slides
-import render_card
+import ledger
 from buffer_client import Buffer, BufferError
 
 RAW = "https://raw.githubusercontent.com/%s/%s/%s/%s"
 ASSET_DIR = "social"
 JPEG_QUALITY = 92
 
-# مواعيد النشر بتوقيت الرياض. الأحد هو يوم الإرساء (0)، والخميس قبله (-3)
-# هو اليوم الذي يعمل فيه الكرون، فتبدأ الدورة منه. الوحدة الواحدة تُعاد
-# عبر الأسبوع لرفع الوصول: سبعة منشورات من أصل عشرة تسمح بها الخطة.
-#   الخميس (-3): انستقرام + X   |   الأحد (0): لنكدن + انستقرام + X
-#   الثلاثاء (+2): لنكدن + X
+# مواعيد النشر بتوقيت الرياض. الأحد يوم 0 في هذا الجدول.
 SCHEDULE = [
-    ("instagram", -3, "20:30"),   # الخميس 8:30 م
-    ("twitter",   -3, "21:30"),   # الخميس 9:30 م
-    ("linkedin",   0, "10:00"),   # الأحد 10:00 ص
-    ("instagram",  0, "21:00"),   # الأحد 9:00 م
-    ("twitter",    0, "21:30"),   # الأحد 9:30 م
-    ("linkedin",   2, "10:00"),   # الثلاثاء 10:00 ص
-    ("twitter",    2, "21:30"),   # الثلاثاء 9:30 م
+    ("linkedin",  0, "10:00"),
+    ("instagram", 0, "21:00"),
+    ("twitter",   0, "21:30"),
 ]
 
 # العقد المسموح إضاءتها: الوحيدتان الواقعتان تحت الجوال
@@ -104,17 +96,11 @@ def pick_unit(plan: dict, target: date) -> dict:
     )
 
 
-# قوالب البطاقات المفردة بمقاس كل منصة. X أفقي 16:9، ولنكدن 1.91:1.
-# انستقرام يبقى الكاروسيل المتصل 4:5 في defaults["template"].
-CARD_SPECS = {
-    "x":  ("templates/x_card.html", 1600, 900),
-    "li": ("templates/linkedin_card.html", 1200, 627),
-}
+def fill_template(unit: dict, defaults: dict, template: Path = None) -> Path:
+    """يعبّئ علامات القالب من الوحدة، ويكتب قالباً مؤقتاً للرندر."""
+    s = {**defaults, **unit.get("slides", {})}
 
-
-def _values_from(s: dict) -> dict:
-    """يبني قيم القالب من قاموس شرائح مدموج (defaults + زاوية/وحدة)."""
-    lit = int(s.get("lit", 5))
+    lit = int(s.get("lit", defaults.get("lit", 5)))
     if lit not in LIT_X:
         raise SystemExit(
             "lit=%d غير مسموح. المسموح 4 أو 5 فقط، فهما العقدتان الواقعتان "
@@ -136,74 +122,35 @@ def _values_from(s: dict) -> dict:
     }
     for i in range(8):
         values["ON_%d" % i] = "rail__node--on" if i == lit else ""
-    return values
 
-
-def build_values(unit: dict, defaults: dict) -> dict:
-    """القيم المشتركة بين الكاروسيل والبطاقات (وحدة قديمة بحقل slides)."""
-    return _values_from({**defaults, **unit.get("slides", {})})
-
-
-def angle_values(angle: dict, defaults: dict) -> dict:
-    """قيم قالب لزاوية في النموذج المنوّع."""
-    return _values_from({**defaults, **angle})
-
-
-def _fill(html: str, values: dict, where: str) -> str:
+    tpl = template or (ROOT / defaults["templates"]["ig"])
+    html = tpl.read_text(encoding="utf-8")
     for k, v in values.items():
         html = html.replace("{{%s}}" % k, str(v))
+
     left = [t.split("}}")[0] for t in html.split("{{")[1:]]
     if left:
-        raise SystemExit("علامات لم تُعبَّأ في %s: %s" % (where, ", ".join(left)))
-    return html
+        raise SystemExit("علامات لم تُعبَّأ في %s: %s" % (tpl.name, ", ".join(left)))
 
-
-def fill_template(unit: dict, defaults: dict) -> Path:
-    """يعبّئ قالب الكاروسيل المتصل (انستقرام) ويكتب قالباً مؤقتاً للرندر."""
-    html = _fill((ROOT / defaults["template"]).read_text(encoding="utf-8"),
-                 build_values(unit, defaults), defaults["template"])
-    out = ROOT / "out" / "_filled.html"
+    out = ROOT / "out" / ("_filled_%s.html" % tpl.stem)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html, encoding="utf-8")
     return out
 
 
-def render_cards(unit: dict, defaults: dict, target: date) -> dict:
-    """يرندر بطاقتي X ولنكدن بمقاس كل منصة، ويرجّع {key: png_path}."""
-    values = build_values(unit, defaults)
-    root = ROOT / "out" / target.isoformat() / "cards"
-    out = {}
-    for key, (tpl, w, h) in CARD_SPECS.items():
-        html = _fill((ROOT / tpl).read_text(encoding="utf-8"), values, tpl)
-        d = root / key
-        d.mkdir(parents=True, exist_ok=True)
-        filled = d / Path(tpl).name
-        filled.write_text(html, encoding="utf-8")
-        out[key] = render_card.render(filled, d, w, h, strict=True)
-    return out
-
-
-def export_jpegs(pngs, outdir: Path, slug: str, target: date) -> list:
+def export_jpegs(pngs, outdir: Path, slug: str, target: date, frame: str) -> list:
     outdir.mkdir(parents=True, exist_ok=True)
     out = []
     for png in pngs:
-        if png.name == "canvas_full.png":
-            continue
+        if png.stem.endswith("_full"):
+            continue   # مرجع بصري داخلي للاتصال، لا يُنشر
         n = png.stem.split("_")[-1]
-        dst = outdir / ("%s-%s-%s.jpg" % (target.isoformat(), slug, n))
+        dst = outdir / ("%s-%s-%s-%s.jpg" % (target.isoformat(), slug, frame, n))
         Image.open(png).convert("RGB").save(
             dst, "JPEG", quality=JPEG_QUALITY, subsampling=0, optimize=True
         )
         out.append(dst)
     return out
-
-
-def to_jpeg(png: Path, dst: Path) -> Path:
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    Image.open(png).convert("RGB").save(
-        dst, "JPEG", quality=JPEG_QUALITY, subsampling=0, optimize=True
-    )
-    return dst
 
 
 def repo_info():
@@ -227,6 +174,28 @@ def push(paths, label: str) -> str:
     if p.returncode != 0:
         raise SystemExit("فشل الـ push:\n" + p.stderr)
     return sh("git", "rev-parse", "HEAD").stdout.strip()
+
+
+def ledger_push() -> None:
+    """يلتزم سجل التكرار ويدفعه. بدونه لا ذاكرة بين التشغيلات."""
+    f = "content/ledger.json"
+    sh("git", "add", f)
+    if not sh("git", "status", "--porcelain", f).stdout.strip():
+        return
+    c = sh("git", "commit", "-m", "ledger: تسجيل ما أُنشئ [skip ci]")
+    if c.returncode != 0:
+        raise SystemExit(
+            "فشل التزام السجل:\n%s%s\n"
+            "لا تتجاهل هذا: سجل غير ملتزم يعني أن التشغيل القادم "
+            "سيعيد نفس المحتوى." % (c.stdout, c.stderr)
+        )
+    pr = sh("git", "push")
+    if pr.returncode != 0:
+        raise SystemExit(
+            "فشل دفع السجل:\n%s\n"
+            "المسودات أُنشئت لكن السجل لم يُدفع. أضفه يدوياً قبل أي "
+            "تشغيل آخر، وإلا تكرر المحتوى." % pr.stderr
+        )
 
 
 def verify(url: str, attempts: int = 8):
@@ -253,195 +222,150 @@ def verify(url: str, attempts: int = 8):
     )
 
 
-# إزاحة أيام النشر عن أحد الإرساء. الخميس قبله (-3) هو يوم عمل الكرون.
-DAY_OFFSET = {"thu": -3, "sun": 0, "tue": 2, "wed": -4, "mon": 1, "fri": -2, "sat": -1}
-
-
-def _slot_asset(slot: dict, vals: dict, assets: Path, outbase: Path,
-                slug: str, iso: str, idx: int, target: date) -> list:
-    """يرندر أصل خانة واحدة (كاروسيل انستقرام أو بطاقة X/لنكدن). يرجّع jpegs."""
-    ch = slot["channel"]
-    tag = "s%d-%s" % (idx, slot["angle"])
-    d = outbase / ("slot%d" % idx)
-    d.mkdir(parents=True, exist_ok=True)
-
-    if ch == "instagram":
-        html = _fill((ROOT / plan_template()).read_text(encoding="utf-8"), vals, "carousel")
-        filled = d / "carousel.html"
-        filled.write_text(html, encoding="utf-8")
-        pngs = render_slides.render(filled, d, strict=True)
-        return export_jpegs(pngs, assets, "%s-%s" % (slug, tag), target)
-
-    key = "x" if ch == "twitter" else "li"
-    tpl, w, h = CARD_SPECS[key]
-    html = _fill((ROOT / tpl).read_text(encoding="utf-8"), vals, tpl)
-    filled = d / Path(tpl).name
-    filled.write_text(html, encoding="utf-8")
-    png = render_card.render(filled, d, w, h, strict=True)
-    return [to_jpeg(png, assets / ("%s-%s-%s-%s.jpg" % (iso, slug, tag, key)))]
-
-
-_PLAN_TEMPLATE = ["templates/carousel_connected.html"]
-
-
-def plan_template() -> str:
-    return _PLAN_TEMPLATE[0]
-
-
-def run_varied(unit: dict, plan: dict, channels: dict, target: date, args) -> None:
+def plan_month(plan: dict, ch: dict, month: str) -> None:
     """
-    النموذج المنوّع: الموضوع الواحد يتفرّع إلى زوايا موزّعة على الخانات
-    السبع بلا تكرار على أي منصة، مع خانة ترند. كل خانة لها تصميمها
-    ونصها وهاشتاقها. كل المسودات saveToDraft.
+    يعرض خطة الشهر ويتحقق من تمايز وحداته، بلا أي رندر أو إنشاء.
+
+    الخطة شهرية لكن إنشاء المسودات يبقى أسبوعياً: أربع وحدات دفعةً
+    تعني 12 منشوراً، وسقف الخطة المجانية 10. فالتخطيط شهري والتنفيذ
+    أسبوعي، ولا نلمس السقف.
     """
-    defaults = plan["defaults"]
-    _PLAN_TEMPLATE[0] = defaults["template"]
-    slug, iso = unit["slug"], target.isoformat()
-    outbase = ROOT / "out" / iso
-    assets = ROOT / ASSET_DIR / iso
-    slots = unit["schedule"]
+    y, m = (int(x) for x in month.split("-"))
+    weeks = [w for w in plan["weeks"]
+             if date.fromisoformat(w["date"]).year == y
+             and date.fromisoformat(w["date"]).month == m]
 
-    print("   الوحدة: %s (خطة منوّعة: %d خانات)" % (slug, len(slots)))
-    print("2) الرندر والفحص لكل خانة")
-    files_per_slot = []
-    for i, slot in enumerate(slots):
-        angle = unit["angles"][slot["angle"]]
-        vals = angle_values(angle, defaults)
-        print("   خانة %d: %s/%s ← زاوية %s" % (i, slot["day"], slot["channel"], slot["angle"]))
-        files_per_slot.append(_slot_asset(slot, vals, assets, outbase, slug, iso, i, target))
-
-    all_files = [f for group in files_per_slot for f in group]
-
-    if args.dry_run:
-        print("3) dry-run: تم الرندر والفحص بلا رفع ولا بفر.")
+    print("خطة %s: %d وحدة" % (month, len(weeks)))
+    if not weeks:
+        print("لا وحدات لهذا الشهر. أضفها في content/quarter.yml.")
         return
 
-    print("3) الدفع")
-    owner, repo = repo_info()
-    sha = push(all_files, "%s %s varied" % (iso, slug))
-    print("   %s/%s @ %s" % (owner, repo, sha[:10]))
+    led = ledger.load()
+    seen_slides, seen_text, problems = {}, {}, []
 
-    print("4) التحقق أن الروابط تخدم صوراً")
-    def raw(j):
-        return RAW % (owner, repo, sha, str(j.relative_to(ROOT)))
-    urls_per_slot = [[raw(f) for f in group] for group in files_per_slot]
-    for group in urls_per_slot:
-        for u in group:
-            verify(u)
+    for w in weeks:
+        occ = "  [%s]" % w["occasion"] if w.get("occasion") else ""
+        print("\n  %s  %s%s" % (w["date"], w["slug"], occ))
+        print("     الهوك: %s" % w["slides"]["title"].replace("<br>", " ")
+              .replace('<span class="u-accent">', "").replace("</span>", ""))
 
-    print("5) المسودات في بفر")
-    trend_file = ROOT / "content" / "trend_current.txt"
-    trend_override = trend_file.read_text(encoding="utf-8").strip() if trend_file.exists() else ""
+        sfp = ledger.slide_fingerprint({**plan["defaults"], **w["slides"]})
+        if sfp in seen_slides:
+            problems.append("تصميم %s مطابق لتصميم %s" % (w["slug"], seen_slides[sfp]))
+        seen_slides[sfp] = w["slug"]
+        if sfp in led["fingerprints"]:
+            problems.append("تصميم %s نُشر سابقاً في %s"
+                            % (w["slug"], led["fingerprints"][sfp]["date"]))
 
-    buf = Buffer()
-    created = []
-    for i, slot in enumerate(slots):
-        service = slot["channel"]
-        angle = unit["angles"][slot["angle"]]
-        caption = angle.get("captions", {}).get(service)
-        if not caption:
-            raise SystemExit("خانة %d (%s) بلا كابشن لـ%s في زاوية %s"
-                             % (i, service, service, slot["angle"]))
-        if angle.get("trend_slot") and trend_override:
-            caption = trend_override    # هوك الترند من صاحب الحساب/trends.py
+        for svc, text in w["posts"].items():
+            n, lim = len(text.strip()), ch["channels"][svc]["charLimit"]
+            tags = text.count("#")
+            lo, hi = ch["channels"][svc]["hashtags"]
+            flag = ""
+            if n > lim:
+                flag += " ✗طويل"
+            if not (lo <= tags <= hi):
+                flag += " ✗هاشتاق"
+            print("     %-10s %4d/%d حرف  %d#%s" % (svc, n, lim, tags, flag))
+            if flag:
+                problems.append("%s / %s:%s" % (w["slug"], svc, flag))
 
-        body = caption.strip()
-        limit = channels["channels"][service]["charLimit"]
-        if len(body) > limit:
-            raise SystemExit("نص خانة %d (%s) طوله %d ويتجاوز حد %d."
-                             % (i, service, len(body), limit))
+            fp = ledger.fingerprint(svc, text)
+            if fp in seen_text:
+                problems.append("نص %s/%s مطابق لـ %s" % (w["slug"], svc, seen_text[fp]))
+            seen_text[fp] = "%s/%s" % (w["slug"], svc)
+            if fp in led["fingerprints"]:
+                problems.append("نص %s/%s نُشر سابقاً في %s"
+                                % (w["slug"], svc, led["fingerprints"][fp]["date"]))
 
-        off = DAY_OFFSET[slot["day"]]
-        when = datetime.combine(target + timedelta(days=off),
-                                datetime.strptime(slot["time"], "%H:%M").time())
-        due = when.strftime("%Y-%m-%dT%H:%M:00+03:00")
-
-        alt = angle.get("alt") or (angle["badge"] + " | زيادة")
-        alts = [alt, alt]  # يكفي للكاروسيل وللبطاقة المفردة
-        try:
-            post = buf.create_draft(channels["channels"][service]["id"],
-                                    body, due, urls_per_slot[i], alts, service)
-        except BufferError as e:
-            raise SystemExit("فشل إنشاء مسودة خانة %d (%s):\n%s" % (i, service, e))
-        created.append((service, slot["angle"], post["id"], due))
-        print("   %-10s %-14s %s  %s" % (service, slot["angle"], post["id"], due))
-
-    print("\nتم: %d مسودة منوّعة. لا شي منشور." % len(created))
-    print("راجعها في بفر واعتمد ما يعجبك.")
-
-    summary = outbase / "run.json"
-    summary.parent.mkdir(parents=True, exist_ok=True)
-    summary.write_text(json.dumps({
-        "date": iso, "slug": slug, "commit": sha, "model": "varied",
-        "drafts": [{"service": s, "angle": a, "id": i, "dueAt": d} for s, a, i, d in created],
-    }, ensure_ascii=False, indent=2), encoding="utf-8")
+    print()
+    if problems:
+        print("مشاكل لازم تُحل قبل التشغيل:")
+        for x in problems:
+            print("   - " + x)
+        raise SystemExit(1)
+    print("الخطة سليمة: كل وحدة متمايزة ولا شي منها نُشر سابقاً.")
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", help="تاريخ أحد بصيغة YYYY-MM-DD")
     ap.add_argument("--dry-run", action="store_true", help="يرندر ويتحقق بلا كتابة في بفر")
+    ap.add_argument("--force", action="store_true",
+                    help="يتجاوز فحص التكرار. احذف المسودات القديمة من بفر أولاً")
+    ap.add_argument("--plan-month", metavar="YYYY-MM",
+                    help="يعرض خطة الشهر ويتحقق من تمايز وحداته بلا أي إنشاء")
     args = ap.parse_args()
 
     plan = yaml.safe_load((ROOT / "content" / "quarter.yml").read_text(encoding="utf-8"))
     channels = yaml.safe_load((ROOT / "content" / "channels.yml").read_text(encoding="utf-8"))
 
+    if args.plan_month:
+        plan_month(plan, channels, args.plan_month)
+        return
+
     target = date.fromisoformat(args.date) if args.date else next_sunday(date.today())
     print("1) الهدف: أحد %s" % target.isoformat())
 
+    # ---- الطبقة الأولى: هل نُفّذ هذا التاريخ سابقاً؟ ----
+    led = ledger.load()
+    ledger.check_run(led, target.isoformat(), force=args.force)
+
     check_occasions(plan)
     unit = pick_unit(plan, target)
-
-    # النموذج المنوّع: الوحدة فيها زوايا وجدول خانات
-    if "angles" in unit:
-        run_varied(unit, plan, channels, target, args)
-        return
-
     print("   الوحدة: %s" % unit["slug"])
 
-    print("2) الرندر والفحص")
-    filled = fill_template(unit, plan["defaults"])
-    pngs = render_slides.render(filled, ROOT / "out" / target.isoformat(), strict=True)
-    cards = render_cards(unit, plan["defaults"], target)
+    # ---- الطبقة الأولى، تكملة: بصمة التصميم وبصمة كل نص ----
+    slides_all = {**plan["defaults"], **unit.get("slides", {})}
+    fps = ledger.check_content(led, target.isoformat(), unit["slug"],
+                               slides_all, unit["posts"], force=args.force)
+    print("   فحص التكرار: %d بصمة جديدة، لا تطابق" % len(fps))
 
-    print("3) التصدير")
+    # المقاسات المطلوبة: ig يخدم انستقرام ولنكدن، و x يخدم X وحده
+    frames = sorted({ch["channels"][s]["frame"] for s in unit["posts"]})
+
+    print("2) الرندر والفحص بمقاس كل منصة")
+    outbase = ROOT / "out" / target.isoformat()
     assets = ROOT / ASSET_DIR / target.isoformat()
-    slug, iso = unit["slug"], target.isoformat()
-    ig = export_jpegs(pngs, assets, slug, target)                        # كاروسيل انستقرام 4:5
-    xj = to_jpeg(cards["x"], assets / ("%s-%s-x.jpg" % (iso, slug)))     # بطاقة X 16:9
-    lij = to_jpeg(cards["li"], assets / ("%s-%s-li.jpg" % (iso, slug)))  # بطاقة لنكدن 1.91:1
-    files = ig + [xj, lij]
-    for j in files:
-        print("   %s  %d KB" % (j.name, j.stat().st_size / 1024))
+    by_frame = {}
+    for fr in frames:
+        tpl = ROOT / plan["defaults"]["templates"][fr]
+        filled = fill_template(unit, plan["defaults"], tpl)
+        pngs = render_slides.render(filled, outbase / fr, strict=True, frame=fr, prefix=fr)
+        by_frame[fr] = export_jpegs(pngs, assets, unit["slug"], target, fr)
+        dims = render_slides.FRAMES[fr]
+        print("   %-3s %dx%d ×2  |  %d صورة" % (fr, dims["w"], dims["h"], len(by_frame[fr])))
+        for j in by_frame[fr]:
+            print("      %s  %d KB" % (j.name, j.stat().st_size / 1024))
+
+    jpegs = [j for fr in frames for j in by_frame[fr]]
 
     print("4) الدفع")
     owner, repo = repo_info()
-    sha = push(files, "%s %s" % (iso, slug))
+    sha = push(jpegs, "%s %s" % (target.isoformat(), unit["slug"]))
     print("   %s/%s @ %s" % (owner, repo, sha[:10]))
 
     print("5) التحقق أن الروابط تخدم صوراً")
-    def raw(j):
-        return RAW % (owner, repo, sha, str(j.relative_to(ROOT)))
-    ig_urls = [raw(j) for j in ig]
-    x_url, li_url = raw(xj), raw(lij)
-    for u in ig_urls + [x_url, li_url]:
+    urls = [RAW % (owner, repo, sha, str(j.relative_to(ROOT))) for j in jpegs]
+    for u in urls:
         verify(u)
 
-    # صورة كل قناة بمقاسها: انستقرام كاروسيل 4:5، X بطاقته 16:9، لنكدن بطاقته
-    chan_images = {"instagram": ig_urls, "twitter": [x_url], "linkedin": [li_url]}
-
-    alt01 = unit.get("alt", {}).get("01", unit["slides"]["badge"] + " | زيادة")
-    alt02 = unit.get("alt", {}).get("02", unit["slides"]["stat_label"].replace("<br>", " "))
-    chan_alts = {"instagram": [alt01, alt02], "twitter": [alt01], "linkedin": [alt01]}
+    alts = [unit.get("alt", {}).get("01", unit["slides"]["badge"] + " | زيادة"),
+            unit.get("alt", {}).get("02", unit["slides"]["stat_label"].replace("<br>", " "))]
 
     print("6) المسودات في بفر")
     if args.dry_run:
         print("   dry-run: تم تخطي الكتابة. الروابط جاهزة:")
-        for u in ig_urls + [x_url, li_url]:
+        for u in urls:
             print("      " + u)
         return
 
     buf = Buffer()
+
+    # ---- الطبقة الثانية: نسأل بفر نفسه، لا ملفاً محلياً ----
+    existing = buf.drafts(channels["organization"]["id"])
+    print("   مسودات قائمة في بفر: %d" % len(existing))
+
     created = []
     for service, day_offset, hhmm in SCHEDULE:
         text = unit["posts"].get(service)
@@ -462,24 +386,52 @@ def main():
                                 datetime.strptime(hhmm, "%H:%M").time())
         due = when.strftime("%Y-%m-%dT%H:%M:00+03:00")
 
+        # كل منصة تاخذ صور مقاسها هي، لا صور منصة أخرى
+        fr = ch["frame"]
+        pool = [u for u in urls if ("-%s-" % fr) in u]
+        want = ch["images"]
+        imgs = pool if want == "all" else pool[:int(want)]
+        if not imgs:
+            raise SystemExit("لا صور بمقاس %s لقناة %s" % (fr, service))
+
+        lo, hi = ch["hashtags"]
+        n_tags = body.count("#")
+        if not (lo <= n_tags <= hi):
+            raise SystemExit(
+                "نص %s فيه %d هاشتاق، والمسموح بين %d و%d. "
+                "الحشو يُخفَّض ترتيبه على هذي المنصة."
+                % (service, n_tags, lo, hi)
+            )
+
+        ledger.check_buffer(existing, ch["id"], due)
+
         try:
-            post = buf.create_draft(ch["id"], body, due,
-                                    chan_images[service], chan_alts[service], service)
+            post = buf.create_draft(ch["id"], body, due, imgs, alts, service)
         except BufferError as e:
             raise SystemExit("فشل إنشاء مسودة %s:\n%s" % (service, e))
 
         created.append((service, post["id"], due))
         print("   %-10s %s  %s" % (service, post["id"], due))
 
+    ledger.record(led, target.isoformat(), unit["slug"], sha, fps,
+                  [{"service": s_, "id": i_, "dueAt": d_} for s_, i_, d_ in created])
+
+    # حرج: وظيفة GitHub تستنسخ الريبو من جديد في كل تشغيل، فسجل غير
+    # ملتزم يبدأ فارغاً كل مرة ويعود التكرار. الالتزام هنا هو ما يجعل
+    # منع التكرار يعمل بين التشغيلات لا داخل التشغيل الواحد.
+    ledger_push()
+    print("   السجل حُدّث والتُزم: content/ledger.json")
+
     print("\nتم: %d مسودة. لا شي منشور." % len(created))
     print("راجعها في بفر واعتمد ما يعجبك.")
+    print("إعادة تشغيل نفس التاريخ سترفض تلقائياً.")
 
     summary = ROOT / "out" / target.isoformat() / "run.json"
     summary.write_text(json.dumps({
-        "date": iso,
-        "slug": slug,
+        "date": target.isoformat(),
+        "slug": unit["slug"],
         "commit": sha,
-        "images": {"instagram": ig_urls, "twitter": [x_url], "linkedin": [li_url]},
+        "images": urls,
         "drafts": [{"service": s, "id": i, "dueAt": d} for s, i, d in created],
     }, ensure_ascii=False, indent=2), encoding="utf-8")
 

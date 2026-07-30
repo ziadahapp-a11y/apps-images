@@ -116,6 +116,29 @@ class Buffer:
         """
         return self._call(q, {"id": org_id})["organization"]["channels"]
 
+    def drafts(self, org_id: str) -> list:
+        """
+        المسودات القائمة. تُقرأ قبل كل إنشاء لمنع التكرار حتى لو ضاع
+        السجل المحلي أو شُغّل النظام من جهاز آخر.
+        """
+        q = """
+        query($id: String!) {
+          posts(organizationId: $id, status: [draft], first: 50) {
+            edges { node { id channelId dueAt text } }
+          }
+        }
+        """
+        try:
+            data = self._call(q, {"id": org_id})
+        except BufferError as e:
+            # لا نكمل على العمياء: عدم القدرة على القراءة يعني عدم
+            # القدرة على منع التكرار، وهذا سبب كافٍ للتوقف.
+            raise BufferError(
+                "تعذّر قراءة المسودات القائمة، فلا أستطيع ضمان عدم التكرار:\n%s" % e
+            )
+        edges = (data.get("posts") or {}).get("edges") or []
+        return [e["node"] for e in edges if e.get("node")]
+
     # ------------------------------------------------------------- كتابة
 
     def create_draft(self, channel_id: str, text: str, due_at: str,
