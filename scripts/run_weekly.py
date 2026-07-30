@@ -322,7 +322,7 @@ def main():
     print("   فحص التكرار: %d بصمة جديدة، لا تطابق" % len(fps))
 
     # المقاسات المطلوبة: ig يخدم انستقرام ولنكدن، و x يخدم X وحده
-    frames = sorted({ch["channels"][s]["frame"] for s in unit["posts"]})
+    frames = sorted({channels["channels"][s]["frame"] for s in unit["posts"]})
 
     print("2) الرندر والفحص بمقاس كل منصة")
     outbase = ROOT / "out" / target.isoformat()
