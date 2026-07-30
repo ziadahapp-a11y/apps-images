@@ -7,22 +7,21 @@
 <link rel="stylesheet" href="../brand/tokens.css">
 <style>
 /* ==========================================================================
-   بطاقة لنكدن مربّعة 1:1 (1080x1080 بإحداثيات CSS، تُصدَّر 2160x2160)
+   بطاقة لنكدن أفقية 1.91:1 (1200x627 بإحداثيات CSS، تُصدَّر 2400x1254)
 
-   ليش قالب مستقل ولا نعيد استخدام كاروسيل 4:5 ولا بطاقة X:
-   لنكدن يعتمد للصورة المفردة مقاسين: 1:1 (1080x1080) و 1.91:1
-   (1200x627). الكاروسيل 4:5 مقاس انستقرام، وبطاقة X مقاس 16:9.
-   المربّع أكثر مقاس متعدد الاستخدام في خط لنكدن الزمني ويظهر كاملاً
-   على سطح المكتب والجوال بلا قص، وهو منشور مفرد لا كاروسيل.
+   لنكدن يعتمد للصورة المفردة المقاس الأفقي 1200x627. عمودان فقط:
+   الجوال يساراً، والخطاف (شارة + عنوان + وصف) يميناً بعرض كامل.
 
-   التخطيط: النص في عمود اليمين (RTL)، والجوال في أسفل اليسار مقتصّاً
-   من أسفله عن قصد. كتلة الإثبات تحت الوصف: رقم كبير أو صف قدرات.
+   ليش بلا كتلة إثبات (رقم/قدرات): الأفقي القصير (627) لا يتسع لعمود
+   ثالث بلا ازدحام أو قص، والتفصيل الرقمي يعيش في نص المنشور نفسه.
+   البطاقة تحمل الخطاف والتوقيع البصري (نافذة زيادة على الجوال)، وهو
+   ما يميّز الهوية في الخط الزمني.
    ========================================================================== */
 
 .card {
   position: relative;
-  width: 1080px;
-  height: 1080px;
+  width: 1200px;
+  height: 627px;
   overflow: hidden;
   background: var(--ink);
 }
@@ -30,135 +29,109 @@
 .bg { position: absolute; inset: 0; }
 .bg__base {
   position: absolute; inset: 0;
-  background: linear-gradient(120deg, var(--ink-deep) 0%, var(--ink) 44%, #20053f 78%, #2a0763 100%);
+  background: linear-gradient(108deg, var(--ink-deep) 0%, var(--ink) 44%, #20053f 78%, #2a0763 100%);
 }
 .bg__glow {
-  position: absolute; top: -28%; left: 60%;
-  width: 1160px; height: 1160px; transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(147,88,232,0.40) 0%, rgba(85,11,245,0.14) 38%, transparent 68%);
-}
-.bg__corner {
-  position: absolute; bottom: -32%; left: 8%;
-  width: 900px; height: 900px;
-  background: radial-gradient(circle, rgba(85,11,245,0.26) 0%, transparent 64%);
+  position: absolute; top: -42%; left: 50%;
+  width: 940px; height: 940px; transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(147,88,232,0.38) 0%, rgba(85,11,245,0.13) 40%, transparent 70%);
 }
 .bg__grid {
   position: absolute; inset: 0;
   background-image:
     linear-gradient(to right, rgba(255,255,255,0.026) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.026) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(ellipse 72% 66% at 54% 40%, #000 0%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse 72% 66% at 54% 40%, #000 0%, transparent 80%);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 76% 72% at 54% 42%, #000 0%, transparent 82%);
+  -webkit-mask-image: radial-gradient(ellipse 76% 72% at 54% 42%, #000 0%, transparent 82%);
 }
 
 /* ---- الشعار ---- */
-.logo-slot { position: absolute; top: 54px; right: 64px; }
+.logo-slot { position: absolute; top: 42px; right: 60px; }
 .logo { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; }
-.logo__mark { width: 72px; }
+.logo__mark { width: 60px; }
 .logo__mark svg { display: block; width: 100%; height: auto; }
-.logo__ar { margin-top: 12px; font-size: 34px; font-weight: 700; letter-spacing: -0.015em; color: var(--on-dark); }
-.logo__en { margin-top: 6px; font-size: 13px; font-weight: 500; letter-spacing: 0.28em; color: var(--on-dark-muted); }
+.logo__ar { margin-top: 9px; font-size: 29px; font-weight: 700; letter-spacing: -0.015em; color: var(--on-dark); }
+.logo__en { margin-top: 5px; font-size: 11px; font-weight: 500; letter-spacing: 0.28em; color: var(--on-dark-muted); }
 
-/* ---- عمود النص، يمين لأن الاتجاه RTL ---- */
-.copy { position: absolute; top: 196px; right: 64px; width: 566px; }
+/* ---- عمود النص، يمين بعرض كامل ---- */
+.copy { position: absolute; top: 168px; right: 60px; width: 700px; }
 
 .badge {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 11px 24px; border-radius: var(--r-pill);
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 10px 22px; border-radius: var(--r-pill);
   background: rgba(255,255,255,0.06); border: 1px solid var(--hairline);
-  font-size: 20px; font-weight: 600; color: var(--violet-soft);
+  font-size: 18px; font-weight: 600; color: var(--violet-soft);
 }
 
 .title {
-  margin-top: 28px;
-  font-size: 62px; font-weight: 700;
-  line-height: 1.15; letter-spacing: -0.034em;
+  margin-top: 24px;
+  font-size: 58px; font-weight: 700;
+  line-height: 1.14; letter-spacing: -0.034em;
   color: var(--on-dark);
 }
 
 .lead {
-  margin-top: 22px; width: 512px;
-  font-size: 25px; font-weight: 300; line-height: 1.42;
+  margin-top: 20px; width: 648px;
+  font-size: 23px; font-weight: 300; line-height: 1.42;
   color: var(--on-dark-muted);
 }
 
-/* ---- كتلة الإثبات، تحت الوصف على اليمين ---- */
-.stat { position: absolute; top: 606px; right: 64px; width: 480px; }
-.stat__num { font-size: 116px; font-weight: 700; letter-spacing: -0.045em; line-height: 1; color: var(--on-dark); }
-.stat__label { margin-top: 18px; font-size: 26px; font-weight: 400; line-height: 1.34; color: var(--on-dark-muted); }
-.stat__rule { margin-top: 26px; width: 84px; height: 4px; border-radius: 2px; background: var(--grad-brand); }
-.stat__second { margin-top: 34px; padding-top: 26px; border-top: 1px solid var(--hairline); }
-.stat__second-num { font-size: 60px; font-weight: 700; letter-spacing: -0.035em; line-height: 1; color: var(--violet-soft); }
-.stat__second-label { margin-top: 12px; font-size: 22px; font-weight: 400; color: var(--on-dark-muted); }
-
-.caps { position: absolute; top: 560px; right: 64px; width: 500px; }
-.caps__lead { font-size: 34px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.24; color: var(--on-dark); }
-.caps__list { margin-top: 28px; display: flex; flex-direction: column; gap: 20px; }
-.cap { display: flex; align-items: flex-start; gap: 14px; }
-.cap__tick { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; background: var(--green);
-  position: relative; margin-top: 1px; box-shadow: 0 0 0 6px rgba(95,194,106,0.14); }
-.cap__tick::after { content: ""; position: absolute; left: 9px; top: 8px; width: 11px; height: 6px;
-  border-left: 3px solid #fff; border-bottom: 3px solid #fff; transform: rotate(-45deg); }
-.cap__text { font-size: 23px; font-weight: 500; line-height: 1.4; color: var(--on-dark); }
-.caps__note { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--hairline);
-  font-size: 21px; font-weight: 300; line-height: 1.5; color: var(--on-dark-muted); }
-
-/* ---- الجوال، أسفل اليسار، مقتصّ من أسفله عن قصد ---- */
+/* ---- الجوال، أقصى اليسار، مقتصّ من أسفله ---- */
 .phone {
-  position: absolute; left: 96px; top: 470px;
-  width: 300px; height: 640px;
-  border-radius: 42px; background: #05010d; padding: 9px;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.10), 0 40px 80px rgba(0,0,0,0.55),
-              0 0 70px rgba(85,11,245,0.24);
+  position: absolute; left: 64px; top: 92px;
+  width: 244px; height: 516px;
+  border-radius: 36px; background: #05010d; padding: 8px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.10), 0 36px 70px rgba(0,0,0,0.55),
+              0 0 60px rgba(85,11,245,0.24);
 }
-.phone__screen { position: relative; width: 100%; height: 100%; border-radius: 34px; overflow: hidden; background: #fff; }
-.phone__island { position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-  width: 72px; height: 21px; border-radius: 999px; background: #05010d; z-index: 6; }
+.phone__screen { position: relative; width: 100%; height: 100%; border-radius: 28px; overflow: hidden; background: #fff; }
+.phone__island { position: absolute; top: 9px; left: 50%; transform: translateX(-50%);
+  width: 58px; height: 18px; border-radius: 999px; background: #05010d; z-index: 6; }
 
-.store { padding: 42px 13px 0; }
-.store__bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.store__name { font-size: 15px; font-weight: 600; color: var(--ink); }
-.store__icons { display: flex; gap: 6px; }
-.store__icons i { display: block; width: 15px; height: 15px; border-radius: 4px; background: #ebe5fa; }
-.store__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-.store__card { height: 100px; border-radius: 11px; background: linear-gradient(150deg, var(--tint), #ddd2fb); }
+.store { padding: 36px 12px 0; }
+.store__bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.store__name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.store__icons { display: flex; gap: 5px; }
+.store__icons i { display: block; width: 13px; height: 13px; border-radius: 4px; background: #ebe5fa; }
+.store__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.store__card { height: 82px; border-radius: 10px; background: linear-gradient(150deg, var(--tint), #ddd2fb); }
 
 .scrim { position: absolute; inset: 0; background: rgba(15,2,34,0.56); z-index: 2; }
 
 .sheet {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
-  background: #fff; border-radius: 22px 22px 0 0; padding: 12px 15px 18px;
-  box-shadow: 0 -16px 40px rgba(15,2,34,0.34);
+  background: #fff; border-radius: 19px 19px 0 0; padding: 11px 13px 16px;
+  box-shadow: 0 -14px 34px rgba(15,2,34,0.34);
 }
-.sheet__handle { width: 36px; height: 4px; border-radius: 2px; background: #ddd4f4; margin: 0 auto 13px; }
-.sheet__title { font-size: 18px; font-weight: 700; color: var(--ink); }
-.sheet__sub { margin-top: 3px; font-size: 13px; color: var(--on-light-muted); }
+.sheet__handle { width: 32px; height: 4px; border-radius: 2px; background: #ddd4f4; margin: 0 auto 12px; }
+.sheet__title { font-size: 16px; font-weight: 700; color: var(--ink); }
+.sheet__sub { margin-top: 3px; font-size: 12px; color: var(--on-light-muted); }
 
-.item { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid #f2eefb; }
-.item__thumb { flex: 0 0 auto; width: 50px; height: 50px; border-radius: 11px;
+.item { display: flex; align-items: center; gap: 9px; padding: 10px 0; border-bottom: 1px solid #f2eefb; }
+.item__thumb { flex: 0 0 auto; width: 42px; height: 42px; border-radius: 10px;
   background: linear-gradient(145deg, var(--violet-glow), var(--violet)); position: relative; }
-.item__thumb::after { content: ""; position: absolute; inset: 15px; border-radius: 6px; background: rgba(255,255,255,0.32); }
+.item__thumb::after { content: ""; position: absolute; inset: 13px; border-radius: 5px; background: rgba(255,255,255,0.32); }
 .item__body { flex: 1 1 auto; min-width: 0; }
-.item__name { font-size: 15px; font-weight: 600; color: var(--ink); }
-.item__prices { margin-top: 4px; display: flex; align-items: center; gap: 8px; }
-.item__now { font-size: 15px; font-weight: 700; color: var(--violet); }
-.item__off { font-size: 11px; font-weight: 600; color: #2f7d3a;
-  background: rgba(95,194,106,0.18); border-radius: 5px; padding: 2px 7px; }
-.item__add { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 10px;
-  background: var(--violet); color: #fff; font-size: 18px; font-weight: 500;
+.item__name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.item__prices { margin-top: 3px; display: flex; align-items: center; gap: 6px; }
+.item__now { font-size: 13px; font-weight: 700; color: var(--violet); }
+.item__off { font-size: 10px; font-weight: 600; color: #2f7d3a;
+  background: rgba(95,194,106,0.18); border-radius: 4px; padding: 2px 6px; }
+.item__add { flex: 0 0 auto; width: 25px; height: 25px; border-radius: 8px;
+  background: var(--violet); color: #fff; font-size: 16px; font-weight: 500;
   display: flex; align-items: center; justify-content: center; }
 
 .cta {
-  margin-top: 12px; height: 44px; border-radius: 13px;
-  background: var(--grad-brand); color: #fff; font-size: 17px; font-weight: 700;
+  margin-top: 11px; height: 38px; border-radius: 11px;
+  background: var(--grad-brand); color: #fff; font-size: 15px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 8px 20px rgba(85,11,245,0.40);
+  box-shadow: 0 6px 16px rgba(85,11,245,0.40);
 }
 
 /* ---- الشريط السفلي ---- */
-.foot { position: absolute; bottom: 44px; right: 64px; font-size: 22px; font-weight: 400; color: var(--on-dark-muted); }
-.foot--l { left: auto; right: 64px; }
+.foot { position: absolute; bottom: 34px; font-size: 19px; font-weight: 400; color: var(--on-dark-muted); }
+.foot--r { right: 60px; }
 </style>
 </head>
 <body>
@@ -169,7 +142,6 @@
     <div class="bg__base"></div>
     <div class="bg__grid"></div>
     <div class="bg__glow"></div>
-    <div class="bg__corner"></div>
   </div>
 
   <div class="logo-slot">
@@ -185,24 +157,6 @@
     <h1 class="title">{{TITLE}}</h1>
     <p class="lead">{{LEAD}}</p>
   </div>
-
-  <!--PROOF:stat-->
-  <!-- المربّع يعرض الرقم البطل وحده: الرقم الثاني يزدحم مع الشريط
-       السفلي في 1:1، وهو موجود في الكاروسيل وبطاقة X لمن أراد التفصيل -->
-  <div class="stat">
-    <div class="stat__num"><bdi>{{STAT_NUM}}</bdi></div>
-    <div class="stat__label">{{STAT_LABEL}}</div>
-    <div class="stat__rule"></div>
-  </div>
-  <!--/PROOF:stat-->
-
-  <!--PROOF:capabilities-->
-  <div class="caps">
-    <div class="caps__lead">{{CAPS_LEAD}}</div>
-    <div class="caps__list">{{CAPS_LIST}}</div>
-    <div class="caps__note">{{CAPS_NOTE}}</div>
-  </div>
-  <!--/PROOF:capabilities-->
 
   <div class="phone">
     <div class="phone__screen">
@@ -238,7 +192,7 @@
     </div>
   </div>
 
-  <div class="foot foot--l">التطبيق متاح على منصة زد ومنصة سلة</div>
+  <div class="foot foot--r">التطبيق متاح على منصة زد ومنصة سلة</div>
 
 </div>
 </body>

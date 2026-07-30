@@ -29,7 +29,7 @@ CONTAINED_BY_FRAME = {
     "ig": [".slide__logo", ".hook", ".hook__title", ".hook__lead", ".badge",
            ".tagline", ".slide__foot", ".stat", ".phone"],
     "li": [".logo-slot", ".copy", ".title", ".lead", ".badge",
-           ".stat", ".caps", ".phone", ".foot"],
+           ".phone", ".foot"],
     "x":  [".logo-slot", ".copy", ".title", ".lead", ".badge",
            ".stat", ".phone", ".foot--r", ".foot--l"],
 }
