@@ -6,7 +6,7 @@
     python3 scripts/plan_sheet.py            # كل ما هو قادم من اليوم
     python3 scripts/plan_sheet.py 2026-09    # شهر محدد
 
-تقرأ نفس مصادر التشغيل (quarter.yml, channels.yml, SCHEDULE, FRAMES)
+تقرأ نفس مصادر التشغيل (quarter.yml, channels.yml, schedule.yml, FRAMES)
 فما تعرضه هو بالضبط ما سيُجدول، لا وصف منفصل يتعفّن.
 """
 import sys
@@ -17,7 +17,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from run_weekly import SCHEDULE, next_sunday      # noqa: E402
+from run_weekly import slots_for, next_sunday      # noqa: E402
 import render_slides                              # noqa: E402
 
 AR_DAY = {6: "الأحد", 0: "الاثنين", 1: "الثلاثاء", 2: "الأربعاء",
@@ -83,7 +83,7 @@ def build(month: str = None) -> str:
             proof = u["slides"].get("proof", "stat")
             proof_ar = "قدرات" if proof == "capabilities" else "رقم"
             posts = []
-            for service, _off, hhmm in SCHEDULE:
+            for service, hhmm in slots_for(d):
                 txt = u["posts"].get(service)
                 if not txt:
                     continue

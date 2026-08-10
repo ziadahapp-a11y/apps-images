@@ -39,12 +39,25 @@ RAW = "https://raw.githubusercontent.com/%s/%s/%s/%s"
 ASSET_DIR = "social"
 JPEG_QUALITY = 92
 
-# مواعيد النشر بتوقيت الرياض. الأحد يوم 0 في هذا الجدول.
-SCHEDULE = [
-    ("linkedin",  0, "10:00"),
-    ("instagram", 0, "21:00"),
-    ("twitter",   0, "21:30"),
-]
+# مواعيد النشر تُقرأ من content/schedule.yml لا من ثابت هنا: الأوقات
+# مبنية على بيانات ذروة السعودية وتحتاج مراجعة دورية، ودفنها في الكود
+# يجعل تعديلها يمر بلا أثر. البنية: كل وحدة في يوم ذروتها
+# (ثلاثاء/أربعاء/خميس)، وكل منصة في نافذة ذروتها داخل ذلك اليوم.
+# الخميس بلا لِنكدإن، لأن تفاعل B2B ينهار خارج ثلاثاء وأربعاء.
+_PY_WEEKDAY = {0: "monday", 1: "tuesday", 2: "wednesday", 3: "thursday",
+               4: "friday", 5: "saturday", 6: "sunday"}
+
+
+def load_schedule() -> dict:
+    """خريطة: اسم اليوم -> [(قناة، وقت)]، من content/schedule.yml."""
+    cfg = yaml.safe_load((ROOT / "content" / "schedule.yml").read_text(encoding="utf-8"))
+    return {u["day"]: [(p["channel"], p["time"]) for p in u["posts"]]
+            for u in cfg["schedule"]}
+
+
+def slots_for(d: date) -> list:
+    """منافذ النشر ليوم الوحدة: [(قناة، وقت)]. فارغة إن لم يكن يوم نشر."""
+    return load_schedule().get(_PY_WEEKDAY[d.weekday()], [])
 
 # العقد المسموح إضاءتها: الوحيدتان الواقعتان تحت الجوال
 LIT_X = {4: 1214, 5: 1483}
@@ -435,8 +448,18 @@ def process_unit(plan, channels, led, buf, target, unit, dry_run, force, existin
             print("      " + u)
         return []
 
+    # منافذ هذا اليوم من schedule.yml: قنواته وأوقات ذروتها. الوحدة
+    # تُنشر في يومها هي (ثلاثاء/أربعاء/خميس)، والخميس بلا لِنكدإن.
+    slots = slots_for(target)
+    if not slots:
+        raise SystemExit(
+            "الوحدة %s بتاريخ %s تقع في يوم بلا نشر (%s). الوحدات تُؤرّخ "
+            "ثلاثاء/أربعاء/خميس حسب content/schedule.yml."
+            % (unit["slug"], target.isoformat(), _PY_WEEKDAY[target.weekday()])
+        )
+
     created = []
-    for service, day_offset, hhmm in SCHEDULE:
+    for service, hhmm in slots:
         text = unit["posts"].get(service)
         if not text:
             print("   لا نص لـ %s، تخطي" % service)
@@ -451,8 +474,8 @@ def process_unit(plan, channels, led, buf, target, unit, dry_run, force, existin
                 % (service, len(body), limit)
             )
 
-        when = datetime.combine(target + timedelta(days=day_offset),
-                                datetime.strptime(hhmm, "%H:%M").time())
+        # الوحدة تُنشر في تاريخها نفسه، والوقت من نافذة ذروة المنصة
+        when = datetime.combine(target, datetime.strptime(hhmm, "%H:%M").time())
         due = when.strftime("%Y-%m-%dT%H:%M:00+03:00")
 
         # كل منصة تاخذ صور مقاسها هي، لا صور منصة أخرى
