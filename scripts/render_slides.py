@@ -9,6 +9,7 @@
 الاستخدام:
     python3 scripts/render_slides.py templates/carousel_connected.html out/test
 """
+import os
 import sys
 import shutil
 import tempfile
@@ -73,7 +74,11 @@ def render(template: Path, outdir: Path, strict: bool = True,
         page_path = build_page(template, Path(tmp))
 
         with sync_playwright() as p:
-            browser = p.chromium.launch()
+            # في CI تُنصَّب النسخة المثبّتة فيعمل الإطلاق الافتراضي. في بيئات
+            # تحمل كروميوم بمسار ثابت مغاير للنسخة المثبّتة، يُمرَّر المسار عبر
+            # PW_CHROMIUM_EXECUTABLE دون كسر السلوك الافتراضي حين لا يُضبط.
+            exe = os.environ.get("PW_CHROMIUM_EXECUTABLE")
+            browser = p.chromium.launch(executable_path=exe) if exe else p.chromium.launch()
             f = FRAMES[frame]
             fw, fh, container = f["w"], f["h"], f["container"]
             # النافذة بعرض كافٍ لأي عدد شرائح، والقص يُحسب من موضع
