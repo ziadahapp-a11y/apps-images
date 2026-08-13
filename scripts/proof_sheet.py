@@ -139,6 +139,8 @@ def build(month: str) -> Path:
         # ---- النصوص ----
         posts = []
         for svc in ("linkedin", "instagram", "twitter"):
+            if svc not in w["posts"]:
+                continue   # وحدة بلا منشور لهذه المنصة (مثلاً بلا لِنكدإن يوم الخميس)
             text = w["posts"][svc].strip()
             c = chans["channels"][svc]
             n, lim = len(text), c["charLimit"]

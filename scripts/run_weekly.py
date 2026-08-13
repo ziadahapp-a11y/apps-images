@@ -634,6 +634,13 @@ def run_batch(units, label, plan, channels, led, args):
     made, skipped = 0, 0
     for w in units:
         iso = w["date"]
+        # وحدة تقع في يوم تجهيز بلا منافذ نشر (أحد/اثنين) لا تُعالَج أبداً،
+        # حتى مع --force. وإلا يفشل process_unit عند حساب المنافذ. هذا يحمي
+        # --month حين يلتقط وحدات قديمة مؤرّخة بالأحد قبل اعتماد شبكة الذروة.
+        if not slots_for(date.fromisoformat(iso)):
+            skipped += 1
+            print("\n=== %s: %s — يوم بلا نشر (تجهيز)، تخطي ===" % (iso, w["slug"]))
+            continue
         if led["runs"].get(iso) and not args.force:
             skipped += 1
             print("\n=== %s: %s — نُفّذ سابقاً، تخطي ===" % (iso, w["slug"]))
