@@ -207,9 +207,10 @@ def main():
     print("=== خاصية %s: %s (%s) ===" % (iso, unit["slug"], unit["card_type"]))
     exe = os.environ.get("PW_CHROMIUM_EXECUTABLE")
 
-    # رندر لكل مقاس مطلوب
+    # رندر لكل مقاس مطلوب. في dry-run نكتب الصور في out/ (المتجاهَل) لا في
+    # social/ حتى لا نلوّث شجرة العمل بأصول مؤقتة.
     aspects = {FRAMES[s]["aspect"] for s, _, _ in SLOTS}
-    assets = ROOT / "social" / iso
+    assets = (ROOT / "out" / iso if args.dry_run else ROOT / "social" / iso)
     jpegs = {}
     with sync_playwright() as p:
         browser = p.chromium.launch(executable_path=exe) if exe else p.chromium.launch()
