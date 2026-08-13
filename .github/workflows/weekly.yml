@@ -61,23 +61,18 @@ jobs:
           git config user.name  "ziadah-social-bot"
           git config user.email "actions@github.com"
 
-      - name: التشغيل
+      - name: التشغيل (نظام التصميم الجديد — خصائص)
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
         run: |
+          # نظام الخصائص الجديد (دليل الأيجنت v1.0): بطاقة الخاصية بمقاس كل
+          # منصة من content/features.yml. بلا وسائط = ثلاثاء الأسبوع القادم.
           ARGS=""
-          if [ -n "${{ inputs.date }}" ]; then
-            ARGS="--date ${{ inputs.date }}"
-          elif [ -n "${{ inputs.month }}" ]; then
-            ARGS="--month ${{ inputs.month }}"
-          elif [ -n "${{ inputs.week }}" ]; then
-            ARGS="--week ${{ inputs.week }}"
-          fi
-          # بلا وسائط: الوضع الافتراضي = الأسبوع القادم (أحد/ثلاثاء/خميس)
+          if [ -n "${{ inputs.date }}" ]; then ARGS="--date ${{ inputs.date }}"; fi
           if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
           if [ "${{ inputs.force }}" = "true" ]; then ARGS="$ARGS --force"; fi
           echo "الوسائط: ${ARGS:-(الأسبوع القادم)}"
-          python3 scripts/run_weekly.py $ARGS
+          python3 scripts/run_features.py $ARGS
 
       - name: ورقة مراجعة الشهر
         if: always()

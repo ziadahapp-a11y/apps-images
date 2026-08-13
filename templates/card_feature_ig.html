@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../brand/ibm_plex_arabic_embedded.css">
+<link rel="stylesheet" href="../brand/tokens.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body, .frame { overflow:hidden; }
+  body { font-family:'IBM Plex Sans Arabic', sans-serif; }
+  .frame { position:relative; width:1080px; height:1350px; isolation:isolate;
+    background:
+      radial-gradient(620px 520px at 92% 4%, rgba(147,88,232,0.18), transparent 60%),
+      radial-gradient(560px 520px at 4% 98%, rgba(85,11,245,0.08), transparent 62%),
+      linear-gradient(162deg, #faf8ff 0%, #f1ebff 100%);
+    padding:64px 62px 56px; display:flex; flex-direction:column; }
+  .top { display:flex; justify-content:space-between; align-items:center; direction:ltr; }
+  .pill { display:inline-flex; align-items:center; gap:10px; background:rgba(255,255,255,0.72);
+    border:1px solid rgba(85,11,245,0.16); border-radius:999px; padding:10px 18px; font-size:20px; font-weight:600; color:#6b21c4; }
+  .pill i { width:9px; height:9px; border-radius:50%; background:var(--violet); }
+  .brand { display:flex; align-items:center; gap:13px; }
+  .brand__tx { text-align:right; line-height:1; }
+  .brand__ar { font-size:32px; font-weight:700; color:var(--ink); }
+  .brand__en { font-size:15px; font-weight:600; color:rgba(28,4,52,0.5); letter-spacing:0.14em; margin-top:4px; }
+  .brand__mark { width:62px; height:62px; border-radius:18px; background:linear-gradient(150deg, #2a0a5e, #12012a);
+    box-shadow:0 12px 30px rgba(85,11,245,0.28); display:flex; align-items:center; justify-content:center; }
+  .brand__mark svg { width:36px; height:auto; }
+  .content { margin-top:62px; }
+  .icon { width:88px; height:88px; border-radius:24px; margin-bottom:28px;
+    background:linear-gradient(150deg, var(--violet-glow), var(--violet)); box-shadow:0 16px 34px rgba(85,11,245,0.32);
+    display:flex; align-items:center; justify-content:center; } .icon svg { width:46px; height:46px; }
+  .kicker { font-size:26px; font-weight:700; color:var(--violet); margin-bottom:18px; }
+  .title { font-size:82px; font-weight:700; line-height:1.07; letter-spacing:-0.02em; color:var(--ink); }
+  .desc { margin-top:26px; font-size:31px; font-weight:400; line-height:1.5; color:rgba(28,4,52,0.62); }
+  .checks { margin-top:36px; display:flex; flex-direction:column; gap:22px; }
+  .chk { display:flex; flex-direction:row-reverse; justify-content:flex-start; align-items:center; gap:16px; font-size:30px; font-weight:700; color:var(--ink); }
+  .chk bdi { direction:ltr; }
+  .chk__c { flex:0 0 auto; width:40px; height:40px; border-radius:50%; background:rgba(85,11,245,0.12); position:relative; }
+  .chk__c::after { content:""; position:absolute; left:12px; top:13px; width:13px; height:7px;
+    border-left:3.5px solid var(--violet); border-bottom:3.5px solid var(--violet); transform:rotate(-45deg); }
+  .demo { margin-top:auto; border-radius:30px; padding:44px 46px;
+    background:radial-gradient(360px 320px at 88% 10%, rgba(124,58,237,0.30), transparent 60%), linear-gradient(158deg, #24073f, #150127);
+    box-shadow:0 34px 80px rgba(21,2,40,0.32), 0 0 0 1px rgba(255,255,255,0.06) inset; display:flex; align-items:center; gap:38px; }
+  .demo__l { flex:0 0 auto; text-align:center; max-width:44%; }
+  .demo__num { direction:ltr; font-size:{{DEMO_NUM_FS_IG}}px; font-weight:700; line-height:0.95; letter-spacing:-0.02em;
+    background:linear-gradient(180deg,#ffffff,#c9b6f6); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .demo__label { margin-top:10px; font-size:21px; font-weight:500; color:rgba(255,255,255,0.72); }
+  .demo__sep { flex:0 0 auto; width:1px; align-self:stretch; background:rgba(255,255,255,0.14); }
+  .demo__r { flex:1; }
+  .demo__ex { font-size:19px; font-weight:700; color:var(--violet-soft); margin-bottom:12px; }
+  .demo__extx { font-size:25px; font-weight:400; line-height:1.5; color:rgba(255,255,255,0.72); }
+  .foot { display:flex; justify-content:space-between; align-items:center; direction:ltr; margin-top:40px; }
+  .foot__site { font-size:24px; font-weight:700; color:var(--violet); }
+  .foot__at { font-size:24px; font-weight:500; color:rgba(28,4,52,0.5); }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="pill"><i></i>{{PILL}}</div>
+      <div class="brand">
+        <div class="brand__tx"><div class="brand__ar">زيادة</div><div class="brand__en">ziadah</div></div>
+        <div class="brand__mark"><!--MARK--></div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="icon">{{ICON}}</div>
+      <div class="kicker">{{KICKER}}</div>
+      <h1 class="title">{{TITLE_IG}}</h1>
+      <p class="desc">{{DESC}}</p>
+      <div class="checks">{{CHECKS}}</div>
+    </div>
+    <div class="demo">
+      <div class="demo__l">
+        <div class="demo__num">{{DEMO_NUM}}</div>
+        <div class="demo__label">{{DEMO_LABEL_IG}}</div>
+      </div>
+      <div class="demo__sep"></div>
+      <div class="demo__r">
+        <div class="demo__ex">{{DEMO_EX}}</div>
+        <div class="demo__extx">{{DEMO_EXTX_IG}}</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="foot__site">ziadah.app</div>
+      <div class="foot__at">@ziadah_app</div>
+    </div>
+  </div>
+</body>
+</html>
