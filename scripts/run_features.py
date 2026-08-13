@@ -65,30 +65,58 @@ def next_tuesday(today: date) -> date:
     return today + timedelta(days=ahead or 7)
 
 
+def _bdi_lead(it: str) -> str:
+    """لفّ رقم/نسبة في بداية العنصر بـ bdi ليبقى LTR."""
+    m = re.match(r"^([+\-]?[\d,٪%]+)\s+(.*)$", it)
+    return ('<bdi>%s</bdi> %s' % (m.group(1), m.group(2))) if m else it
+
+
 def render_checks(items: list) -> str:
+    return "".join('<div class="chk"><span class="chk__c"></span>%s</div>' % _bdi_lead(i) for i in items)
+
+
+def render_probs(items: list) -> str:
+    return "".join('<div class="prob"><span class="mk mk--x"></span>%s</div>' % i for i in items)
+
+
+def render_rows(items: list, mark: str) -> str:
+    return "".join('<div class="row"><span class="mk mk--%s"></span>%s</div>' % (mark, i) for i in items)
+
+
+def render_stat2(cards: list) -> str:
     out = []
-    for it in items:
-        # لفّ رقم/نسبة في بداية العنصر بـ bdi ليبقى LTR
-        m = re.match(r"^([+\-]?[\d,٪%]+)\s+(.*)$", it)
-        if m:
-            it = '<bdi>%s</bdi> %s' % (m.group(1), m.group(2))
-        out.append('<div class="chk"><span class="chk__c"></span>%s</div>' % it)
+    for c in cards:
+        out.append('<div class="stat2__c"><div class="stat2__store">%s</div>'
+                   '<div class="stat2__n"><bdi>%s</bdi></div>'
+                   '<div class="stat2__l">%s</div></div>'
+                   % (c.get("store", ""), c.get("n", ""), c.get("l", "")))
     return "".join(out)
 
 
 def fill(unit: dict, defaults: dict, aspect: str) -> str:
     tpl = ROOT / "templates" / ("card_%s%s.html" % (unit["card_type"], "_ig" if aspect == "tall" else ""))
+    if not tpl.exists():
+        raise SystemExit("لا قالب %s للنوع %s. أضفه في templates/." % (tpl.name, unit["card_type"]))
     html = tpl.read_text(encoding="utf-8")
     html = html.replace("<!--MARK-->", (ROOT / "brand" / "logo_mark_white.svg").read_text(encoding="utf-8"))
+
+    # قاموس شامل لكل الأنواع؛ القالب يأخذ ما يحتاجه فقط. الافتراضي "" يضمن
+    # عدم بقاء أي علامة غير معبَّأة مهما كان النوع.
     v = {
         "PILL": unit.get("pill", defaults.get("pill", "")),
         "ICON": ICONS.get(unit.get("icon", "chart"), ICONS["chart"]),
-        "KICKER": unit["kicker"],
-        "TITLE": unit["title"],
-        "TITLE_IG": unit.get("title_ig", unit["title"]),
-        "DESC": unit["desc"],
+        "KICKER": unit.get("kicker", ""),
+        "KICKERC": unit.get("kicker", ""),
+        "TITLE": unit.get("title", ""),
+        "TITLE_IG": unit.get("title_ig", unit.get("title", "")),
+        "DESC": unit.get("desc", ""),
         "CHECKS": render_checks(unit.get("checks", [])),
+        "PROBS": render_probs(unit.get("probs", [])),
+        "STAT2": render_stat2(unit.get("stat2", [])),
+        "AFTER_ROWS": render_rows(unit.get("after_rows", []), "c"),
+        "NOW_ROWS": render_rows(unit.get("now_rows", []), "x"),
         "DEMO_NUM": unit.get("demo_num", ""),
+        "DEMO_WORD": unit.get("demo_word", ""),
         "DEMO_NUM_FS": str(unit.get("demo_num_fs", 118)),
         "DEMO_NUM_FS_IG": str(unit.get("demo_num_fs_ig", unit.get("demo_num_fs", 90))),
         "DEMO_LABEL": unit.get("demo_label", ""),
