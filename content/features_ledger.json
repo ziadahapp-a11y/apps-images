@@ -1,0 +1,25 @@
+{
+  "runs": {
+    "2026-09-08": {
+      "slug": "cart-recovery",
+      "commit": "da645466db8888588b63ad8495e17d83dc94ff90",
+      "drafts": [
+        {
+          "service": "twitter",
+          "id": "6a7e0ed4ac5e38892e8d727f",
+          "dueAt": "2026-09-08T09:00:00+03:00"
+        },
+        {
+          "service": "linkedin",
+          "id": "6a7e0ed4e8f662362539ef94",
+          "dueAt": "2026-09-08T10:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6a7e0ed5fa03fcc4d9f2547f",
+          "dueAt": "2026-09-09T19:00:00+03:00"
+        }
+      ]
+    }
+  }
+}
