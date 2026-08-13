@@ -306,6 +306,70 @@
 }
 
 .skip { margin-top: 13px; text-align: center; font-size: 18px; color: rgba(28,4,52,0.40); }
+
+/* ==========================================================================
+   مشاهد الجوال حسب المحور — كل مشهد يعبّر عن رسالته
+   ========================================================================== */
+.scr { position: absolute; inset: 0; background: #fff; padding: 60px 20px 22px; overflow: hidden; }
+.scr__hint {
+  position: absolute; left: 20px; right: 20px; bottom: 18px;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  font-size: 16px; font-weight: 600; color: var(--violet);
+  background: rgba(85,11,245,0.08); border-radius: 12px; padding: 11px 14px;
+}
+.scr__hint::before { content: "✦"; color: var(--violet); }
+
+/* شريط علوي مشترك */
+.tbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.tbar__t { font-size: 20px; font-weight: 700; color: var(--ink); }
+.tbar__i { display: flex; gap: 8px; }
+.tbar__i i { width: 20px; height: 20px; border-radius: 6px; background: #ebe5fa; }
+
+/* --- مشهد: المنتج نفد → بديل --- */
+.pcard { display: flex; align-items: center; gap: 13px; padding: 15px; border-radius: 18px;
+  border: 1px solid #f0ebfb; }
+.pcard__img { flex: 0 0 auto; width: 82px; height: 82px; border-radius: 14px;
+  background: linear-gradient(145deg, var(--violet-glow), var(--violet)); }
+.pcard__b { flex: 1 1 auto; min-width: 0; }
+.pcard__nm { font-size: 20px; font-weight: 600; color: var(--ink); }
+.pcard__meta { margin-top: 8px; font-size: 17px; }
+.pcard--out { background: #f7f5fb; }
+.pcard--out .pcard__img { background: #e7e1f2; filter: grayscale(1); }
+.pcard--out .pcard__nm { color: #9990ad; }
+.pcard--out .pcard__meta { color: #b21f4b; font-weight: 600; }
+.pcard__tag { flex: 0 0 auto; font-size: 14px; font-weight: 700; color: #b21f4b;
+  background: rgba(178,31,75,0.12); border-radius: 8px; padding: 5px 10px; }
+.altsep { display: flex; align-items: center; gap: 12px; margin: 20px 4px 16px; }
+.altsep::before, .altsep::after { content: ""; height: 1px; flex: 1; background: #ece6fa; }
+.altsep span { font-size: 17px; font-weight: 700; color: var(--violet); }
+.pcard--alt { border: 2px solid var(--violet); box-shadow: 0 12px 30px rgba(85,11,245,0.16); }
+.pcard--alt .pcard__meta { display: flex; align-items: center; gap: 10px; }
+.pcard__now { font-size: 21px; font-weight: 700; color: var(--violet); }
+.pcard__ready { font-size: 14px; font-weight: 700; color: #2f7d3a;
+  background: rgba(95,194,106,0.16); border-radius: 8px; padding: 4px 9px; }
+.pcard__add { flex: 0 0 auto; font-size: 16px; font-weight: 700; color: #fff;
+  background: var(--grad-brand); border-radius: 12px; padding: 12px 15px; }
+
+/* --- مشهد: الصفحة الرئيسية → عرض مخصّص --- */
+.hero { height: 118px; border-radius: 18px;
+  background: linear-gradient(120deg, var(--violet), var(--violet-glow)); margin-bottom: 14px;
+  position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; inset: 0;
+  background: radial-gradient(120px 120px at 82% 30%, rgba(255,255,255,0.28), transparent); }
+.hcats { display: flex; gap: 10px; margin-bottom: 20px; }
+.hcats i { flex: 1; height: 44px; border-radius: 12px; background: #f0ebfb; }
+.hrow__head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 13px; }
+.hrow__head b { font-size: 20px; font-weight: 700; color: var(--ink); }
+.hrow__head span { font-size: 15px; color: var(--on-light-muted); }
+.hrow { display: flex; gap: 12px; }
+.hprod { flex: 1; border-radius: 15px; border: 1px solid #f0ebfb; padding: 10px; }
+.hprod__img { height: 96px; border-radius: 11px; background: linear-gradient(150deg, var(--tint), #ddd2fb); margin-bottom: 10px; }
+.hprod__nm { font-size: 15px; font-weight: 600; color: var(--ink); }
+.hprod__pr { margin-top: 5px; font-size: 16px; font-weight: 700; color: var(--violet); }
+.hprod--on { border: 2px solid var(--violet); box-shadow: 0 10px 26px rgba(85,11,245,0.18); }
+.hprod--on .hprod__img { background: linear-gradient(145deg, var(--violet-glow), var(--violet)); }
+.hprod__pick { display: inline-block; margin-bottom: 8px; font-size: 13px; font-weight: 700;
+  color: var(--violet); background: rgba(85,11,245,0.10); border-radius: 7px; padding: 3px 8px; }
 </style>
 </head>
 <body>
@@ -393,6 +457,7 @@
       <div class="phone__screen">
         <div class="phone__island"></div>
 
+        <!--SCREEN:upsell-->
         <div class="store">
           <div class="store__bar">
             <div class="store__name">سلة العميل</div>
@@ -448,6 +513,69 @@
           <div class="cta">{{SHEET_CTA}}</div>
           <div class="skip">أكمل بدون إضافات</div>
         </div>
+        <!--/SCREEN:upsell-->
+
+        <!--SCREEN:alternative-->
+        <div class="scr">
+          <div class="tbar"><div class="tbar__t">صفحة المنتج</div><div class="tbar__i"><i></i><i></i></div></div>
+
+          <div class="pcard pcard--out">
+            <div class="pcard__img"></div>
+            <div class="pcard__b">
+              <div class="pcard__nm">اللي يبيه العميل</div>
+              <div class="pcard__meta">غير متوفر حالياً</div>
+            </div>
+            <div class="pcard__tag">نفد</div>
+          </div>
+
+          <div class="altsep"><span>بديل مناسب لعميلك</span></div>
+
+          <div class="pcard pcard--alt">
+            <div class="pcard__img"></div>
+            <div class="pcard__b">
+              <div class="pcard__nm">بديل من نفس الفئة</div>
+              <div class="pcard__meta">
+                <span class="pcard__now"><bdi>199</bdi> ريال</span>
+                <span class="pcard__ready">متوفر</span>
+              </div>
+            </div>
+            <div class="pcard__add">أضف للسلة</div>
+          </div>
+
+          <div class="scr__hint">زيادة اقترحت البديل تلقائياً</div>
+        </div>
+        <!--/SCREEN:alternative-->
+
+        <!--SCREEN:home-->
+        <div class="scr">
+          <div class="tbar"><div class="tbar__t">متجرك</div><div class="tbar__i"><i></i><i></i></div></div>
+
+          <div class="hero"></div>
+          <div class="hcats"><i></i><i></i><i></i><i></i></div>
+
+          <div class="hrow__head"><b>مختارة له</b><span>حسب اهتمامه</span></div>
+          <div class="hrow">
+            <div class="hprod hprod--on">
+              <div class="hprod__pick">الأنسب له</div>
+              <div class="hprod__img"></div>
+              <div class="hprod__nm">مقترح مخصّص</div>
+              <div class="hprod__pr"><bdi>149</bdi> ريال</div>
+            </div>
+            <div class="hprod">
+              <div class="hprod__img"></div>
+              <div class="hprod__nm">مقترح</div>
+              <div class="hprod__pr"><bdi>89</bdi> ريال</div>
+            </div>
+            <div class="hprod">
+              <div class="hprod__img"></div>
+              <div class="hprod__nm">مقترح</div>
+              <div class="hprod__pr"><bdi>120</bdi> ريال</div>
+            </div>
+          </div>
+
+          <div class="scr__hint">زيادة رتّبت العرض لكل زائر</div>
+        </div>
+        <!--/SCREEN:home-->
 
       </div>
     </div>

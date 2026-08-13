@@ -122,6 +122,27 @@ def pick_unit(plan: dict, target: date) -> dict:
 
 PROOF_KINDS = ("stat", "capabilities")
 
+# مشاهد الجوال: كل محور يعرض مشهداً يعبّر عنه بدل تكرار مشهد السلة.
+# القالب يحمل كل المشاهد بعلامات، والتعبئة تُبقي واحداً حسب حقل screen.
+SCREEN_KINDS = ("upsell", "checkout", "alternative", "home", "coupon",
+                "personalized", "campaign")
+
+
+def strip_unused_screen(html: str, keep: str) -> str:
+    """يُبقي مشهد الجوال المطلوب ويحذف البقية. مثل strip_unused_proof."""
+    if keep not in SCREEN_KINDS:
+        raise SystemExit(
+            "screen=%s غير معروف. المسموح: %s" % (keep, " أو ".join(SCREEN_KINDS))
+        )
+    for kind in SCREEN_KINDS:
+        if kind == keep:
+            html = html.replace("<!--SCREEN:%s-->" % kind, "") \
+                       .replace("<!--/SCREEN:%s-->" % kind, "")
+        else:
+            html = re.sub(r"<!--SCREEN:%s-->.*?<!--/SCREEN:%s-->" % (kind, kind),
+                          "", html, flags=re.S)
+    return html
+
 
 def strip_unused_proof(html: str, keep: str) -> str:
     """
@@ -194,6 +215,7 @@ def fill_template(unit: dict, defaults: dict, template: Path = None) -> Path:
     tpl = template or (ROOT / defaults["templates"]["ig"])
     html = tpl.read_text(encoding="utf-8")
     html = strip_unused_proof(html, proof)
+    html = strip_unused_screen(html, s.get("screen", "upsell"))
     for k, v in values.items():
         html = html.replace("{{%s}}" % k, str(v))
 

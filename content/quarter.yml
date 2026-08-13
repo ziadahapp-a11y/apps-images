@@ -181,6 +181,7 @@ weeks:
     act: capability
     slides:
       proof: capabilities
+      screen: alternative
       badge: "المنتج نفد"
       title: 'المنتج نفد؟<br>لا يطلع من <span class="u-accent">متجرك</span>.'
       lead: "جاء يبي منتج ولقاه خلص. بلا بديل يطلع، ونيّة الشراء معه."
@@ -339,6 +340,7 @@ weeks:
     act: recognition
     slides:
       proof: capabilities
+      screen: home
       badge: "العميل في الرئيسية"
       title: 'دخل متجرك،<br>وش أول شي <span class="u-accent">يشوفه</span>؟'
       lead: "دخل الرئيسية، ولو ضاع بين المنتجات راحت الزيارة بلا طلب."
