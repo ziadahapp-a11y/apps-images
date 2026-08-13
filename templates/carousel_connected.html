@@ -370,6 +370,61 @@
 .hprod--on .hprod__img { background: linear-gradient(145deg, var(--violet-glow), var(--violet)); }
 .hprod__pick { display: inline-block; margin-bottom: 8px; font-size: 13px; font-weight: 700;
   color: var(--violet); background: rgba(85,11,245,0.10); border-radius: 7px; padding: 3px 8px; }
+
+/* --- مشهد: آخر خطوة قبل الدفع --- */
+.co__sum { border-radius: 16px; background: #f7f5fb; padding: 16px 18px; margin-bottom: 18px; }
+.co__row { display: flex; justify-content: space-between; align-items: center; font-size: 19px; color: var(--ink); }
+.co__row + .co__row { margin-top: 11px; }
+.co__row b { font-weight: 700; }
+.co__row--mut { color: var(--on-light-muted); font-size: 17px; }
+.co__row--mut span:last-child { color: #2f7d3a; font-weight: 700; }
+.co__last { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px;
+  font-size: 17px; font-weight: 700; color: var(--violet); }
+.co__last::before { content: "⏱"; }
+.co__pay { margin-top: 18px; height: 62px; border-radius: 18px; background: var(--grad-brand);
+  color: #fff; font-size: 24px; font-weight: 700; display: flex; align-items: center;
+  justify-content: center; box-shadow: 0 12px 30px rgba(85,11,245,0.42); }
+
+/* --- مشهد: الكوبون يكبّر السلة --- */
+.cpn { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px;
+  border-radius: 15px; background: rgba(95,194,106,0.11); border: 1px dashed rgba(95,194,106,0.46);
+  font-size: 19px; font-weight: 600; color: #2f7d3a; margin-bottom: 18px; }
+.cpn b { letter-spacing: 0.04em; }
+.cpn__on { font-size: 15px; background: #2f7d3a; color: #fff; border-radius: 8px; padding: 4px 10px; }
+.prog { margin-bottom: 18px; }
+.prog__bar { height: 14px; border-radius: 999px; background: #eee7fb; overflow: hidden; }
+.prog__bar i { display: block; height: 100%; width: 64%; border-radius: 999px; background: var(--grad-brand); }
+.prog__txt { margin-top: 10px; font-size: 18px; font-weight: 600; color: var(--ink); }
+.prog__txt b { color: var(--violet); }
+
+/* --- مشهد: لكل عميل عرضه --- */
+.cust { display: flex; align-items: center; gap: 14px; padding: 15px; border-radius: 18px;
+  border: 1px solid #f0ebfb; margin-bottom: 14px; }
+.cust__av { flex: 0 0 auto; width: 54px; height: 54px; border-radius: 50%;
+  background: linear-gradient(145deg, var(--violet-glow), var(--violet)); }
+.cust__av--b { background: linear-gradient(145deg, #8f7be8, #5fc26a); }
+.cust__b { flex: 1 1 auto; min-width: 0; }
+.cust__nm { font-size: 18px; font-weight: 700; color: var(--ink); }
+.cust__pick { margin-top: 8px; display: flex; align-items: center; gap: 10px;
+  font-size: 16px; color: var(--on-light-muted); }
+.cust__chip { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(150deg, var(--tint), #ddd2fb); }
+.cust__t b { color: var(--violet); font-weight: 700; }
+
+/* --- مشهد: استغلال الحملة --- */
+.camp__row { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
+.camp__row i { width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(145deg, var(--violet-glow), var(--violet)); }
+.camp__row i:nth-child(4), .camp__row i:nth-child(5) { opacity: 0.42; }
+.camp__cmp { display: flex; gap: 14px; }
+.camp__col { flex: 1; border-radius: 16px; padding: 16px 12px; text-align: center; }
+.camp__col--lo { background: #f7f5fb; }
+.camp__col--hi { background: rgba(85,11,245,0.08); border: 2px solid var(--violet); }
+.camp__k { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 12px; }
+.camp__bar { border-radius: 10px 10px 4px 4px; margin: 0 auto 12px; width: 46px; }
+.camp__bar--lo { height: 44px; background: #d9d0ee; }
+.camp__bar--hi { height: 92px; background: var(--grad-brand); }
+.camp__val { font-size: 16px; font-weight: 600; color: var(--ink); }
+.camp__col--hi .camp__val { color: var(--violet); }
 </style>
 </head>
 <body>
@@ -576,6 +631,89 @@
           <div class="scr__hint">زيادة رتّبت العرض لكل زائر</div>
         </div>
         <!--/SCREEN:home-->
+
+        <!--SCREEN:checkout-->
+        <div class="scr">
+          <div class="tbar"><div class="tbar__t">إتمام الطلب</div><div class="tbar__i"><i></i><i></i></div></div>
+          <div class="co__sum">
+            <div class="co__row"><span>مجموع الطلب</span><b><bdi>240</bdi> ريال</b></div>
+            <div class="co__row co__row--mut"><span>الشحن</span><span>مجاني</span></div>
+          </div>
+          <div class="co__last">آخر فرصة قبل الدفع</div>
+          <div class="pcard pcard--alt">
+            <div class="pcard__img"></div>
+            <div class="pcard__b">
+              <div class="pcard__nm">يكمّل طلبه</div>
+              <div class="pcard__meta"><span class="pcard__now"><bdi>59</bdi> ريال</span></div>
+            </div>
+            <div class="pcard__add">أضف</div>
+          </div>
+          <div class="co__pay">ادفع الآن</div>
+          <div class="scr__hint">زيادة تقترح قبل الضغط على «ادفع»</div>
+        </div>
+        <!--/SCREEN:checkout-->
+
+        <!--SCREEN:coupon-->
+        <div class="scr">
+          <div class="tbar"><div class="tbar__t">سلة العميل</div><div class="tbar__i"><i></i><i></i></div></div>
+          <div class="cpn"><span>🎟 كوبون <b>ZIADAH</b></span><span class="cpn__on">مفعّل</span></div>
+          <div class="prog">
+            <div class="prog__bar"><i></i></div>
+            <div class="prog__txt">أضف بـ <b><bdi>40</bdi> ريال</b> ووصل لخصم أكبر</div>
+          </div>
+          <div class="pcard pcard--alt">
+            <div class="pcard__img"></div>
+            <div class="pcard__b">
+              <div class="pcard__nm">يوصّلك للخصم</div>
+              <div class="pcard__meta"><span class="pcard__now"><bdi>45</bdi> ريال</span><span class="pcard__ready">مناسب</span></div>
+            </div>
+            <div class="pcard__add">أضف</div>
+          </div>
+          <div class="co__pay">أضف ووفّر أكثر</div>
+          <div class="scr__hint">زيادة تربط الخصم بسلّة أكبر</div>
+        </div>
+        <!--/SCREEN:coupon-->
+
+        <!--SCREEN:personalized-->
+        <div class="scr">
+          <div class="tbar"><div class="tbar__t">لكل عميل عرضه</div><div class="tbar__i"><i></i><i></i></div></div>
+          <div class="cust">
+            <div class="cust__av"></div>
+            <div class="cust__b">
+              <div class="cust__nm">عميل أول زيارة</div>
+              <div class="cust__pick"><div class="cust__chip"></div><div class="cust__t">اقتراح <b>مناسب له</b></div></div>
+            </div>
+          </div>
+          <div class="cust">
+            <div class="cust__av cust__av--b"></div>
+            <div class="cust__b">
+              <div class="cust__nm">عميل يزور كثيراً</div>
+              <div class="cust__pick"><div class="cust__chip"></div><div class="cust__t">اقتراح <b>مختلف له</b></div></div>
+            </div>
+          </div>
+          <div class="scr__hint">نفس المتجر، عرض مختلف لكل عميل</div>
+        </div>
+        <!--/SCREEN:personalized-->
+
+        <!--SCREEN:campaign-->
+        <div class="scr">
+          <div class="tbar"><div class="tbar__t">زوّار حملتك</div><div class="tbar__i"><i></i><i></i></div></div>
+          <div class="camp__row"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="camp__cmp">
+            <div class="camp__col camp__col--lo">
+              <div class="camp__k">بدون زيادة</div>
+              <div class="camp__bar camp__bar--lo"></div>
+              <div class="camp__val">طلب بنفس القيمة</div>
+            </div>
+            <div class="camp__col camp__col--hi">
+              <div class="camp__k">مع زيادة</div>
+              <div class="camp__bar camp__bar--hi"></div>
+              <div class="camp__val">طلب أكبر</div>
+            </div>
+          </div>
+          <div class="scr__hint">استغل كل زيارة دفعت ثمنها</div>
+        </div>
+        <!--/SCREEN:campaign-->
 
       </div>
     </div>

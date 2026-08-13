@@ -146,6 +146,7 @@ weeks:
     act: capability
     slides:
       proof: capabilities
+      screen: checkout
       badge: "آخر خطوة قبل الدفع"
       title: 'قبل «ادفع»،<br>آخر فرصة <span class="u-accent">تكبّر</span>.'
       lead: "العميل مقتنع وواصل للدفع. تخليه ينهي بنفس القيمة، أو تعرض له الأنسب؟"
@@ -217,6 +218,7 @@ weeks:
     act: activation
     slides:
       proof: capabilities
+      screen: upsell
       badge: "زيادة قيمة الطلب"
       title: 'عميل قرّر يشتري،<br>ليش <span class="u-accent">قطعة وحدة</span>؟'
       lead: "عميل قرّر يشتري. أسهل مبيعة عندك هي عليه هو، لو عرضت له الأنسب."
@@ -262,6 +264,7 @@ weeks:
     act: objection
     slides:
       proof: capabilities
+      screen: campaign
       badge: "قبل الحملات الإعلانية"
       title: 'قبل ما تزيد<br>ميزانية <span class="u-accent">الإعلان</span>.'
       lead: "كل زيارة إعلان دفعت عليها. متجرك جاهز يطلّع منها أكثر من طلب واحد؟"
@@ -307,6 +310,7 @@ weeks:
     act: capability
     slides:
       proof: capabilities
+      screen: personalized
       badge: "تجربة المتاجر الكبيرة"
       title: 'تجربة الكبار،<br>بلا <span class="u-accent">فريقهم</span>.'
       lead: "ما تحتاج فريق كبير لتجربة شراء ذكية. تحتاج تعرض الأنسب في الوقت الصح."
@@ -386,6 +390,7 @@ weeks:
     act: objection
     slides:
       proof: capabilities
+      screen: coupon
       badge: "الكوبون والخصم"
       title: 'مو كل خصم<br>يأكل <span class="u-accent">هامشك</span>.'
       lead: "الخصم على كل طلب يقصّ ربحك. بشرط ذكي، يكبّر الطلب بدل ما يصغّر الهامش."
