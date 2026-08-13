@@ -113,139 +113,139 @@
     },
     "2026-08-12": {
       "slug": "p7-checkout",
-      "commit": "808b521a9d837fad128182025a1772a1a7364da2",
-      "createdAt": "2026-08-12T14:13:34+00:00",
+      "commit": "812427539d667460cc2fad4c987000e448e6e67a",
+      "createdAt": "2026-08-13T09:05:45+00:00",
       "drafts": [
         {
           "service": "instagram",
-          "id": "6a7c7f8da90610805b9addc3",
+          "id": "6a7d88e9bc73727d20f4c3fd",
           "dueAt": "2026-08-12T20:00:00+03:00"
         },
         {
           "service": "twitter",
-          "id": "6a7c7f8e776794b728c5cda6",
+          "id": "6a7d88e984436e7521a431fa",
           "dueAt": "2026-08-12T21:00:00+03:00"
         }
       ]
     },
     "2026-08-13": {
       "slug": "p3-restock",
-      "commit": "a241d5c1cd33dde7bfd3e7605366cf8dd1cacb77",
-      "createdAt": "2026-08-12T14:13:48+00:00",
+      "commit": "4585bdabf0ab69fae79ec5c99871ed5f09a13d91",
+      "createdAt": "2026-08-13T09:05:58+00:00",
       "drafts": [
         {
           "service": "instagram",
-          "id": "6a7c7f9b7bc7209477f5a00a",
+          "id": "6a7d88f56523c7515a240286",
           "dueAt": "2026-08-13T20:00:00+03:00"
         },
         {
           "service": "twitter",
-          "id": "6a7c7f9bc191037ae77ba419",
+          "id": "6a7d88f6a8f0b7b7d4650ff7",
           "dueAt": "2026-08-13T21:00:00+03:00"
         }
       ]
     },
     "2026-08-18": {
       "slug": "p1-order-value",
-      "commit": "aaeaec926a579c0225ffd9d3285e7bd5962876f5",
-      "createdAt": "2026-08-12T14:14:04+00:00",
+      "commit": "4585bdabf0ab69fae79ec5c99871ed5f09a13d91",
+      "createdAt": "2026-08-13T09:06:13+00:00",
       "drafts": [
         {
           "service": "linkedin",
-          "id": "6a7c7fabc191037ae77ba4d5",
+          "id": "6a7d8904bc73727d20f4c4fb",
           "dueAt": "2026-08-18T10:00:00+03:00"
         },
         {
           "service": "instagram",
-          "id": "6a7c7facd6153a1c3f5e2d4f",
+          "id": "6a7d890584436e7521a43384",
           "dueAt": "2026-08-18T20:00:00+03:00"
         },
         {
           "service": "twitter",
-          "id": "6a7c7facfdda98db0c32a452",
+          "id": "6a7d8905bbb4aa7c1ddeb3af",
           "dueAt": "2026-08-18T21:00:00+03:00"
         }
       ]
     },
     "2026-08-19": {
       "slug": "p6-campaign-ready",
-      "commit": "09be5810c205034c5ff833b16533f2bbdd500752",
-      "createdAt": "2026-08-12T14:14:21+00:00",
+      "commit": "bd9ac7b0e10eb3030f172e5b459a82e9f93659c8",
+      "createdAt": "2026-08-13T09:06:29+00:00",
       "drafts": [
         {
           "service": "linkedin",
-          "id": "6a7c7fbca90610805b9adf5d",
+          "id": "6a7d89146523c7515a2403cc",
           "dueAt": "2026-08-19T10:00:00+03:00"
         },
         {
           "service": "instagram",
-          "id": "6a7c7fbd7bc7209477f5a153",
+          "id": "6a7d8914a8f0b7b7d4651196",
           "dueAt": "2026-08-19T20:00:00+03:00"
         },
         {
           "service": "twitter",
-          "id": "6a7c7fbd776794b728c5cf9f",
+          "id": "6a7d89156523c7515a2403e5",
           "dueAt": "2026-08-19T21:00:00+03:00"
         }
       ]
     },
     "2026-08-20": {
       "slug": "p5-enterprise",
-      "commit": "6c36ce7fca74a0347f06642c88b5894f11a4c7ee",
-      "createdAt": "2026-08-12T14:14:35+00:00",
+      "commit": "74dbe039e282b0db6cb54c4fce9539f14595b0e1",
+      "createdAt": "2026-08-13T09:06:42+00:00",
       "drafts": [
         {
           "service": "instagram",
-          "id": "6a7c7fcad6153a1c3f5e2eb5",
+          "id": "6a7d8921bbb4aa7c1ddeb75f",
           "dueAt": "2026-08-20T20:00:00+03:00"
         },
         {
           "service": "twitter",
-          "id": "6a7c7fcac191037ae77ba5aa",
+          "id": "6a7d8922e8ef718a10929d9f",
           "dueAt": "2026-08-20T21:00:00+03:00"
         }
       ]
     },
     "2026-08-25": {
       "slug": "p2-homepage",
-      "commit": "a915b168cc6fa62b3f070c5ca789a0899e6ebb9a",
-      "createdAt": "2026-08-12T14:14:53+00:00",
+      "commit": "f9e84695cbb61ca2f45941df488a7ee50f5dec37",
+      "createdAt": "2026-08-13T09:06:58+00:00",
       "drafts": [
         {
           "service": "linkedin",
-          "id": "6a7c7fdc7bc7209477f5a299",
+          "id": "6a7d893184436e7521a438dd",
           "dueAt": "2026-08-25T10:00:00+03:00"
         },
         {
           "service": "instagram",
-          "id": "6a7c7fddfdda98db0c32a64f",
+          "id": "6a7d89316523c7515a2404fa",
           "dueAt": "2026-08-25T20:00:00+03:00"
         },
         {
           "service": "twitter",
-          "id": "6a7c7fdd7bc7209477f5a2c5",
+          "id": "6a7d89326523c7515a240512",
           "dueAt": "2026-08-25T21:00:00+03:00"
         }
       ]
     },
     "2026-08-26": {
       "slug": "p4-coupon",
-      "commit": "f7146b45677d7fea8ea58ba5612ed8c69bcbd571",
-      "createdAt": "2026-08-12T14:15:10+00:00",
+      "commit": "fcadcc0437fe0897fbc8433cd1fcc058b5beaba5",
+      "createdAt": "2026-08-13T09:07:14+00:00",
       "drafts": [
         {
           "service": "linkedin",
-          "id": "6a7c7fedd6153a1c3f5e3211",
+          "id": "6a7d8941bbb4aa7c1ddeb94c",
           "dueAt": "2026-08-26T10:00:00+03:00"
         },
         {
           "service": "instagram",
-          "id": "6a7c7feed6153a1c3f5e3229",
+          "id": "6a7d89426523c7515a240596",
           "dueAt": "2026-08-26T20:00:00+03:00"
         },
         {
           "service": "twitter",
-          "id": "6a7c7fee776794b728c5d378",
+          "id": "6a7d8942bbb4aa7c1ddeb964",
           "dueAt": "2026-08-26T21:00:00+03:00"
         }
       ]
@@ -493,6 +493,96 @@
       "kind": "instagram"
     },
     "d635e416bbe26b00c53f43e037a1353fe07fb8fb028843dbbe910ed5ee2d08c0": {
+      "date": "2026-08-26",
+      "slug": "p4-coupon",
+      "kind": "twitter"
+    },
+    "effaeafe5de829a0b5cab0f191078878d54a0022f210b492f96b7a3ad36784f5": {
+      "date": "2026-08-12",
+      "slug": "p7-checkout",
+      "kind": "instagram"
+    },
+    "6ef314213e87979894f775b0a144e0abd60424299d136d4724f4f3913ebe764e": {
+      "date": "2026-08-12",
+      "slug": "p7-checkout",
+      "kind": "twitter"
+    },
+    "a6235363fd9b8dcfdcae82124b8ce1365a76279e0306433cd7bca149fcebe212": {
+      "date": "2026-08-13",
+      "slug": "p3-restock",
+      "kind": "instagram"
+    },
+    "1e1042621d30b474a909d742376b1ef30d56ade1de922f2f1c90b95d18adb539": {
+      "date": "2026-08-13",
+      "slug": "p3-restock",
+      "kind": "twitter"
+    },
+    "d416d1838b11fbaab70e9049b3e88d31a7493fd19c97ea44f5e37311a86ab6fa": {
+      "date": "2026-08-18",
+      "slug": "p1-order-value",
+      "kind": "linkedin"
+    },
+    "fbc61344a0b4e9005dc6e157e595a807de11b34de271cd653f8ba06096e242c9": {
+      "date": "2026-08-18",
+      "slug": "p1-order-value",
+      "kind": "instagram"
+    },
+    "7b642238e26d9a8c993a68584cb6d458bfb3812f8b9d5ee7a9624f528305c0fa": {
+      "date": "2026-08-18",
+      "slug": "p1-order-value",
+      "kind": "twitter"
+    },
+    "107f7db784853f581d3167260ccd52d1ac1ed9a20c772b16d6de881b41d0026f": {
+      "date": "2026-08-19",
+      "slug": "p6-campaign-ready",
+      "kind": "linkedin"
+    },
+    "ec936f7987557e08d491579fe3326c73629a44e6cae3f753d4813a692071d1ac": {
+      "date": "2026-08-19",
+      "slug": "p6-campaign-ready",
+      "kind": "instagram"
+    },
+    "c9e7e2e8eefb12d915dde1c71c150581b189402b98470b6f8410e77f66c6dfe2": {
+      "date": "2026-08-19",
+      "slug": "p6-campaign-ready",
+      "kind": "twitter"
+    },
+    "640bd6ee2dfb31ba5e390f3544fc332cbfbe5a3aea3d38d3beb1f14b066d5912": {
+      "date": "2026-08-20",
+      "slug": "p5-enterprise",
+      "kind": "instagram"
+    },
+    "67e7f8c39e1c77b1c363c2beb41ecd328b00fcde098e153bf0bb6d5683d8feeb": {
+      "date": "2026-08-20",
+      "slug": "p5-enterprise",
+      "kind": "twitter"
+    },
+    "be9e04e54e7332da16f2c3e4823cd263e73ccc82e82ccad77892bff8010f7ff2": {
+      "date": "2026-08-25",
+      "slug": "p2-homepage",
+      "kind": "linkedin"
+    },
+    "d38c92372115254c10984aeef9f7a2c64a97e5b3b770023ede76179b779f2c22": {
+      "date": "2026-08-25",
+      "slug": "p2-homepage",
+      "kind": "instagram"
+    },
+    "4afa3abfc91b49b022039e89e188a1dd3c6429afbeb3cd3227f50f8a63592db7": {
+      "date": "2026-08-25",
+      "slug": "p2-homepage",
+      "kind": "twitter"
+    },
+    "22a757d2240810fdf27f29c6e7521ddb9f17d0acf8d9d49bacc8c838f7cfb35e": {
+      "date": "2026-08-26",
+      "slug": "p4-coupon",
+      "kind": "linkedin"
+    },
+    "3f4408bc39aa4ab0977455e51e04beaff15ae27f3c1cce19986867262fd5af41": {
+      "date": "2026-08-26",
+      "slug": "p4-coupon",
+      "kind": "instagram"
+    },
+    "a62b66f2cf4f38f0a8858a4632d0d6c52737aa8fce567b91e883385385aff86b": {
       "date": "2026-08-26",
       "slug": "p4-coupon",
       "kind": "twitter"
