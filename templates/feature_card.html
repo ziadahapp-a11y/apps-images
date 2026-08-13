@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../brand/ibm_plex_arabic_embedded.css">
+<link rel="stylesheet" href="../brand/tokens.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body, .frame { overflow:hidden; }
+  body { font-family:'IBM Plex Sans Arabic', sans-serif; }
+  .frame {
+    position:relative; width:1600px; height:900px; isolation:isolate;
+    background:
+      radial-gradient(760px 620px at 88% 6%, rgba(147,88,232,0.16), transparent 60%),
+      radial-gradient(680px 560px at 6% 96%, rgba(85,11,245,0.08), transparent 62%),
+      linear-gradient(160deg, #faf8ff 0%, #f2ecff 100%);
+    padding:70px 84px;
+    display:flex; flex-direction:column;
+  }
+
+  /* ---- الشريط العلوي ---- */
+  .top { display:flex; justify-content:space-between; align-items:center; direction:ltr; }
+  .pill {
+    display:inline-flex; align-items:center; gap:11px;
+    background:rgba(255,255,255,0.7); border:1px solid rgba(85,11,245,0.16);
+    border-radius:999px; padding:11px 20px;
+    font-size:19px; font-weight:600; color:#6b21c4;
+  }
+  .pill i { width:9px; height:9px; border-radius:50%; background:var(--violet); }
+  .brand { display:flex; align-items:center; gap:14px; }
+  .brand__tx { text-align:right; line-height:1; }
+  .brand__ar { font-size:33px; font-weight:700; color:var(--ink); }
+  .brand__en { font-size:16px; font-weight:600; color:rgba(28,4,52,0.5); letter-spacing:0.14em; margin-top:4px; }
+  .brand__mark {
+    width:66px; height:66px; border-radius:19px;
+    background:linear-gradient(150deg, #2a0a5e, #12012a);
+    box-shadow:0 12px 30px rgba(85,11,245,0.28);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .brand__mark svg { width:38px; height:auto; }
+
+  /* ---- الجسم ---- */
+  .body { flex:1; display:flex; align-items:center; gap:56px; margin-top:8px; }
+
+  /* البطاقة الداكنة (المثال) — يسار */
+  .demo {
+    flex:0 0 486px; align-self:stretch; margin:26px 0;
+    border-radius:30px; padding:52px 46px;
+    background:
+      radial-gradient(340px 300px at 78% 12%, rgba(124,58,237,0.28), transparent 60%),
+      linear-gradient(158deg, #24073f, #150127);
+    box-shadow:0 40px 90px rgba(21,2,40,0.34), 0 0 0 1px rgba(255,255,255,0.06) inset;
+    display:flex; flex-direction:column; justify-content:center;
+    text-align:center;
+  }
+  .demo__num {
+    direction:ltr;
+    font-size:118px; font-weight:700; line-height:0.9; letter-spacing:-0.02em;
+    background:linear-gradient(180deg,#ffffff,#c9b6f6);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .demo__label { margin-top:14px; font-size:24px; font-weight:500; color:rgba(255,255,255,0.72); }
+  .demo__rule { height:1px; background:rgba(255,255,255,0.14); margin:34px 4px; }
+  .demo__ex { font-size:18px; font-weight:700; color:var(--violet-soft); margin-bottom:12px; }
+  .demo__extx { font-size:22px; font-weight:400; line-height:1.55; color:rgba(255,255,255,0.7); }
+
+  /* المحتوى — يمين */
+  .content { flex:1; }
+  .icon {
+    width:74px; height:74px; border-radius:20px; margin-bottom:22px;
+    background:linear-gradient(150deg, var(--violet-glow), var(--violet));
+    box-shadow:0 14px 30px rgba(85,11,245,0.32);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .kicker { font-size:21px; font-weight:700; color:var(--violet); margin-bottom:16px; }
+  .title { font-size:74px; font-weight:700; line-height:1.08; letter-spacing:-0.015em; color:var(--ink); }
+  .desc { margin-top:22px; font-size:26px; font-weight:400; line-height:1.55; color:rgba(28,4,52,0.62); max-width:640px; }
+  .checks { margin-top:34px; display:flex; flex-direction:column; gap:18px; }
+  .chk { display:flex; flex-direction:row-reverse; justify-content:flex-start; align-items:center; gap:14px; font-size:25px; font-weight:700; color:var(--ink); }
+  .chk bdi { direction:ltr; }
+  .chk__c {
+    flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+    background:rgba(85,11,245,0.12); position:relative;
+  }
+  .chk__c::after {
+    content:""; position:absolute; left:10px; top:11px; width:11px; height:6px;
+    border-left:3px solid var(--violet); border-bottom:3px solid var(--violet);
+    transform:rotate(-45deg);
+  }
+
+  /* ---- التذييل ---- */
+  .foot { display:flex; justify-content:space-between; align-items:center; direction:ltr; }
+  .foot__site { font-size:22px; font-weight:700; color:var(--violet); }
+  .foot__at { font-size:22px; font-weight:500; color:rgba(28,4,52,0.5); }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="pill"><i></i>وكيل زيد · ذكاء اصطناعي</div>
+      <div class="brand">
+        <div class="brand__tx">
+          <div class="brand__ar">زيادة</div>
+          <div class="brand__en">ziadah</div>
+        </div>
+        <div class="brand__mark"><!--MARK--></div>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="content">
+        <div class="icon">
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="13" width="4" height="8" rx="1.5" fill="#fff"/>
+            <rect x="10" y="8" width="4" height="13" rx="1.5" fill="#fff"/>
+            <rect x="17" y="4" width="4" height="17" rx="1.5" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="kicker">خاصية · تحليل شامل</div>
+        <h1 class="title">يحلّل متجرك بالكامل</h1>
+        <p class="desc">أكثر من ١٨٠ مؤشر إضافي عن منتجاتك وطلباتك وعملائك، عشان قراراتك مبنية على الأرقام مو التخمين.</p>
+        <div class="checks">
+          <div class="chk"><span class="chk__c"></span><bdi>+20</bdi> مؤشر عن منتجاتك</div>
+          <div class="chk"><span class="chk__c"></span><bdi>+40</bdi> مؤشر عن طلباتك</div>
+          <div class="chk"><span class="chk__c"></span><bdi>+120</bdi> مؤشر عن عملائك</div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo__num">+180</div>
+        <div class="demo__label">مؤشر إضافي لمتجرك</div>
+        <div class="demo__rule"></div>
+        <div class="demo__ex">مثال</div>
+        <div class="demo__extx">زيد يعرف أي منتج يُشترى مع أي منتج، ومتى، ومن أي شريحة عملاء — فتقرّر بثقة.</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="foot__site">ziadah.app</div>
+      <div class="foot__at">@ziadah_app</div>
+    </div>
+  </div>
+</body>
+</html>
