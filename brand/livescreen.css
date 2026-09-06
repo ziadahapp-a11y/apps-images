@@ -1,0 +1,108 @@
+/* ==========================================================================
+   السكرين الحي + الهولوجرام + منتجات CSS شبه-3D — لبطاقات الخصائص
+   يُستعمل داخل قوالب card_feature*. المشهد يُحقن في .screen حسب الخاصية.
+   ========================================================================== */
+
+/* ---- المسرح والهولوجرام ---- */
+.stage { position:relative; display:flex; align-items:center; justify-content:center; }
+.holo, .holo__ring, .holo__grid { position:absolute; pointer-events:none; }
+.holo { width:82%; aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle at 50% 45%, rgba(147,88,232,0.55), rgba(85,11,245,0.22) 45%, transparent 70%); filter:blur(10px); }
+.holo__ring { width:96%; aspect-ratio:1; border-radius:50%;
+  border:1px solid rgba(147,88,232,0.35); box-shadow:0 0 60px rgba(147,88,232,0.3) inset; }
+.holo__grid { inset:0;
+  background-image:linear-gradient(rgba(147,88,232,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(147,88,232,0.10) 1px, transparent 1px);
+  background-size:34px 34px; -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 30%, transparent 68%); }
+
+/* ---- الجوال ---- */
+.phone { position:relative; border-radius:46px; background:#05010d; padding:11px;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.12), 0 50px 100px rgba(21,2,40,0.5), 0 0 90px rgba(147,88,232,0.5); }
+.screen { position:relative; width:100%; height:100%; border-radius:36px; overflow:hidden; background:#faf8ff; }
+.island { position:absolute; top:12px; left:50%; transform:translateX(-50%); width:92px; height:25px; border-radius:999px; background:#05010d; z-index:6; }
+.sheen { position:absolute; inset:0; z-index:5; pointer-events:none;
+  background:linear-gradient(122deg, transparent 42%, rgba(255,255,255,0.14) 48%, rgba(179,148,246,0.10) 52%, transparent 60%); }
+
+/* ---- شريط المتجر ---- */
+.sbar { padding:52px 20px 0; display:flex; justify-content:space-between; align-items:center; }
+.sbar__t { font-size:19px; font-weight:700; color:var(--ink); }
+.sbar__i { width:22px; height:22px; border-radius:7px; background:#e9e2fb; }
+.slist { padding:14px 20px 0; }
+.ci { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid #eee7fb; }
+.ci__b { flex:1; } .ci__n { font-size:16px; font-weight:600; color:var(--ink); }
+.ci__p { margin-top:4px; font-size:15px; font-weight:700; color:var(--violet); }
+.ci__q { font-size:14px; color:#9990ad; }
+
+/* ---- منتج CSS شبه-3D (حسب المجال) ---- */
+.p3d { width:60px; height:60px; border-radius:14px; position:relative; flex:0 0 auto;
+  box-shadow:0 10px 18px rgba(85,11,245,0.24); }
+.p3d--sm { width:50px; height:50px; border-radius:12px; }
+/* عطر: قارورة بغطاء */
+.p3d--perfume { background:linear-gradient(145deg, #c9a9ff 0%, #8f5cf0 45%, #5a1fc0 100%);
+  box-shadow:inset 0 -10px 16px rgba(0,0,0,0.28), inset 0 8px 12px rgba(255,255,255,0.4), 0 12px 20px rgba(85,11,245,0.3); }
+.p3d--perfume::before { content:""; position:absolute; top:-9px; left:50%; transform:translateX(-50%);
+  width:22%; height:12px; border-radius:4px 4px 2px 2px; background:linear-gradient(180deg,#3a1170,#1c0434); }
+.p3d--perfume::after { content:""; position:absolute; left:22%; top:26%; width:26%; height:44%; border-radius:6px;
+  background:linear-gradient(160deg, rgba(255,255,255,0.6), rgba(255,255,255,0.05)); }
+/* صندوق/طقم */
+.p3d--box { background:linear-gradient(145deg, #b48bff, #6a1fd0);
+  box-shadow:inset 0 -10px 16px rgba(0,0,0,0.26), inset 0 7px 11px rgba(255,255,255,0.34), 0 12px 20px rgba(85,11,245,0.3); }
+.p3d--box::after { content:""; position:absolute; inset:0; border-radius:inherit;
+  background:linear-gradient(90deg, transparent 46%, rgba(0,0,0,0.14) 50%, transparent 54%),
+             linear-gradient(0deg, transparent 46%, rgba(255,255,255,0.22) 50%, transparent 54%); }
+/* عام (منتج مضيء) */
+.p3d--gen { background:linear-gradient(145deg, #b9c4ff, #6a5cf0);
+  box-shadow:inset 0 -9px 14px rgba(0,0,0,0.24), inset 0 6px 10px rgba(255,255,255,0.4), 0 12px 20px rgba(85,11,245,0.28); }
+.p3d--gen::after { content:""; position:absolute; left:24%; top:20%; width:22px; height:26px; border-radius:6px;
+  background:linear-gradient(160deg, rgba(255,255,255,0.55), rgba(255,255,255,0.05)); }
+
+/* ---- الغشاء ونافذة زيد ---- */
+.scrim { position:absolute; inset:0; background:rgba(15,2,34,0.5); z-index:2; }
+.win { position:absolute; left:0; right:0; bottom:0; z-index:3; background:#fff;
+  border-radius:26px 26px 36px 36px; padding:18px 20px 22px; box-shadow:0 -20px 50px rgba(15,2,34,0.4);
+  border-top:2px solid rgba(147,88,232,0.5); }
+.win__zaid { display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:700; color:var(--violet);
+  background:rgba(85,11,245,0.1); border-radius:999px; padding:5px 11px; margin-bottom:12px; }
+.win__zaid::before { content:"✦"; }
+.win__h { font-size:22px; font-weight:700; color:var(--ink); line-height:1.3; }
+.win__s { margin-top:6px; font-size:15px; color:var(--on-light-muted); }
+.timer { margin-top:14px; display:flex; align-items:center; gap:9px; justify-content:flex-start; }
+.timer__box { direction:ltr; font-size:20px; font-weight:700; color:#fff; background:var(--ink); border-radius:9px; padding:6px 12px; letter-spacing:0.08em; }
+.timer__t { font-size:14px; color:var(--on-light-muted); }
+.win__cta { margin-top:15px; height:52px; border-radius:15px; background:var(--grad-brand); color:#fff; font-size:18px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; box-shadow:0 12px 26px rgba(85,11,245,0.4); }
+
+/* ---- نافذة اقتراح (أكمل إطلالتك) ---- */
+.sug { position:absolute; left:0; right:0; bottom:0; z-index:3; background:#fff;
+  border-radius:26px 26px 36px 36px; padding:16px 18px 20px; box-shadow:0 -20px 50px rgba(15,2,34,0.4); border-top:2px solid rgba(147,88,232,0.5); }
+.sug__h { display:flex; align-items:center; gap:7px; font-size:17px; font-weight:700; color:var(--ink); margin-bottom:10px; }
+.sug__h b { color:var(--violet); }
+.sug__it { display:flex; align-items:center; gap:11px; padding:9px 0; border-bottom:1px solid #f2eefb; }
+.sug__it:last-of-type { border-bottom:0; }
+.sug__nm { flex:1; font-size:15px; font-weight:600; color:var(--ink); }
+.sug__pr { font-size:15px; font-weight:700; color:var(--violet); }
+.sug__add { width:34px; height:34px; border-radius:11px; background:var(--violet); color:#fff; font-size:22px; font-weight:500;
+  display:flex; align-items:center; justify-content:center; }
+.sug__cta { margin-top:12px; height:50px; border-radius:14px; background:var(--grad-brand); color:#fff; font-size:18px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; box-shadow:0 12px 26px rgba(85,11,245,0.4); }
+
+/* ---- شريط كوبون (Checkout) ---- */
+.cobar { padding:52px 20px 0; }
+.co__row { display:flex; justify-content:space-between; font-size:16px; color:var(--ink); padding:9px 0; }
+.co__row--mut { color:#9990ad; }
+.cpnbar { margin-top:14px; display:flex; align-items:center; gap:10px; padding:14px 16px; border-radius:14px;
+  background:rgba(95,194,106,0.14); border:1px dashed rgba(95,194,106,0.5); }
+.cpnbar__ic { width:30px; height:30px; border-radius:8px; background:#2f7d3a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.cpnbar__t { flex:1; font-size:15px; font-weight:700; color:#2f7d3a; }
+.cpnbar__t b { letter-spacing:0.04em; }
+.co__pay { position:absolute; left:16px; right:16px; bottom:16px; height:54px; border-radius:15px; background:var(--grad-brand); color:#fff;
+  font-size:19px; font-weight:700; display:flex; align-items:center; justify-content:center; box-shadow:0 12px 26px rgba(85,11,245,0.4); }
+
+/* ---- صفحة الشكر ---- */
+.thx { padding:70px 22px 0; text-align:center; }
+.thx__c { width:76px; height:76px; border-radius:50%; margin:0 auto 16px; background:rgba(95,194,106,0.16); position:relative; }
+.thx__c::after { content:""; position:absolute; left:27px; top:30px; width:22px; height:12px;
+  border-left:5px solid var(--green); border-bottom:5px solid var(--green); transform:rotate(-45deg); }
+.thx__h { font-size:22px; font-weight:700; color:var(--ink); }
+.thx__s { margin-top:6px; font-size:15px; color:var(--on-light-muted); }
+.thx__sug { position:absolute; left:0; right:0; bottom:0; z-index:3; background:#fff; border-radius:26px 26px 36px 36px;
+  padding:16px 18px 20px; box-shadow:0 -20px 50px rgba(15,2,34,0.4); border-top:2px solid rgba(147,88,232,0.5); }

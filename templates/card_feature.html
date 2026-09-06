@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="../brand/ibm_plex_arabic_embedded.css">
 <link rel="stylesheet" href="../brand/tokens.css">
 <link rel="stylesheet" href="../brand/cards.css">
+<link rel="stylesheet" href="../brand/livescreen.css">
 </head>
 <body>
   <div class="frame">
@@ -23,14 +24,18 @@
         <h1 class="title">{{TITLE}}</h1>
         <p class="desc">{{DESC}}</p>
         <div class="checks">{{CHECKS}}</div>
+        <div class="statline"><span class="statline__n"><bdi>{{DEMO_NUM}}</bdi></span><span class="statline__l">{{DEMO_LABEL}}</span></div>
       </div>
 
-      <div class="demo demo--side">
-        <div class="demo__num" style="font-size:{{DEMO_NUM_FS}}px">{{DEMO_NUM}}</div>
-        <div class="demo__label">{{DEMO_LABEL}}</div>
-        <div class="demo__rule"></div>
-        <div class="demo__ex">{{DEMO_EX}}</div>
-        <div class="demo__extx">{{DEMO_EXTX}}</div>
+      <div class="stage" style="flex:0 0 470px; align-self:stretch;">
+        <div class="holo__grid"></div><div class="holo"></div><div class="holo__ring"></div>
+        <div class="phone" style="width:346px; height:706px;">
+          <div class="screen">
+            <div class="island"></div>
+            <div class="sheen"></div>
+            {{SCREEN}}
+          </div>
+        </div>
       </div>
     </div>
 

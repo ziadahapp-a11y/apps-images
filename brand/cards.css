@@ -112,3 +112,10 @@ body { font-family:'IBM Plex Sans Arabic', sans-serif; }
   box-shadow:0 14px 34px rgba(28,4,52,0.05); }
 .stat2__n { direction:ltr; font-size:52px; font-weight:700; color:var(--violet); }
 .stat2__l { font-size:20px; color:rgba(28,4,52,0.6); margin-top:6px; }
+
+/* ---- شريحة النتيجة (رقم حقيقي) داخل بطاقة الخاصية الحيّة ---- */
+.statline { margin-top:28px; display:inline-flex; align-items:baseline; gap:12px;
+  background:rgba(85,11,245,0.08); border:1px solid rgba(85,11,245,0.18); border-radius:14px; padding:12px 20px; }
+.statline__n { direction:ltr; font-size:34px; font-weight:700; color:var(--violet); line-height:1; }
+.statline__n bdi { direction:ltr; }
+.statline__l { font-size:20px; font-weight:600; color:rgba(28,4,52,0.6); }

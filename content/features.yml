@@ -19,6 +19,7 @@ weeks:
   - date: "2026-09-08"
     slug: cart-recovery
     card_type: feature
+    screen: abandon
     hook: احصائية
     icon: return
     kicker: "خاصية · استرداد السلة"
@@ -217,6 +218,7 @@ weeks:
   - date: "2026-10-06"
     slug: coupon-checkout
     card_type: feature
+    screen: coupon
     hook: سؤال
     icon: tag
     kicker: "خاصية · كوبون الخصم"
@@ -269,6 +271,7 @@ weeks:
   - date: "2026-10-13"
     slug: bundles
     card_type: feature
+    screen: bundle
     hook: خسارة
     icon: box
     kicker: "خاصية · عروض الحزم"
@@ -321,6 +324,7 @@ weeks:
   - date: "2026-10-20"
     slug: post-purchase
     card_type: feature
+    screen: thanks
     hook: خسارة
     icon: gift
     kicker: "خاصية · صفحة الشكر"

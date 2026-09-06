@@ -56,6 +56,68 @@ ICONS = {
 }
 
 
+# مشاهد السكرين الحي: لكل خاصية شاشة تعرض تجربة العميل الفعلية، بمنتجات
+# CSS شبه-3D حسب مجال المتجر (المثال: عطور). يُحقن في {{SCREEN}}.
+SCREENS = {
+    "abandon": """
+      <div class="sbar"><div class="sbar__t">سلة العميل</div><div class="sbar__i"></div></div>
+      <div class="slist">
+        <div class="ci"><div class="p3d p3d--perfume"></div><div class="ci__b"><div class="ci__n">عطر فاخر</div><div class="ci__p"><bdi>240</bdi> ريال</div></div><div class="ci__q">×<bdi>1</bdi></div></div>
+        <div class="ci"><div class="p3d p3d--gen"></div><div class="ci__b"><div class="ci__n">مبخرة خشب</div><div class="ci__p"><bdi>120</bdi> ريال</div></div><div class="ci__q">×<bdi>1</bdi></div></div>
+      </div>
+      <div class="scrim"></div>
+      <div class="win">
+        <div class="win__zaid">زيد يقترح الآن</div>
+        <div class="win__h">مهلاً! خصمك ١٥٪ لو أكملت طلبك الحين 🎁</div>
+        <div class="win__s">حافظنا لك على سلّتك — أكمل قبل ما ينتهي العرض.</div>
+        <div class="timer"><span class="timer__box">09:58</span><span class="timer__t">باقٍ على العرض</span></div>
+        <div class="win__cta">أكمل الطلب وخذ الخصم</div>
+      </div>""",
+    "addtocart": """
+      <div class="sbar"><div class="sbar__t">سلة العميل</div><div class="sbar__i"></div></div>
+      <div class="slist">
+        <div class="ci"><div class="p3d p3d--perfume"></div><div class="ci__b"><div class="ci__n">عطر فاخر</div><div class="ci__p"><bdi>240</bdi> ريال</div></div><div class="ci__q">×<bdi>1</bdi></div></div>
+      </div>
+      <div class="scrim"></div>
+      <div class="sug">
+        <div class="sug__h">✦ زيد يقترح: <b>أكمل تشكيلتك</b></div>
+        <div class="sug__it"><div class="p3d p3d--gen p3d--sm"></div><div class="sug__nm">مبخرة خشب</div><div class="sug__pr"><bdi>120</bdi> ريال</div><div class="sug__add">+</div></div>
+        <div class="sug__it"><div class="p3d p3d--box p3d--sm"></div><div class="sug__nm">فحم طبيعي</div><div class="sug__pr"><bdi>35</bdi> ريال</div><div class="sug__add">+</div></div>
+        <div class="sug__cta">أضف الكل للسلة</div>
+      </div>""",
+    "coupon": """
+      <div class="cobar">
+        <div class="sbar__t" style="margin-bottom:10px">إتمام الطلب</div>
+        <div class="co__row"><span>مجموع الطلب</span><b><bdi>240</bdi> ريال</b></div>
+        <div class="co__row co__row--mut"><span>الشحن</span><span>مجاني</span></div>
+        <div class="cpnbar"><div class="cpnbar__ic">✓</div><div class="cpnbar__t">✦ زيد فعّل كود <b>ZIADAH</b> — وفّرت <bdi>25</bdi> ريال</div></div>
+      </div>
+      <div class="co__pay">ادفع الآن</div>""",
+    "bundle": """
+      <div class="sbar"><div class="sbar__t">صفحة المنتج</div><div class="sbar__i"></div></div>
+      <div style="padding:18px 20px 0"><div class="p3d p3d--perfume" style="width:100%; height:158px; border-radius:18px"></div></div>
+      <div class="scrim"></div>
+      <div class="sug">
+        <div class="sug__h">✦ زيد يقترح: <b>طقم كامل</b></div>
+        <div class="sug__it"><div class="p3d p3d--box p3d--sm"></div><div class="sug__nm">عطر + كريم + بخور</div><div class="sug__pr"><bdi>320</bdi> ريال</div></div>
+        <div class="cpnbar" style="margin-top:8px"><div class="cpnbar__ic">٪</div><div class="cpnbar__t">وفّر <bdi>70</bdi> ريال مع الطقم</div></div>
+        <div class="sug__cta">أضف الطقم للسلة</div>
+      </div>""",
+    "thanks": """
+      <div class="thx">
+        <div class="thx__c"></div>
+        <div class="thx__h">شكراً على طلبك ✓</div>
+        <div class="thx__s">وصلنا طلبك وجاري تجهيزه.</div>
+      </div>
+      <div class="scrim"></div>
+      <div class="thx__sug">
+        <div class="sug__h">✦ زيد: <b>عملاء اشتروا هذا أخذوا معه</b></div>
+        <div class="sug__it"><div class="p3d p3d--gen p3d--sm"></div><div class="sug__nm">مبخرة خشب</div><div class="sug__pr"><bdi>120</bdi> ريال</div><div class="sug__add">+</div></div>
+        <div class="sug__cta">أضفه لطلبك</div>
+      </div>""",
+}
+
+
 def sh(*args):
     return subprocess.run(args, cwd=ROOT, capture_output=True, text=True)
 
@@ -124,6 +186,7 @@ def fill(unit: dict, defaults: dict, aspect: str) -> str:
         "DEMO_EX": unit.get("demo_ex", "مثال"),
         "DEMO_EXTX": unit.get("demo_extx", ""),
         "DEMO_EXTX_IG": unit.get("demo_extx_ig", unit.get("demo_extx", "")),
+        "SCREEN": SCREENS.get(unit.get("screen", "addtocart"), SCREENS["addtocart"]),
     }
     for k, val in v.items():
         html = html.replace("{{%s}}" % k, str(val))
