@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../brand/ibm_plex_arabic_embedded.css">
+<link rel="stylesheet" href="../brand/tokens.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body, .frame { overflow:hidden; }
+  body { font-family:'IBM Plex Sans Arabic', sans-serif; }
+  .frame { position:relative; width:1600px; height:900px; isolation:isolate;
+    background:
+      radial-gradient(760px 620px at 88% 6%, rgba(147,88,232,0.16), transparent 60%),
+      radial-gradient(680px 560px at 6% 96%, rgba(85,11,245,0.08), transparent 62%),
+      linear-gradient(160deg, #faf8ff 0%, #f2ecff 100%);
+    padding:70px 84px; display:flex; flex-direction:column; }
+
+  .top { display:flex; justify-content:space-between; align-items:center; direction:ltr; }
+  .pill { display:inline-flex; align-items:center; gap:11px; background:rgba(255,255,255,0.7);
+    border:1px solid rgba(85,11,245,0.16); border-radius:999px; padding:11px 20px; font-size:19px; font-weight:600; color:#6b21c4; }
+  .pill i { width:9px; height:9px; border-radius:50%; background:var(--violet); }
+  .brand { display:flex; align-items:center; gap:14px; }
+  .brand__tx { text-align:right; line-height:1; }
+  .brand__ar { font-size:33px; font-weight:700; color:var(--ink); }
+  .brand__en { font-size:16px; font-weight:600; color:rgba(28,4,52,0.5); letter-spacing:0.14em; margin-top:4px; }
+  .brand__mark { width:66px; height:66px; border-radius:19px; background:linear-gradient(150deg, #2a0a5e, #12012a);
+    box-shadow:0 12px 30px rgba(85,11,245,0.28); display:flex; align-items:center; justify-content:center; }
+  .brand__mark svg { width:38px; height:auto; }
+
+  .body { flex:1; display:flex; align-items:center; gap:56px; margin-top:8px; }
+  .content { flex:1; }
+  .icon { width:74px; height:74px; border-radius:20px; margin-bottom:22px;
+    background:linear-gradient(150deg, var(--violet-glow), var(--violet)); box-shadow:0 14px 30px rgba(85,11,245,0.32);
+    display:flex; align-items:center; justify-content:center; } .icon svg { width:38px; height:38px; }
+  .kicker { font-size:21px; font-weight:700; color:var(--violet); margin-bottom:16px; }
+  .title { font-size:70px; font-weight:700; line-height:1.08; letter-spacing:-0.015em; color:var(--ink); }
+  .desc { margin-top:22px; font-size:26px; font-weight:400; line-height:1.55; color:rgba(28,4,52,0.62); max-width:600px; }
+  .checks { margin-top:30px; display:flex; flex-direction:column; gap:16px; }
+  .chk { display:flex; flex-direction:row-reverse; justify-content:flex-start; align-items:center; gap:14px; font-size:24px; font-weight:700; color:var(--ink); }
+  .chk__c { flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:rgba(85,11,245,0.12); position:relative; }
+  .chk__c::after { content:""; position:absolute; left:10px; top:11px; width:11px; height:6px;
+    border-left:3px solid var(--violet); border-bottom:3px solid var(--violet); transform:rotate(-45deg); }
+
+  /* ---- منطقة السكرين الحي + الهولوجرام ---- */
+  .stage { flex:0 0 500px; align-self:stretch; position:relative; display:flex; align-items:center; justify-content:center; }
+  /* توهّج هولوجرامي خلف الجوال */
+  .holo { position:absolute; width:440px; height:440px; border-radius:50%;
+    background:radial-gradient(circle at 50% 45%, rgba(147,88,232,0.55), rgba(85,11,245,0.22) 45%, transparent 70%);
+    filter:blur(10px); }
+  .holo__ring { position:absolute; width:520px; height:520px; border-radius:50%;
+    border:1px solid rgba(147,88,232,0.35); box-shadow:0 0 60px rgba(147,88,232,0.3) inset; }
+  .holo__grid { position:absolute; inset:0;
+    background-image:linear-gradient(rgba(147,88,232,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(147,88,232,0.10) 1px, transparent 1px);
+    background-size:34px 34px; -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 30%, transparent 68%); }
+
+  .phone { position:relative; width:352px; height:716px; border-radius:46px; background:#05010d; padding:11px;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.12), 0 50px 100px rgba(21,2,40,0.5),
+      0 0 90px rgba(147,88,232,0.5); }
+  .screen { position:relative; width:100%; height:100%; border-radius:36px; overflow:hidden; background:#faf8ff; }
+  .island { position:absolute; top:12px; left:50%; transform:translateX(-50%); width:96px; height:26px; border-radius:999px; background:#05010d; z-index:6; }
+  /* لمعة هولوجرامية عبر الشاشة */
+  .sheen { position:absolute; inset:0; z-index:5; pointer-events:none;
+    background:linear-gradient(122deg, transparent 42%, rgba(255,255,255,0.14) 48%, rgba(179,148,246,0.10) 52%, transparent 60%); }
+
+  /* المتجر خلف النافذة */
+  .sbar { padding:52px 20px 0; display:flex; justify-content:space-between; align-items:center; }
+  .sbar__t { font-size:19px; font-weight:700; color:var(--ink); }
+  .sbar__i { width:22px; height:22px; border-radius:7px; background:#e9e2fb; }
+  .cart { padding:14px 20px 0; }
+  .ci { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid #eee7fb; }
+  .ci__img { width:60px; height:60px; border-radius:13px; position:relative; overflow:hidden;
+    background:linear-gradient(145deg, #b48bff, #6a1fd0); box-shadow:0 8px 16px rgba(85,11,245,0.28), inset 0 -8px 14px rgba(0,0,0,0.22), inset 0 6px 10px rgba(255,255,255,0.35); }
+  .ci__img::after { content:""; position:absolute; left:12px; top:10px; width:20px; height:26px; border-radius:6px 6px 3px 3px;
+    background:linear-gradient(160deg, rgba(255,255,255,0.55), rgba(255,255,255,0.05)); }
+  .ci__b { flex:1; } .ci__n { font-size:16px; font-weight:600; color:var(--ink); }
+  .ci__p { margin-top:4px; font-size:15px; font-weight:700; color:var(--violet); }
+  .ci__q { font-size:14px; color:#9990ad; }
+
+  .scrim { position:absolute; inset:0; background:rgba(15,2,34,0.5); z-index:2; }
+  /* نافذة زيد الحية */
+  .win { position:absolute; left:0; right:0; bottom:0; z-index:3; background:#fff;
+    border-radius:26px 26px 36px 36px; padding:18px 20px 22px; box-shadow:0 -20px 50px rgba(15,2,34,0.4);
+    border-top:2px solid rgba(147,88,232,0.5); }
+  .win__zaid { display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:700; color:var(--violet);
+    background:rgba(85,11,245,0.1); border-radius:999px; padding:5px 11px; margin-bottom:12px; }
+  .win__zaid::before { content:"✦"; }
+  .win__h { font-size:23px; font-weight:700; color:var(--ink); line-height:1.3; }
+  .win__s { margin-top:6px; font-size:15px; color:var(--on-light-muted); }
+  .timer { margin-top:14px; display:flex; align-items:center; gap:9px; justify-content:flex-start; }
+  .timer__box { direction:ltr; font-size:20px; font-weight:700; color:#fff; background:var(--ink); border-radius:9px; padding:6px 12px; letter-spacing:0.08em; }
+  .timer__t { font-size:14px; color:var(--on-light-muted); }
+  .win__cta { margin-top:15px; height:54px; border-radius:15px; background:var(--grad-brand); color:#fff; font-size:19px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 12px 26px rgba(85,11,245,0.4); }
+
+  .foot { display:flex; justify-content:space-between; align-items:center; direction:ltr; }
+  .foot__site { font-size:22px; font-weight:700; color:var(--violet); }
+  .foot__at { font-size:22px; font-weight:500; color:rgba(28,4,52,0.5); }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="pill"><i></i>وكيل زيد · ذكاء اصطناعي</div>
+      <div class="brand">
+        <div class="brand__tx"><div class="brand__ar">زيادة</div><div class="brand__en">ziadah</div></div>
+        <div class="brand__mark"><!--MARK--></div>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="content">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 1 1 2.3 5.6" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M4 20v-5h5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="kicker">خاصية · استرداد السلة</div>
+        <h1 class="title">زيد يمسك السلة قبل ما تروح</h1>
+        <p class="desc">شوف كيف يظهر عرض زيد للعميل لحظة ما يهمّ يطلع — كأنك تشوفه لايف في متجرك.</p>
+        <div class="checks">
+          <div class="chk"><span class="chk__c"></span>يرصد العميل قبل ما يغادر</div>
+          <div class="chk"><span class="chk__c"></span>يعرض حافزاً في اللحظة الصح</div>
+          <div class="chk"><span class="chk__c"></span>يرجّع طلبات كانت بتضيع</div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="holo__grid"></div>
+        <div class="holo"></div>
+        <div class="holo__ring"></div>
+        <div class="phone">
+          <div class="island"></div>
+          <div class="screen">
+            <div class="sheen"></div>
+            <div class="sbar"><div class="sbar__t">سلة العميل</div><div class="sbar__i"></div></div>
+            <div class="cart">
+              <div class="ci"><div class="ci__img"></div><div class="ci__b"><div class="ci__n">عطر فاخر</div><div class="ci__p"><bdi>240</bdi> ريال</div></div><div class="ci__q">×<bdi>1</bdi></div></div>
+              <div class="ci"><div class="ci__img"></div><div class="ci__b"><div class="ci__n">مبخرة خشب</div><div class="ci__p"><bdi>120</bdi> ريال</div></div><div class="ci__q">×<bdi>1</bdi></div></div>
+            </div>
+            <div class="scrim"></div>
+            <div class="win">
+              <div class="win__zaid">زيد يقترح الآن</div>
+              <div class="win__h">مهلاً! خصمك ١٥٪ لو أكملت طلبك الحين 🎁</div>
+              <div class="win__s">حافظنا لك على سلّتك — أكمل قبل ما ينتهي العرض.</div>
+              <div class="timer"><span class="timer__box">09:58</span><span class="timer__t">باقٍ على العرض</span></div>
+              <div class="win__cta">أكمل الطلب وخذ الخصم</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="foot__site">ziadah.app</div>
+      <div class="foot__at">@ziadah_app</div>
+    </div>
+  </div>
+</body>
+</html>
