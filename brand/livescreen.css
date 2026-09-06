@@ -106,3 +106,76 @@
 .thx__s { margin-top:6px; font-size:15px; color:var(--on-light-muted); }
 .thx__sug { position:absolute; left:0; right:0; bottom:0; z-index:3; background:#fff; border-radius:26px 26px 36px 36px;
   padding:16px 18px 20px; box-shadow:0 -20px 50px rgba(15,2,34,0.4); border-top:2px solid rgba(147,88,232,0.5); }
+
+/* ---- يُشترى معاً (Cross-sell) ---- */
+.fbt { position:absolute; left:0; right:0; bottom:0; z-index:3; background:#fff; border-radius:26px 26px 36px 36px;
+  padding:16px 18px 20px; box-shadow:0 -20px 50px rgba(15,2,34,0.4); border-top:2px solid rgba(147,88,232,0.5); }
+.fbt__h { font-size:16px; font-weight:700; color:var(--violet); margin-bottom:12px; }
+.fbt__row { display:flex; align-items:center; justify-content:center; gap:8px; }
+.fbt__p { width:60px; height:60px; border-radius:16px; background:#f4f0ff; display:flex; align-items:center; justify-content:center; }
+.fbt__x { font-size:22px; font-weight:600; color:#b0a4c8; }
+.fbt__tot { display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-size:16px; color:var(--ink); }
+.fbt__tot b { font-size:19px; font-weight:700; color:var(--violet); }
+.fbt__tot bdi { direction:ltr; }
+
+/* ---- شريط الشحن المجاني (Free-shipping) ---- */
+.ship { position:absolute; left:0; right:0; bottom:0; z-index:3; background:#fff; border-radius:26px 26px 36px 36px;
+  padding:18px 20px 22px; box-shadow:0 -20px 50px rgba(15,2,34,0.4); border-top:2px solid rgba(147,88,232,0.5); }
+.ship__z { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--violet);
+  background:rgba(85,11,245,0.1); border-radius:999px; padding:5px 11px; margin-bottom:12px; }
+.ship__h { font-size:20px; font-weight:700; color:var(--ink); line-height:1.3; }
+.ship__h bdi { direction:ltr; }
+.ship__bar { margin-top:13px; height:12px; border-radius:999px; background:#eee7fb; overflow:hidden; }
+.ship__bar span { display:block; height:100%; border-radius:999px; background:var(--grad-brand); }
+.ship__it { display:flex; align-items:center; gap:11px; padding:13px 0 4px; }
+.ship__it .sug__nm { flex:1; font-size:15px; font-weight:600; color:var(--ink); }
+
+/* ---- الرئيسية المخصّصة (Home) ---- */
+.home__hero { padding:52px 20px 0; }
+.home__z { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--violet);
+  background:rgba(85,11,245,0.1); border-radius:999px; padding:5px 11px; }
+.home__ht { margin-top:10px; font-size:22px; font-weight:700; color:var(--ink); line-height:1.3; }
+.home__grid { padding:16px 18px 0; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.htile { background:#fff; border:1px solid #efe9fb; border-radius:16px; padding:14px; box-shadow:0 8px 20px rgba(28,4,52,0.05);
+  display:flex; flex-direction:column; align-items:flex-start; gap:9px; }
+.htile .p3d { width:100%; height:78px; border-radius:12px; }
+.htile__n { font-size:14px; font-weight:600; color:var(--ink); }
+.htile__p { font-size:14px; font-weight:700; color:var(--violet); }
+.htile__p bdi { direction:ltr; }
+
+/* ---- ندرة الكمية (Low-stock) ---- */
+.stk__badge { position:absolute; top:28px; right:32px; z-index:2; background:var(--ink); color:#fff;
+  font-size:14px; font-weight:700; border-radius:999px; padding:7px 13px; box-shadow:0 8px 18px rgba(21,2,40,0.4); }
+.stk__badge bdi { direction:ltr; }
+.stk { position:absolute; left:0; right:0; bottom:0; z-index:3; background:#fff; border-radius:26px 26px 36px 36px;
+  padding:18px 20px 22px; box-shadow:0 -20px 50px rgba(15,2,34,0.4); border-top:2px solid rgba(178,31,75,0.4); }
+.stk__h { font-size:20px; font-weight:700; color:#b21f4b; }
+.stk__bar { margin-top:13px; height:12px; border-radius:999px; background:#f6e3ea; overflow:hidden; }
+.stk__bar span { display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#e0567f,#b21f4b); }
+.stk__n { margin-top:11px; font-size:15px; font-weight:600; color:var(--on-light-muted); }
+.stk__n bdi { direction:ltr; }
+
+/* ---- لوحة أثر زيد (Dashboard) ---- */
+.dash { padding:56px 22px 0; }
+.dash__t { font-size:19px; font-weight:700; color:var(--ink); margin-bottom:16px; }
+.dash__kpi { display:flex; gap:12px; }
+.kpi { flex:1; background:#f6f2ff; border:1px solid #ece4ff; border-radius:16px; padding:15px; }
+.kpi__n { direction:ltr; text-align:right; font-size:26px; font-weight:700; color:var(--violet); line-height:1; }
+.kpi__l { margin-top:7px; font-size:13px; font-weight:600; color:var(--on-light-muted); }
+.dash__ch { margin-top:20px; display:flex; align-items:flex-end; justify-content:space-between; gap:9px; height:150px; padding:0 4px; }
+.dbar { flex:1; border-radius:8px 8px 4px 4px; background:#e3d9fb; }
+.dbar--hi { background:var(--grad-brand); box-shadow:0 8px 18px rgba(85,11,245,0.35); }
+.dash__cap { margin-top:14px; font-size:14px; font-weight:600; color:var(--on-light-muted); text-align:center; }
+
+/* ---- تجهيز المواسم (Seasonal) ---- */
+.seas { padding:52px 18px 0; }
+.seas__bn { border-radius:20px; padding:20px; color:#fff;
+  background:radial-gradient(300px 240px at 82% 8%, rgba(147,88,232,0.5), transparent 60%), linear-gradient(158deg,#24073f,#150127);
+  box-shadow:0 24px 60px rgba(21,2,40,0.3); }
+.seas__z { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:#d9c6ff;
+  background:rgba(255,255,255,0.12); border-radius:999px; padding:5px 11px; }
+.seas__h { margin-top:11px; font-size:24px; font-weight:700; line-height:1.2; }
+.seas__s { margin-top:6px; font-size:14px; color:rgba(255,255,255,0.72); }
+.seas__bn .timer { margin-top:14px; }
+.seas__bn .timer__box { background:rgba(255,255,255,0.16); }
+.seas__bn .timer__t { color:rgba(255,255,255,0.7); }

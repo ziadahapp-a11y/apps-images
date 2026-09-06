@@ -2,12 +2,16 @@
 """
 مشغّل الخصائص — نظام التصميم الجديد (دليل الأيجنت v1.0).
 
-يقرأ content/features.yml، يرندر بطاقة كل خاصية بمقاس كل منصة، يدفع
-الأصول، وينشئ مسودات بفر بأوقات الدليل:
-    إكس الثلاثاء ٩ص · لِنكدإن الثلاثاء ١٠ص · إنستقرام الأربعاء ٧م
+يقرأ content/features.yml، يرندر بطاقة كل وحدة بمقاس كل منصة، يدفع
+الأصول، وينشئ مسودات بفر. الجدول: ٣ بوستات في الأسبوع لكل منصة، على
+شبكة الأحد/الثلاثاء/الخميس. كل وحدة تُنشر في يومها على المنصات الثلاث:
+    إكس ٩ص · لِنكدإن ١١ص · إنستقرام ٨م (كلها بتوقيت الرياض).
 
-    python3 scripts/run_features.py                 # الأسبوع القادم (ثلاثاء)
-    python3 scripts/run_features.py --date 2026-09-08
+التشغيل الأسبوعي (بلا --date) يعالج كل وحدات أقرب أسبوع سعودي معلّق
+(الأحد→السبت) دفعةً واحدة — أي مسودات الأيام الثلاثة معاً.
+
+    python3 scripts/run_features.py                 # أقرب أسبوع معلّق (٣ وحدات)
+    python3 scripts/run_features.py --date 2026-09-13   # وحدة واحدة بتاريخها
     python3 scripts/run_features.py --dry-run       # يرندر محلياً بلا دفع/بفر
 
 لا شيء يُنشر: كل منشور saveToDraft. صاحب الحساب يعتمد من بفر.
@@ -36,8 +40,9 @@ LEDGER = ROOT / "content" / "features_ledger.json"
 JPEG_QUALITY = 92
 SCALE = 2
 
-# منافذ الأسبوع: (خدمة، إزاحة أيام عن الثلاثاء، وقت). إنستقرام أربعاء.
-SLOTS = [("twitter", 0, "09:00"), ("linkedin", 0, "10:00"), ("instagram", 1, "19:00")]
+# أوقات النشر في يوم الوحدة نفسه لكل المنصات: (خدمة، وقت). لا إزاحة أيام —
+# كل بوست يُنشر في يوم وحدته على المنصات الثلاث، بفارق ساعات يوزّع الظهور.
+SLOTS = [("twitter", "09:00"), ("linkedin", "11:00"), ("instagram", "20:00")]
 
 # المقاس لكل منصة: قالب و أبعاد
 FRAMES = {
@@ -115,6 +120,99 @@ SCREENS = {
         <div class="sug__it"><div class="p3d p3d--gen p3d--sm"></div><div class="sug__nm">مبخرة خشب</div><div class="sug__pr"><bdi>120</bdi> ريال</div><div class="sug__add">+</div></div>
         <div class="sug__cta">أضفه لطلبك</div>
       </div>""",
+    "pdp": """
+      <div class="sbar"><div class="sbar__t">صفحة المنتج</div><div class="sbar__i"></div></div>
+      <div style="padding:16px 20px 0"><div class="p3d p3d--perfume" style="width:100%; height:150px; border-radius:18px"></div></div>
+      <div class="scrim"></div>
+      <div class="sug">
+        <div class="sug__h">✦ زيد يقترح: <b>الترقية الأفضل</b></div>
+        <div class="sug__it"><div class="p3d p3d--gen p3d--sm"></div><div class="sug__nm">الحجم الأكبر ١٠٠مل</div><div class="sug__pr"><bdi>+60</bdi> ريال</div><div class="sug__add">↑</div></div>
+        <div class="cpnbar" style="margin-top:8px"><div class="cpnbar__ic">✦</div><div class="cpnbar__t">قيمة أعلى بفرق بسيط — أفضل صفقة له</div></div>
+        <div class="sug__cta">رقّي الطلب</div>
+      </div>""",
+    "crosssell": """
+      <div class="sbar"><div class="sbar__t">صفحة المنتج</div><div class="sbar__i"></div></div>
+      <div style="padding:16px 20px 0"><div class="p3d p3d--perfume" style="width:100%; height:140px; border-radius:18px"></div></div>
+      <div class="fbt">
+        <div class="fbt__h">✦ زيد: يُشترى معاً كثيراً</div>
+        <div class="fbt__row">
+          <div class="fbt__p"><div class="p3d p3d--perfume p3d--sm"></div></div>
+          <div class="fbt__x">+</div>
+          <div class="fbt__p"><div class="p3d p3d--gen p3d--sm"></div></div>
+          <div class="fbt__x">+</div>
+          <div class="fbt__p"><div class="p3d p3d--box p3d--sm"></div></div>
+        </div>
+        <div class="fbt__tot"><span>الإجمالي معاً</span><b><bdi>395</bdi> ريال</b></div>
+        <div class="sug__cta">أضف الثلاثة للسلة</div>
+      </div>""",
+    "shipbar": """
+      <div class="sbar"><div class="sbar__t">سلة العميل</div><div class="sbar__i"></div></div>
+      <div class="slist">
+        <div class="ci"><div class="p3d p3d--perfume"></div><div class="ci__b"><div class="ci__n">عطر فاخر</div><div class="ci__p"><bdi>240</bdi> ريال</div></div><div class="ci__q">×<bdi>1</bdi></div></div>
+      </div>
+      <div class="scrim"></div>
+      <div class="ship">
+        <div class="ship__z">✦ زيد</div>
+        <div class="ship__h">باقٍ <bdi>35</bdi> ريال على الشحن المجاني 🚚</div>
+        <div class="ship__bar"><span style="width:82%"></span></div>
+        <div class="ship__it"><div class="p3d p3d--gen p3d--sm"></div><div class="sug__nm">فحم طبيعي</div><div class="sug__pr"><bdi>35</bdi> ريال</div><div class="sug__add">+</div></div>
+        <div class="sug__cta">أضفه واحصل على شحن مجاني</div>
+      </div>""",
+    "home": """
+      <div class="sbar"><div class="sbar__t">الرئيسية</div><div class="sbar__i"></div></div>
+      <div class="home__hero">
+        <div class="home__z">✦ مختار لك من زيد</div>
+        <div class="home__ht">لأنك تحب العطور الشرقية</div>
+      </div>
+      <div class="home__grid">
+        <div class="htile"><div class="p3d p3d--perfume"></div><div class="htile__n">عطر عود</div><div class="htile__p"><bdi>240</bdi> ريال</div></div>
+        <div class="htile"><div class="p3d p3d--gen"></div><div class="htile__n">مبخرة خشب</div><div class="htile__p"><bdi>120</bdi> ريال</div></div>
+        <div class="htile"><div class="p3d p3d--box"></div><div class="htile__n">طقم بخور</div><div class="htile__p"><bdi>180</bdi> ريال</div></div>
+        <div class="htile"><div class="p3d p3d--perfume"></div><div class="htile__n">دهن عود</div><div class="htile__p"><bdi>320</bdi> ريال</div></div>
+      </div>""",
+    "stock": """
+      <div class="sbar"><div class="sbar__t">صفحة المنتج</div><div class="sbar__i"></div></div>
+      <div style="padding:16px 20px 0; position:relative">
+        <div class="p3d p3d--perfume" style="width:100%; height:150px; border-radius:18px"></div>
+        <div class="stk__badge">🔥 آخر <bdi>3</bdi> قطع</div>
+      </div>
+      <div class="stk">
+        <div class="stk__h">الكمية شبه منتهية</div>
+        <div class="stk__bar"><span style="width:12%"></span></div>
+        <div class="stk__n">بقي <bdi>3</bdi> من <bdi>25</bdi> — اطلبه قبل ما يخلص</div>
+        <div class="sug__cta">أضفه للسلة الآن</div>
+      </div>""",
+    "dashboard": """
+      <div class="dash">
+        <div class="dash__t">لوحة زيادة · أثر زيد</div>
+        <div class="dash__kpi">
+          <div class="kpi"><div class="kpi__n">+136,871</div><div class="kpi__l">ريال إضافي</div></div>
+          <div class="kpi"><div class="kpi__n">1,086</div><div class="kpi__l">تحويل من زيد</div></div>
+        </div>
+        <div class="dash__ch">
+          <div class="dbar" style="height:34%"></div>
+          <div class="dbar" style="height:48%"></div>
+          <div class="dbar" style="height:44%"></div>
+          <div class="dbar" style="height:66%"></div>
+          <div class="dbar" style="height:82%"></div>
+          <div class="dbar dbar--hi" style="height:100%"></div>
+        </div>
+        <div class="dash__cap">أثر زيد على متوسط قيمة الطلب</div>
+      </div>""",
+    "season": """
+      <div class="sbar"><div class="sbar__t">الرئيسية</div><div class="sbar__i"></div></div>
+      <div class="seas">
+        <div class="seas__bn">
+          <div class="seas__z">✦ زيد جهّز حملتك</div>
+          <div class="seas__h">اليوم الوطني 🇸🇦</div>
+          <div class="seas__s">عروض وحزم مقترحة جاهزة للتفعيل بضغطة</div>
+          <div class="timer"><span class="timer__box">03:12:40</span><span class="timer__t">على انطلاق الحملة</span></div>
+        </div>
+        <div class="home__grid" style="padding-top:14px">
+          <div class="htile"><div class="p3d p3d--box"></div><div class="htile__n">حزمة الوطني</div><div class="htile__p"><bdi>299</bdi> ريال</div></div>
+          <div class="htile"><div class="p3d p3d--perfume"></div><div class="htile__n">عطر مميّز</div><div class="htile__p"><bdi>240</bdi> ريال</div></div>
+        </div>
+      </div>""",
 }
 
 
@@ -122,9 +220,9 @@ def sh(*args):
     return subprocess.run(args, cwd=ROOT, capture_output=True, text=True)
 
 
-def next_tuesday(today: date) -> date:
-    ahead = (1 - today.weekday()) % 7      # الثلاثاء = 1
-    return today + timedelta(days=ahead or 7)
+def saudi_week_start(d: date) -> date:
+    """بداية الأسبوع السعودي (الأحد) للتاريخ المعطى. weekday: إثنين=0..أحد=6."""
+    return d - timedelta(days=(d.weekday() + 1) % 7)
 
 
 def _bdi_lead(it: str) -> str:
@@ -267,88 +365,42 @@ def led_push():
         raise SystemExit("فشل دفع السجل:\n" + pr.stderr)
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--date", help="ثلاثاء الأسبوع YYYY-MM-DD")
-    ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--force", action="store_true")
-    args = ap.parse_args()
-
-    plan = yaml.safe_load((ROOT / "content" / "features.yml").read_text(encoding="utf-8"))
-    channels = yaml.safe_load((ROOT / "content" / "channels.yml").read_text(encoding="utf-8"))
-    defaults = plan.get("defaults", {})
-    led = led_load()
-
-    # اختيار الأسبوع: --date يدوي؛ وإلا الكرون يختار أقرب أسبوع قادم لم
-    # يُنشأ بعد. حرج: لا نفشل التشغيل لو الأسبوع مُنشأ سابقاً — نتخطاه
-    # نظيفاً وننتقل، وإلا فشل كرون واحد (كأسبوع أُنشئ يدوياً) يوقف الأتمتة.
-    if args.date:
-        target = date.fromisoformat(args.date)
-    else:
-        today_iso = date.today().isoformat()
-        pending = sorted(w["date"] for w in plan["weeks"]
-                         if w["date"] >= today_iso and w["date"] not in led["runs"])
-        if not pending:
-            dates = sorted(w["date"] for w in plan["weeks"])
-            print("لا أسبوع معلّق للإنشاء (كله مُنشأ أو المخزون نفد).")
-            if dates and dates[-1] < today_iso:
-                print("⚠️ نفد مخزون الخصائص (آخرها %s). أضف وحدات في content/features.yml." % dates[-1])
-            return
-        target = date.fromisoformat(pending[0])
-
-    iso = target.isoformat()
-    unit = next((w for w in plan["weeks"] if w["date"] == iso), None)
-    if not unit:
-        print("لا خاصية لتاريخ %s — تخطي." % iso)
-        return
-
-    if led["runs"].get(iso) and not args.force and not args.dry_run:
-        # ليس خطأ: الأسبوع أُنشئ سابقاً (يدوياً غالباً). تخطٍّ نظيف.
-        print("أسبوع %s نُفّذ سابقاً — تخطي (لإعادته احذف مسوداته واستخدم --force)." % iso)
-        return
-
-    print("=== خاصية %s: %s (%s) ===" % (iso, unit["slug"], unit["card_type"]))
-    exe = os.environ.get("PW_CHROMIUM_EXECUTABLE")
-
-    # رندر لكل مقاس مطلوب. في dry-run نكتب الصور في out/ (المتجاهَل) لا في
-    # social/ حتى لا نلوّث شجرة العمل بأصول مؤقتة.
-    aspects = {FRAMES[s]["aspect"] for s, _, _ in SLOTS}
-    assets = (ROOT / "out" / iso if args.dry_run else ROOT / "social" / iso)
+def render_unit(unit: dict, defaults: dict, dry_run: bool, browser) -> dict:
+    """يرندر مقاسي الوحدة (wide/tall) ويحفظها JPEG. يُعيد {aspect: path}."""
+    iso = unit["date"]
+    aspects = {FRAMES[s]["aspect"] for s, _ in SLOTS}
+    assets = (ROOT / "out" / iso if dry_run else ROOT / "social" / iso)
     jpegs = {}
-    with sync_playwright() as p:
-        browser = p.chromium.launch(executable_path=exe) if exe else p.chromium.launch()
-        for asp in aspects:
-            w = 1600 if asp == "wide" else 1080
-            h = 900 if asp == "wide" else 1350
-            html = fill(unit, defaults, asp)
-            png = ROOT / "out" / iso / ("card_%s.png" % asp)
-            render_png(html, w, h, png, browser)
-            dst = assets / ("%s-%s-%s.jpg" % (iso, unit["slug"], asp))
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            Image.open(png).convert("RGB").save(dst, "JPEG", quality=JPEG_QUALITY, subsampling=0, optimize=True)
-            jpegs[asp] = dst
-            print("   رندر %s %dx%d → %s (%d KB)" % (asp, w, h, dst.name, dst.stat().st_size/1024))
-        browser.close()
+    for asp in aspects:
+        w = 1600 if asp == "wide" else 1080
+        h = 900 if asp == "wide" else 1350
+        html = fill(unit, defaults, asp)
+        png = ROOT / "out" / iso / ("card_%s.png" % asp)
+        render_png(html, w, h, png, browser)
+        dst = assets / ("%s-%s-%s.jpg" % (iso, unit["slug"], asp))
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        Image.open(png).convert("RGB").save(dst, "JPEG", quality=JPEG_QUALITY, subsampling=0, optimize=True)
+        jpegs[asp] = dst
+        print("   رندر %s %dx%d → %s (%d KB)" % (asp, w, h, dst.name, dst.stat().st_size / 1024))
+    return jpegs
 
-    if args.dry_run:
-        print("dry-run: تم الرندر بلا دفع/بفر.")
-        return
 
+def draft_unit(unit: dict, jpegs: dict, channels: dict, buf, existing: list) -> list:
+    """يدفع أصول الوحدة وينشئ مسودات بفر للمنصات الثلاث في يوم الوحدة."""
+    iso = unit["date"]
+    target = date.fromisoformat(iso)
     owner, repo = repo_info()
     sha = push(list(jpegs.values()), "%s %s" % (iso, unit["slug"]))
     urls = {asp: RAW % (owner, repo, sha, str(j.relative_to(ROOT))) for asp, j in jpegs.items()}
     for u in urls.values():
         verify(u)
 
-    buf = Buffer()
-    existing = buf.drafts(channels["organization"]["id"])
-    alt = "%s — %s | زيادة" % (unit["kicker"].replace("خاصية · ", ""), unit["title"])
-
+    kicker = unit.get("kicker", "")
+    alt = "%s — %s | زيادة" % (kicker.replace("خاصية · ", ""), unit.get("title", ""))
     created = []
-    for service, day_off, hhmm in SLOTS:
+    for service, hhmm in SLOTS:
         ch = channels["channels"][service]
-        when = datetime.combine(target + timedelta(days=day_off),
-                                datetime.strptime(hhmm, "%H:%M").time())
+        when = datetime.combine(target, datetime.strptime(hhmm, "%H:%M").time())
         due = when.strftime("%Y-%m-%dT%H:%M:00+03:00")
         # منع تكرار: نفس القناة نفس الموعد
         if any(e.get("channelId") == ch["id"] and (e.get("dueAt") or "").startswith(when.strftime("%Y-%m-%dT%H:%M"))
@@ -365,11 +417,88 @@ def main():
             raise SystemExit("فشل مسودة %s:\n%s" % (service, e))
         created.append({"service": service, "id": post["id"], "dueAt": due})
         print("   %-10s %s  %s" % (service, post["id"], due))
+    return {"slug": unit["slug"], "commit": sha, "drafts": created}
 
-    led["runs"][iso] = {"slug": unit["slug"], "commit": sha, "drafts": created}
-    led_save(led)
+
+def select_units(plan: dict, led: dict, args) -> list:
+    """يختار الوحدات المطلوب إنشاؤها. --date: وحدة واحدة. وإلا: كل وحدات
+    أقرب أسبوع سعودي (أحد→سبت) فيه وحدة معلّقة لم تُنشأ بعد."""
+    weeks = plan["weeks"]
+    if args.date:
+        unit = next((w for w in weeks if w["date"] == args.date), None)
+        if not unit:
+            print("لا وحدة لتاريخ %s." % args.date)
+            return []
+        return [unit]
+
+    today_iso = date.today().isoformat()
+    pending = sorted((w["date"] for w in weeks
+                      if w["date"] >= today_iso and w["date"] not in led["runs"]))
+    if not pending:
+        dates = sorted(w["date"] for w in weeks)
+        print("لا أسبوع معلّق للإنشاء (كله مُنشأ أو المخزون نفد).")
+        if dates and dates[-1] < today_iso:
+            print("⚠️ نفد مخزون الوحدات (آخرها %s). أضف وحدات في content/features.yml." % dates[-1])
+        return []
+
+    wk = saudi_week_start(date.fromisoformat(pending[0]))
+    wk_end = wk + timedelta(days=6)
+    units = [w for w in weeks
+             if wk.isoformat() <= w["date"] <= wk_end.isoformat()
+             and w["date"] not in led["runs"]]
+    units.sort(key=lambda w: w["date"])
+    print("أسبوع %s → %s: %d وحدة معلّقة" % (wk.isoformat(), wk_end.isoformat(), len(units)))
+    return units
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--date", help="تاريخ وحدة واحدة YYYY-MM-DD")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--force", action="store_true")
+    args = ap.parse_args()
+
+    plan = yaml.safe_load((ROOT / "content" / "features.yml").read_text(encoding="utf-8"))
+    channels = yaml.safe_load((ROOT / "content" / "channels.yml").read_text(encoding="utf-8"))
+    defaults = plan.get("defaults", {})
+    led = led_load()
+
+    units = select_units(plan, led, args)
+    if not units:
+        return
+
+    exe = os.environ.get("PW_CHROMIUM_EXECUTABLE")
+    buf = None
+    existing = []
+    if not args.dry_run:
+        buf = Buffer()
+        existing = buf.drafts(channels["organization"]["id"])
+
+    total = 0
+    with sync_playwright() as p:
+        browser = p.chromium.launch(executable_path=exe) if exe else p.chromium.launch()
+        try:
+            for unit in units:
+                iso = unit["date"]
+                if led["runs"].get(iso) and not args.force and not args.dry_run:
+                    print("• %s نُفّذ سابقاً — تخطي (احذف مسوداته واستخدم --force لإعادته)." % iso)
+                    continue
+                print("=== وحدة %s: %s (%s) ===" % (iso, unit["slug"], unit["card_type"]))
+                jpegs = render_unit(unit, defaults, args.dry_run, browser)
+                if args.dry_run:
+                    continue
+                rec = draft_unit(unit, jpegs, channels, buf, existing)
+                led["runs"][iso] = rec
+                led_save(led)
+                total += len(rec["drafts"])
+        finally:
+            browser.close()
+
+    if args.dry_run:
+        print("dry-run: تم الرندر بلا دفع/بفر.")
+        return
     led_push()
-    print("\nتم: %d مسودة. لا شي منشور. راجعها في بفر." % len(created))
+    print("\nتم: %d مسودة عبر %d وحدة. لا شي منشور. راجعها في بفر." % (total, len(units)))
 
 
 if __name__ == "__main__":
