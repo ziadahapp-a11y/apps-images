@@ -214,23 +214,35 @@ def main():
     plan = yaml.safe_load((ROOT / "content" / "features.yml").read_text(encoding="utf-8"))
     channels = yaml.safe_load((ROOT / "content" / "channels.yml").read_text(encoding="utf-8"))
     defaults = plan.get("defaults", {})
+    led = led_load()
 
-    target = date.fromisoformat(args.date) if args.date else next_tuesday(date.today())
+    # اختيار الأسبوع: --date يدوي؛ وإلا الكرون يختار أقرب أسبوع قادم لم
+    # يُنشأ بعد. حرج: لا نفشل التشغيل لو الأسبوع مُنشأ سابقاً — نتخطاه
+    # نظيفاً وننتقل، وإلا فشل كرون واحد (كأسبوع أُنشئ يدوياً) يوقف الأتمتة.
+    if args.date:
+        target = date.fromisoformat(args.date)
+    else:
+        today_iso = date.today().isoformat()
+        pending = sorted(w["date"] for w in plan["weeks"]
+                         if w["date"] >= today_iso and w["date"] not in led["runs"])
+        if not pending:
+            dates = sorted(w["date"] for w in plan["weeks"])
+            print("لا أسبوع معلّق للإنشاء (كله مُنشأ أو المخزون نفد).")
+            if dates and dates[-1] < today_iso:
+                print("⚠️ نفد مخزون الخصائص (آخرها %s). أضف وحدات في content/features.yml." % dates[-1])
+            return
+        target = date.fromisoformat(pending[0])
+
     iso = target.isoformat()
     unit = next((w for w in plan["weeks"] if w["date"] == iso), None)
     if not unit:
-        dates = sorted(w["date"] for w in plan["weeks"])
-        upcoming = [d for d in dates if d >= iso]
-        # خروج نظيف لا فشل: الكرون يعمل كل خميس، وأسبوع بلا خاصية ليس خطأ.
-        print("لا خاصية لتاريخ %s — تخطي هذا الأسبوع." % iso)
-        if not upcoming:
-            print("⚠️ نفد مخزون الخصائص (آخرها %s). أضف وحدات في content/features.yml."
-                  % (dates[-1] if dates else "—"))
+        print("لا خاصية لتاريخ %s — تخطي." % iso)
         return
 
-    led = led_load()
     if led["runs"].get(iso) and not args.force and not args.dry_run:
-        raise SystemExit("أسبوع %s نُفّذ سابقاً. استخدم --force بعد حذف مسوداته من بفر." % iso)
+        # ليس خطأ: الأسبوع أُنشئ سابقاً (يدوياً غالباً). تخطٍّ نظيف.
+        print("أسبوع %s نُفّذ سابقاً — تخطي (لإعادته احذف مسوداته واستخدم --force)." % iso)
+        return
 
     print("=== خاصية %s: %s (%s) ===" % (iso, unit["slug"], unit["card_type"]))
     exe = os.environ.get("PW_CHROMIUM_EXECUTABLE")
