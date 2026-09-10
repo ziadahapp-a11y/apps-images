@@ -63,8 +63,9 @@ body { font-family:'IBM Plex Sans Arabic', sans-serif; }
 .content { flex:1; }
 .demo--side { flex:0 0 486px; align-self:stretch; margin:26px 0; }
 .checks { margin-top:34px; display:flex; flex-direction:column; gap:18px; }
-.chk { display:flex; flex-direction:row-reverse; justify-content:flex-start; align-items:center; gap:14px;
+.chk { display:flex; align-items:center; gap:14px;
   font-size:25px; font-weight:700; color:var(--ink); }
+.chk__t { text-align:right; }
 .chk bdi { direction:ltr; }
 .chk__c { flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:rgba(85,11,245,0.12); position:relative; }
 .chk__c::after { content:""; position:absolute; left:10px; top:11px; width:11px; height:6px;

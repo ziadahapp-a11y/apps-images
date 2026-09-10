@@ -52,7 +52,8 @@ body { font-family:'IBM Plex Sans Arabic', sans-serif; }
 
 /* feature: قائمة التحقّق */
 .checks { margin-top:34px; display:flex; flex-direction:column; gap:20px; }
-.chk { display:flex; flex-direction:row-reverse; justify-content:flex-start; align-items:center; gap:16px; font-size:30px; font-weight:700; color:var(--ink); }
+.chk { display:flex; align-items:center; gap:16px; font-size:30px; font-weight:700; color:var(--ink); }
+.chk__t { text-align:right; }
 .chk bdi { direction:ltr; }
 .chk__c { flex:0 0 auto; width:40px; height:40px; border-radius:50%; background:rgba(85,11,245,0.12); position:relative; }
 .chk__c::after { content:""; position:absolute; left:12px; top:13px; width:13px; height:7px;
