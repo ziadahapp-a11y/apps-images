@@ -232,8 +232,8 @@ def _bdi_lead(it: str) -> str:
 
 
 def render_checks(items: list) -> str:
-    # النص أولاً (يبدأ من حافة اليمين) وعلامة الصح بعده (يساراً).
-    return "".join('<div class="chk"><span class="chk__t">%s</span><span class="chk__c"></span></div>' % _bdi_lead(i) for i in items)
+    # علامة الصح أولاً على اليمين، ثم النص يليها — يبدأ السطر بالعلامة.
+    return "".join('<div class="chk"><span class="chk__c"></span><span class="chk__t">%s</span></div>' % _bdi_lead(i) for i in items)
 
 
 def render_probs(items: list) -> str:
