@@ -82,8 +82,9 @@ body { font-family:'IBM Plex Sans Arabic', sans-serif; }
 .col__tag { font-size:20px; font-weight:700; border-radius:999px; padding:8px 18px; }
 .col--now .col__tag { color:#b21f4b; background:rgba(178,31,75,0.12); }
 .col--after .col__tag { color:#fff; background:rgba(85,11,245,0.55); }
-.row { display:flex; flex-direction:row-reverse; justify-content:flex-start; align-items:center; gap:14px;
+.row { display:flex; align-items:center; gap:14px;
   padding:15px 0; font-size:23px; font-weight:600; }
+.row__t { flex:1; text-align:right; }
 .row + .row { border-top:1px solid rgba(28,4,52,0.06); }
 .col--after .row + .row { border-top:1px solid rgba(255,255,255,0.08); }
 .col--now .row { color:rgba(28,4,52,0.82); }
@@ -99,9 +100,10 @@ body { font-family:'IBM Plex Sans Arabic', sans-serif; }
 
 /* ---- نوع: المشكلة ---- */
 .probs { margin-top:30px; display:flex; flex-direction:column; gap:16px; }
-.prob { display:flex; flex-direction:row-reverse; justify-content:flex-start; align-items:center; gap:16px;
+.prob { display:flex; align-items:center; gap:16px;
   background:#fff; border:1px solid rgba(28,4,52,0.07); border-radius:16px; padding:20px 24px;
   box-shadow:0 12px 30px rgba(28,4,52,0.05); font-size:24px; font-weight:700; color:var(--ink); }
+.prob__t { flex:1; text-align:right; }
 
 /* ---- نوع: القصة / الإحصائية ---- */
 .story { flex:1; display:flex; align-items:center; gap:56px; margin-top:8px; }

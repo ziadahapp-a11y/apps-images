@@ -236,11 +236,13 @@ def render_checks(items: list) -> str:
 
 
 def render_probs(items: list) -> str:
-    return "".join('<div class="prob"><span class="mk mk--x"></span>%s</div>' % i for i in items)
+    # النص أولاً (يبدأ من حافة اليمين) والعلامة في نهاية السطر (يسار).
+    return "".join('<div class="prob"><span class="prob__t">%s</span><span class="mk mk--x"></span></div>' % i for i in items)
 
 
 def render_rows(items: list, mark: str) -> str:
-    return "".join('<div class="row"><span class="mk mk--%s"></span>%s</div>' % (mark, i) for i in items)
+    # النص أولاً (يبدأ من حافة اليمين) والعلامة في نهاية السطر (يسار).
+    return "".join('<div class="row"><span class="row__t">%s</span><span class="mk mk--%s"></span></div>' % (i, mark) for i in items)
 
 
 def render_stat2(cards: list) -> str:
