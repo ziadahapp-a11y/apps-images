@@ -20,6 +20,27 @@
           "dueAt": "2026-09-09T19:00:00+03:00"
         }
       ]
+    },
+    "2026-09-15": {
+      "slug": "low-order-value",
+      "commit": "84c5466bd83c37683a2db00e6befae5318eeafde",
+      "drafts": [
+        {
+          "service": "twitter",
+          "id": "6aa20f30f7b764c764e9dd22",
+          "dueAt": "2026-09-15T09:00:00+03:00"
+        },
+        {
+          "service": "linkedin",
+          "id": "6aa20f3002b1a6fe6e41fdf8",
+          "dueAt": "2026-09-15T10:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6aa20f3195ae637f15fa200e",
+          "dueAt": "2026-09-16T19:00:00+03:00"
+        }
+      ]
     }
   }
 }
