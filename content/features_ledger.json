@@ -146,6 +146,69 @@
           "dueAt": "2026-09-24T20:00:00+03:00"
         }
       ]
+    },
+    "2026-09-27": {
+      "slug": "coupon-checkout",
+      "commit": "f954b771e40c3f60e8bcc663435ff68956150236",
+      "drafts": [
+        {
+          "service": "twitter",
+          "id": "6ab485fd1a0af484261ef37e",
+          "dueAt": "2026-09-27T09:00:00+03:00"
+        },
+        {
+          "service": "linkedin",
+          "id": "6ab485fd5b0b95240b4671a6",
+          "dueAt": "2026-09-27T11:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6ab485fe1a0af484261ef39a",
+          "dueAt": "2026-09-27T20:00:00+03:00"
+        }
+      ]
+    },
+    "2026-09-29": {
+      "slug": "transformation",
+      "commit": "ce0f10377ac89a1982cc20de481b596a0fe48240",
+      "drafts": [
+        {
+          "service": "twitter",
+          "id": "6ab48604ccbef1e0a541c643",
+          "dueAt": "2026-09-29T09:00:00+03:00"
+        },
+        {
+          "service": "linkedin",
+          "id": "6ab48604153ba7c8a695051c",
+          "dueAt": "2026-09-29T11:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6ab48605153ba7c8a695053e",
+          "dueAt": "2026-09-29T20:00:00+03:00"
+        }
+      ]
+    },
+    "2026-10-01": {
+      "slug": "free-shipping",
+      "commit": "6d24df807c5ceec7b80d368c9a2081a2a32f4e4f",
+      "drafts": [
+        {
+          "service": "twitter",
+          "id": "6ab4860c1a0af484261ef452",
+          "dueAt": "2026-10-01T09:00:00+03:00"
+        },
+        {
+          "service": "linkedin",
+          "id": "6ab4860c153ba7c8a69505e1",
+          "dueAt": "2026-10-01T11:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6ab4860d1a0af484261ef46e",
+          "dueAt": "2026-10-01T20:00:00+03:00"
+        }
+      ]
     }
   }
 }
