@@ -209,6 +209,69 @@
           "dueAt": "2026-10-01T20:00:00+03:00"
         }
       ]
+    },
+    "2026-10-04": {
+      "slug": "low-stock",
+      "commit": "f5451e8bd58ebde95b196dcfcba984bf7d3846d7",
+      "drafts": [
+        {
+          "service": "twitter",
+          "id": "6abdcce2f245fa4cd53bf79d",
+          "dueAt": "2026-10-04T09:00:00+03:00"
+        },
+        {
+          "service": "linkedin",
+          "id": "6abdcce27b21e6b4b737fe7f",
+          "dueAt": "2026-10-04T11:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6abdcce2f245fa4cd53bf7bc",
+          "dueAt": "2026-10-04T20:00:00+03:00"
+        }
+      ]
+    },
+    "2026-10-06": {
+      "slug": "ad-dependency",
+      "commit": "6d6e45e384250e7b305af494686068aca9f82c56",
+      "drafts": [
+        {
+          "service": "twitter",
+          "id": "6abdcce805e9a5c46ab61335",
+          "dueAt": "2026-10-06T09:00:00+03:00"
+        },
+        {
+          "service": "linkedin",
+          "id": "6abdcce87b21e6b4b738014c",
+          "dueAt": "2026-10-06T11:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6abdcce8b29c0fecf413c4aa",
+          "dueAt": "2026-10-06T20:00:00+03:00"
+        }
+      ]
+    },
+    "2026-10-08": {
+      "slug": "homepage-personal",
+      "commit": "511e3790ed3170c9d516a01b03d4eb2e5aeacceb",
+      "drafts": [
+        {
+          "service": "twitter",
+          "id": "6abdccf0f245fa4cd53bfb46",
+          "dueAt": "2026-10-08T09:00:00+03:00"
+        },
+        {
+          "service": "linkedin",
+          "id": "6abdccf024db200ef444de16",
+          "dueAt": "2026-10-08T11:00:00+03:00"
+        },
+        {
+          "service": "instagram",
+          "id": "6abdccf026106f73326d3b1f",
+          "dueAt": "2026-10-08T20:00:00+03:00"
+        }
+      ]
     }
   }
 }
