@@ -12,8 +12,8 @@
     "height": 1920,
     "fps": 30,
     "codec": "h264+aac",
-    "duration_seconds": 50.6,
-    "loudness": "-14.8 LUFS"
+    "duration_seconds": 50.4,
+    "loudness": "-14.7 LUFS"
   },
   "claim": "طلباتك تقدر ترتفع 30%: ادعاء مقدَّم من المالك ومعتمد (2026-10-08)، بصيغة احتمال لا ضمان.",
   "ai_disclosure": false,
@@ -56,5 +56,6 @@
       10
     ],
     "cover": "before-after"
-  }
+  },
+  "voice_pronunciation": "سَلّه / صفحت (2026-10-12)"
 }
